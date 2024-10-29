@@ -15,6 +15,13 @@ class AppImages {
   static const attending_icon = 'assets/images/attending.png';
   static const calender_icon = 'assets/images/calender.png';
   static const profile_icon = 'assets/images/profile.png';
+  static const drawer_icon = 'assets/images/drawer_icon1.png';
+  static const profile_image_small = 'assets/images/profile_image_small.png';
+  static const notification_icon_small = 'assets/images/notification_icon_small.png';
+  static const search_icon = 'assets/images/search-normal.png';
+  static const event_card_image = 'assets/images/party_hd.jpg';
+  static const Bookmark = 'assets/images/Bookmark.png';
+  static const back_icon = 'assets/images/back_icon.png';
 
 
 }
