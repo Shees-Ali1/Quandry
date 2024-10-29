@@ -8,4 +8,13 @@ class AppImages {
   static const onboard5 = 'assets/images/onboard5.png';
   static const onboardingellipse = 'assets/images/eclipse.png';
 
+
+
+  /// Midhat
+  static const home_icon = 'assets/images/home.png';
+  static const attending_icon = 'assets/images/attending.png';
+  static const calender_icon = 'assets/images/calender.png';
+  static const profile_icon = 'assets/images/profile.png';
+
+
 }
