@@ -6,5 +6,6 @@ class AppImages {
   static const onboard3 = 'assets/images/ellipse2.png';
   static const onboard4 = 'assets/images/ellipse2.png';
   static const onboard5 = 'assets/images/ellipse2.png';
+  static const onboardingellipse = 'assets/images/ellipse2.png';
 
 }
