@@ -22,6 +22,8 @@ class AppImages {
   static const event_card_image = 'assets/images/party_hd.jpg';
   static const Bookmark = 'assets/images/Bookmark.png';
   static const back_icon = 'assets/images/back_icon.png';
+  static const profile_pic = 'assets/images/profile_pic_avatar.png';
+  static const camera_icon = 'assets/images/camera_icon.png';
 
 
 }
