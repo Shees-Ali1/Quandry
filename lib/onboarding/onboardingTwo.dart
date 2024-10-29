@@ -67,7 +67,7 @@ class OnBoardingTwo extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(AppImages.onboard1),
+                      image: AssetImage(AppImages.onboardingellipse),
                       fit: BoxFit.fill)),
               child: Column(
                 children: [
@@ -78,7 +78,7 @@ class OnBoardingTwo extends StatelessWidget {
                       height: 274.h,
                       width: 309.w,
                       child: Image.asset(
-                        "assets/images/onboarding_screen_two_image.png",
+                        AppImages.onboard2,
                         fit: BoxFit.contain,
                       )),
                   SizedBox(

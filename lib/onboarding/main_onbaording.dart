@@ -1,11 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import 'onboardThree.dart';
 import 'onboarding.dart';
 import 'onboardingFour.dart';
@@ -32,7 +30,7 @@ class _MainOnBoardingViewState extends State<MainOnBoardingView> {
       );
     } else if (currentpage == 4) {
       // Navigate to the LoginView screen
-     // Get.offAll(LoginView());
+      // Get.offAll(LoginView());
     }
   }
 
@@ -46,7 +44,7 @@ class _MainOnBoardingViewState extends State<MainOnBoardingView> {
         children: [
           // PageView with disabled scroll
           PageView(
-            physics: const NeverScrollableScrollPhysics(),
+            //physics: const NeverScrollableScrollPhysics(),
             controller: pageController,
             onPageChanged: (index) {
               setState(() {
@@ -109,7 +107,8 @@ class _MainOnBoardingViewState extends State<MainOnBoardingView> {
                           child: CircularProgressIndicator(
                             value: progress,
                             strokeWidth: 1.5,
-                            backgroundColor: AppColors.redColor.withOpacity(0.3),
+                            backgroundColor:
+                                AppColors.redColor.withOpacity(0.3),
                             valueColor: const AlwaysStoppedAnimation<Color>(
                               AppColors.redColor,
                             ),

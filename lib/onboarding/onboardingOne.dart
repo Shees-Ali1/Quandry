@@ -31,10 +31,10 @@ class OnBoardingOne extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'The Only Medical Device Library in the World',
+                    text: 'Discover the Best CE Events',
                     style: GoogleFonts.jost(
-                      fontSize: 28.sp,
-                      color: Colors.black,
+                      fontSize: 24.sp,
+                      color: AppColors.blueColor,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -68,7 +68,7 @@ class OnBoardingOne extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(AppImages.onboard2,),
+                  image: AssetImage(AppImages.onboardingellipse,),
                   fit: BoxFit.fill,
                 ),
               ),

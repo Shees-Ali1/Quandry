@@ -78,7 +78,7 @@ class OnBoardingFour extends StatelessWidget {
                       height: 286.h,
                       width: 287.w,
                       child: Image.asset(
-                        "assets/images/onboarding_screen_four_image.png",
+                        AppImages.onboard4,
                         fit: BoxFit.contain,
                       )),
                   SizedBox(

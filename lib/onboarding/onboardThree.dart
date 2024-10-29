@@ -65,7 +65,7 @@ class OnBoardingThree extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(""),
+                      image: AssetImage(AppImages.onboardingellipse),
                       fit: BoxFit.fill)),
               child: Column(
                 children: [
@@ -76,7 +76,7 @@ class OnBoardingThree extends StatelessWidget {
                       height: 263.h,
                       width: 266.w,
                       child: Image.asset(
-                        AppImages.onboard2,
+                        AppImages.onboard3,
                         fit: BoxFit.contain,
                       )),
                   SizedBox(
