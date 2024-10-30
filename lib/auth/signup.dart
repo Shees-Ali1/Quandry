@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:quandry/auth/login.dart';
 import 'package:quandry/const/colors.dart';
 import 'dart:io';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 import '../const/images.dart';
 import '../widgets/custom_button.dart';
@@ -181,23 +184,27 @@ class _SignupViewState extends State<SignupView> {
                         prefixIcon: Icons.person,
                         hintTextSize: 14.65.sp,
                         obscuringCharacter: null,
+                        borderColor: AppColors.textfieldBorder,borderWidth: 1.w,
                       ),
                     ),
                     SizedBox(height: 16.25.h),
                     Container(
                       width: 311.w,
                       child: CustomTextField1(
-                        hintText: 'Your Email',
+                        hintText: 'Your email',
                         hintTextSize: 14.65.sp,
                         prefixIcon: Icons.email,
+                        borderColor: AppColors.textfieldBorder,borderWidth: 1.w,
                       ),
                     ),
                     SizedBox(height: 14.25.h),
                     Container(
                       width: 311.w,
                       child: CustomTextField1(
-                        hintText: 'Your Password',
-                        prefixIcon: Icons.lock,
+                        borderColor: AppColors.textfieldBorder,borderWidth: 1.w,
+                        hintText: 'Your password',
+                        prefixIcon: FontAwesomeIcons.lock,
+
                         obscureText: true,
                         obscuringCharacter: '*',
                         suffixIcon: Icons.visibility,
@@ -209,7 +216,9 @@ class _SignupViewState extends State<SignupView> {
                     CustomButton(
                       color: AppColors.greenbutton,
                       text:"Continue" ,
-                      onPressed: (){},
+                      onPressed: (){
+                        Get.to(()=> LoginView());
+                      },
 
                     ),
                     SizedBox(height: 14.25.h),

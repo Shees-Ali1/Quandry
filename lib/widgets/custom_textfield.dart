@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quandry/const/colors.dart';
 
 class CustomTextField1 extends StatefulWidget {
   final String hintText;
-  final IconData prefixIcon;
+  final IconData? prefixIcon; // Allows Font Awesome icons
   final IconData? suffixIcon;
   final bool obscureText;
-  final String? obscuringCharacter; // Nullable to handle non-password fields
+  final String? obscuringCharacter;
   final double hintTextSize;
-  final Color fillColor; // Fill color
-  final double borderRadius; // Border radius
-  final Color? borderColor; // Custom border color
-  final double borderWidth; // Custom border width
+  final Color fillColor;
+  final double borderRadius;
+  final Color? borderColor;
+  final double borderWidth;
 
   CustomTextField1({
     required this.hintText,
@@ -21,12 +22,11 @@ class CustomTextField1 extends StatefulWidget {
     this.obscureText = false,
     this.obscuringCharacter,
     this.hintTextSize = 14,
-    this.fillColor = const Color.fromRGBO(245, 251, 254, 1), // Default fill color
-    this.borderRadius = 13.31, // Default radius
-    this.borderColor, // Default to null
-    this.borderWidth = 1.0, // Default border width
+    this.fillColor = AppColors.fillcolor,
+    this.borderRadius = 13.31,
+    this.borderColor,
+    this.borderWidth = 1.0,
   });
-
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -46,24 +46,22 @@ class _CustomTextFieldState extends State<CustomTextField1> {
   @override
   Widget build(BuildContext context) {
     return Container(
-
       width: 311.w,
       height: 43.75.h,
       decoration: BoxDecoration(
-        color: widget.fillColor, // Keep the specified fill color
-        borderRadius: BorderRadius.circular(widget.borderRadius), // Keep the specified radius
+        color: widget.fillColor,
+        borderRadius: BorderRadius.circular(widget.borderRadius),
         border: Border.all(
-          color: widget.borderColor ?? Colors.transparent, // Default to transparent if no color is specified
+          color: widget.borderColor ?? Colors.transparent,
           width: widget.borderWidth,
         ),
       ),
       child: TextField(
         obscureText: _obscureText,
         obscuringCharacter: _obscuringCharacter ?? '*',
-
-        style: TextStyle(color: Color.fromRGBO(19, 64, 100, 1),fontSize: 14.sp),
+        style: TextStyle(color: Color.fromRGBO(19, 64, 100, 1), fontSize: 14.sp),
         decoration: InputDecoration(
-          filled: false, // No additional filling from InputDecoration
+          filled: false,
           hintText: widget.hintText,
           hintStyle: TextStyle(
             color: AppColors.blueColor,
@@ -71,14 +69,18 @@ class _CustomTextFieldState extends State<CustomTextField1> {
             fontSize: widget.hintTextSize,
             fontFamily: 'jost',
           ),
-          prefixIcon: Icon(
+          prefixIcon: widget.prefixIcon != null
+              ? Icon(
             widget.prefixIcon,
+            size: 16.sp,
             color: Color.fromRGBO(19, 64, 100, 1),
-          ),
+          )
+              : null,
           suffixIcon: widget.suffixIcon != null
               ? IconButton(
             icon: Icon(
-              _obscureText ? Icons.visibility : Icons.visibility_off,
+              size: 15.sp,
+              _obscureText ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash,
               color: Color.fromRGBO(19, 64, 100, 1),
             ),
             onPressed: () {
@@ -88,7 +90,7 @@ class _CustomTextFieldState extends State<CustomTextField1> {
             },
           )
               : null,
-          border: InputBorder.none, // No border until specified
+          border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
         ),
       ),

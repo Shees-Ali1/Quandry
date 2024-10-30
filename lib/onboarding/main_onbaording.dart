@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:quandry/auth/signup.dart';
 import 'package:quandry/bottom_nav/bottom_nav.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
@@ -30,7 +31,7 @@ class _MainOnBoardingViewState extends State<MainOnBoardingView> {
         curve: Curves.ease,
       );
     } else if (currentpage == 4) {
-      Get.offAll(AppNavBar());
+      Get.offAll(SignupView());
     }
   }
 

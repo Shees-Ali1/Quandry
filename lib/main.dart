@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:quandry/Homepage/homepage.dart';
 import 'package:quandry/auth/login.dart';
 import 'package:quandry/auth/signup.dart';
+import 'package:quandry/bottom_nav/bottom_nav.dart';
 import 'package:quandry/onboarding/main_onbaording.dart';
 
 import 'auth/forgotPassword/forgot_password.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'QWANDERY',
-          home: ForgetPasswordEmailPhoneView(),
+          home: MainOnBoardingView(),
         );
       },
     );

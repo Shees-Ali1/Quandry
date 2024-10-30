@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:quandry/bottom_nav/bottom_nav.dart';
 import 'package:quandry/const/colors.dart';
 
 import '../const/images.dart';
@@ -150,7 +151,9 @@ class _LoginViewState extends State<LoginView> {
 
                 /// Login Button
                 CustomButton(
-                  text: 'Login', color: AppColors.greenbutton, onPressed: () {},
+                  text: 'Login', color: AppColors.greenbutton, onPressed: () {
+                    Get.to(()=> AppNavBar());
+                },
 
                   // textSize: 19.sp,
                   // height: 51.h,
