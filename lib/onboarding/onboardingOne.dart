@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quandry/const/colors.dart';
+import 'package:quandry/const/textstyle.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../const/images.dart';
@@ -38,30 +39,26 @@ class OnBoardingOne extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  TextSpan(
-                    text: '.', // The full stop in orange color
-                    style: TextStyle(
-                      fontSize: 28.sp,
-                      color: Colors.black, // Set the color to orange
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+
                 ],
               ),
             ),
           ),
           SizedBox(
-            height: 19.81.h,
+            height: 26.81.h,
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 5.w),
             child: Text(
-              'A detailed and organized repository of medical devices, offering comprehensive information on how each device works, its importance, and its clinical applications, making it an essential reference for biomedical engineers and healthcare professionals.',
+              'Find conferences, courses, and training sessions tailored to your professional growth.',
+              textAlign: TextAlign.center,
+              style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
 
-            ),
+            )
+
           ),
           SizedBox(
-            height: 17.19.h,
+            height: 30.19.h,
           ),
           Expanded(
             child: Container(

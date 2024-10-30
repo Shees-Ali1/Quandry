@@ -6,6 +6,7 @@ import 'package:quandry/const/colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../const/images.dart';
+import '../const/textstyle.dart';
 
 class OnBoardingFive extends StatelessWidget {
   const OnBoardingFive({super.key});
@@ -29,18 +30,10 @@ class OnBoardingFive extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Monthly Updates and New Courses',
+                    text: 'Go Ad-Free with Premium',
                     style: GoogleFonts.jost(
-                      fontSize: 28.sp,
+                      fontSize: 24.sp,
                       color: AppColors.blueColor,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  TextSpan(
-                    text: '.', // The full stop in orange color
-                    style: TextStyle(
-                      fontSize: 28.sp,
-                      color: AppColors.redColor, // Set the color to orange
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -48,20 +41,22 @@ class OnBoardingFive extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(
+            height: 32.9.h,
+          ),
           /// Long Text
           Padding(
             padding:  EdgeInsets.symmetric(horizontal: 5.w),
 
             child: Text(
-                "Stay ahead with fresh content! Every month, we bring you new course releases, updates, and cutting-edge information. Our commitment is to continuously expand and refine the app, keeping you up to date with the latest advancements in the field of biomedical engineering and the MedTech industry as a whole. You'll never stop learning!",
-              style: TextStyle(  fontSize: 14.sp,
-
-                fontWeight: FontWeight.w500),
+                "Upgrade to remove ads and enjoy a seamless experience for a small yearly fee.",
+              textAlign: TextAlign.center,
+              style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
           ),),
           SizedBox(
-            height: 22.9.h,
+            height: 32.9.h,
           ),
-          /// Background Blue Circle Image & Center Image
+          // Background Blue Circle Image & Center Image
           Expanded(
             child: Container(
               width: double.infinity,

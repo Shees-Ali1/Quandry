@@ -6,6 +6,7 @@ import 'package:quandry/const/colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../const/images.dart';
+import '../const/textstyle.dart';
 
 class OnBoardingFour extends StatelessWidget {
   const OnBoardingFour({super.key});
@@ -19,7 +20,7 @@ class OnBoardingFour extends StatelessWidget {
       body: Column(
         children: [
           SizedBox(
-            height: 80.h,
+            height: 67.h,
           ),
           ///  Incredible Keyword Search Engine.
           Padding(
@@ -29,34 +30,29 @@ class OnBoardingFour extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Incredible Keyword Search Engine',
+                    text: 'Suggest Events and Stay Informed',
                     style: GoogleFonts.jost(
-                      fontSize: 28.sp,
+                      fontSize: 24.sp,
                       color: AppColors.blueColor,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  TextSpan(
-                    text: '.', // The full stop in orange color
-                    style: TextStyle(
-                      fontSize: 28.sp,
-                      color: AppColors.redColor, // Set the color to orange
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+
                 ],
               ),
             ),
+          ),
+          SizedBox(
+            height: 31.h,
           ),
           /// Long Text
           Padding(
             padding:  EdgeInsets.symmetric(horizontal: 5.w),
 
             child: Text(
-                "Find exactly what you need in seconds! Our powerful keyword search engine is designed to deliver instant results, so you can easily access all the content you're looking for. Whether it's devices, courses, or detailed explanations, type in a keyword, and everything you need will be right at your fingertips—fast, accurate, and effortless.",
-              style: TextStyle(fontSize: 14.sp,
-
-                fontWeight: FontWeight.w500),
+                "Know about the latest events or suggest new ones to enhance our event database.",
+              textAlign: TextAlign.center,
+              style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
             )),
           SizedBox(
             height: 15.9.h,

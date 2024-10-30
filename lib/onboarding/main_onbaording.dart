@@ -5,7 +5,7 @@ import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'onboardThree.dart';
-import 'onboarding.dart';
+import 'onboardingFive.dart';
 import 'onboardingFour.dart';
 import 'onboardingOne.dart';
 import 'onboardingTwo.dart';
@@ -74,8 +74,8 @@ class _MainOnBoardingViewState extends State<MainOnBoardingView> {
                     effect: ExpandingDotsEffect(
                       dotWidth: 9.w,
                       dotHeight: 9.h,
-                      activeDotColor: AppColors.blueColor,
-                      dotColor: Colors.grey.shade400,
+                      activeDotColor: AppColors.redColor,
+                      dotColor: Colors.white,
                     ),
                     controller: pageController,
                     count: 5,
@@ -98,7 +98,7 @@ class _MainOnBoardingViewState extends State<MainOnBoardingView> {
                           ),
                           child: const Icon(
                             Icons.arrow_forward_ios,
-                            color: AppColors.redColor,
+                            color: Colors.black,
                           ),
                         ),
                         SizedBox(

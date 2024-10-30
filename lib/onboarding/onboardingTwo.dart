@@ -6,6 +6,7 @@ import 'package:quandry/const/colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../const/images.dart';
+import '../const/textstyle.dart';
 
 class OnBoardingTwo extends StatelessWidget {
   const OnBoardingTwo({super.key});
@@ -29,43 +30,38 @@ class OnBoardingTwo extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Interactive Learning Courses & Quizzes',
+                    text: 'Search, Filter, and Save',
                     style: GoogleFonts.jost(
-                      fontSize: 28.sp,
-                      color: AppColors.redColor,
+                      fontSize: 24.sp,
+                      color: AppColors.blueColor,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  TextSpan(
-                    text: '.', // The full stop in orange color
-                    style: TextStyle(
-                      fontSize: 28.sp,
-                      color: AppColors.redColor, // Set the color to orange
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+
                 ],
               ),
             ),
           ),
           SizedBox(
-            height: 10.h,
+            height: 31.h,
           ),
-          /// Text long
+          // Text long
           Padding(
             padding:  EdgeInsets.symmetric(horizontal: 5.w),
 
             child: Text(
-                'Thorough, text-based learning modules that dive into critical areas of biomedical engineering, breaking down complex topics into readable, easy-to-understand sections, coupled with a variety of interactive quizez to test your knowledge and skills gained in a certain area.',
+                'Easily search by CE credits, location, topics, and more. Bookmark your favorite events.',
+              textAlign: TextAlign.center,
+              style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
               ),
           ),
           SizedBox(
-            height: 13.h,
+            height: 31.h,
           ),
           Expanded(
             child: Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage(AppImages.onboardingellipse),
                       fit: BoxFit.fill)),

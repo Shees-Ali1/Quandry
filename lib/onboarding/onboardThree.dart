@@ -5,6 +5,7 @@ import 'package:quandry/const/colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../const/images.dart';
+import '../const/textstyle.dart';
 
 class OnBoardingThree extends StatelessWidget {
   const OnBoardingThree({super.key});
@@ -28,37 +29,32 @@ class OnBoardingThree extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Latest MedTech Innovations & Updates',
+                    text: 'Track Your CE Journey',
                     style: GoogleFonts.jost(
-                      fontSize: 28.sp,
+                      fontSize: 24.sp,
                       color: AppColors.blueColor,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  TextSpan(
-                    text: '.', // The full stop in orange color
-                    style: TextStyle(
-                      fontSize: 28.sp,
-                      color: AppColors.redColor, // Set the color to orange
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+
                 ],
               ),
             ),
           ),
           SizedBox(
-            height: 8.h,
+            height: 33.h,
           ),
           Padding(
             padding:  EdgeInsets.symmetric(horizontal: 5.w),
 
             child: Text(
-                'This is your MedTech Instagram focusing on showcasing the latest developments in medical technology. keeping users informed with text-based summaries of new devices, innovations, and breakthroughs in biomedical engineering and healthcare technology.',
+                'Keep a record of your attended, upcoming, and favorite events all in one place.',
+              textAlign: TextAlign.center,
+              style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
                ),
           ),
           SizedBox(
-            height: 21.9.h,
+            height: 33.h,
           ),
           Expanded(
             child: Container(
