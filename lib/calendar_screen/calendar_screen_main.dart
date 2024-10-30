@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quandry/Drawer/drawer.dart';
 import 'package:quandry/calendar_screen/event_card.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
@@ -7,8 +8,15 @@ import 'package:quandry/widgets/appbar.dart';
 import 'package:quandry/widgets/custom_calendar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CalendarScreenMain extends StatelessWidget {
+class CalendarScreenMain extends StatefulWidget {
   const CalendarScreenMain({super.key});
+
+  @override
+  State<CalendarScreenMain> createState() => _CalendarScreenMainState();
+}
+
+class _CalendarScreenMainState extends State<CalendarScreenMain> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +25,14 @@ class CalendarScreenMain extends StatelessWidget {
         FocusScope.of(context).unfocus(); // Dismiss the keyboard
       },
       child: Scaffold(
-        appBar: CustomAppBarL(),
+        key: _scaffoldKey, // Assign the scaffold key
+
+        appBar: CustomAppBarL(onDrawerTap: () {
+          _scaffoldKey.currentState?.openDrawer(); // Open drawer on icon tap
+
+        },),
         backgroundColor: AppColors.backgroundColor,
+        drawer: MyDrawer(), // Your custom drawer widget
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 7.w),

@@ -4,6 +4,10 @@ import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 
 class CustomAppBarL extends StatelessWidget implements PreferredSizeWidget {
+  final VoidCallback onDrawerTap; // Add a callback parameter
+
+  CustomAppBarL({required this.onDrawerTap}); // Constructor to receive the callback
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,20 +28,24 @@ class CustomAppBarL extends StatelessWidget implements PreferredSizeWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  height: 36.28.h,
-                  width: 36.28.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color:  AppColors.blueColor,
-                    border: Border.all(color: AppColors.backgroundColor)
-                  ),
-                  child: Center(
-                    child: Container(
-                      height: 12.03.h,
-                      width: 21.43.w,
-                      child: Image.asset(
-                        AppImages.drawer_icon,
+                /// Drawer Button
+                GestureDetector(
+                  onTap: onDrawerTap, // Use the callback here
+                  child: Container(
+                    height: 36.28.h,
+                    width: 36.28.w,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.blueColor,
+                        border: Border.all(color: AppColors.backgroundColor)
+                    ),
+                    child: Center(
+                      child: Container(
+                        height: 12.03.h,
+                        width: 21.43.w,
+                        child: Image.asset(
+                          AppImages.drawer_icon,
+                        ),
                       ),
                     ),
                   ),
@@ -98,8 +106,6 @@ class CustomAppBarL extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
             )
-
-
           ],
         ),
       ),
