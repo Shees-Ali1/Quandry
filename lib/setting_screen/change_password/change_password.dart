@@ -42,9 +42,10 @@ class _ChangePasswordState extends State<ChangePassword> {
       },
       child: Scaffold(
         appBar: AppbarSmall(
-          // title: "Settings", // Change title as needed
-          iconImage: AppImages.drawer_icon, // Change icon as needed
+          title: "Change Password", // Change title as needed
+          iconImage: AppImages.back_icon, // Change icon as needed
           onIconTap: () {
+            Get.back();
           },
         ),
         backgroundColor: AppColors.backgroundColor,
@@ -54,12 +55,11 @@ class _ChangePasswordState extends State<ChangePassword> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 70.h),
-                Text("Change Password", style: jost700(12.sp, AppColors.blueColor),),
+                Text("Enter Old Password", style: jost700(12.sp, AppColors.blueColor),),
                 SizedBox(height: 10.h),
                 Container(
                   width: double.infinity,
                   child: CustomTextField1(
-                    borderColor: AppColors.textfieldBorder,borderWidth: 1.w,
                     hintText: '*********',
                     obscureText: true,
                     obscuringCharacter: '*',
@@ -67,12 +67,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                     hintTextSize: 14.65.sp, prefixIcon: null,
                   ),
                 ),
+                SizedBox(height: 23.h),
                 Text("Enter New Password", style: jost700(12.sp, AppColors.blueColor),),
                 SizedBox(height: 10.h),
                 Container(
                   width: double.infinity,
                   child: CustomTextField1(
-                    borderColor: AppColors.textfieldBorder,borderWidth: 1.w,
                     hintText: '*********',
                     obscureText: true,
                     obscuringCharacter: '*',
@@ -80,9 +80,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     hintTextSize: 14.65.sp, prefixIcon: null,
                   ),
                 ),
-
                 SizedBox(height: 369.h),
-
                 /// Save Button
                 CustomButton(text: "Save", color: AppColors.blueColor, onPressed: (){
                   Get.to(SettingsScreen());

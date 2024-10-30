@@ -29,6 +29,9 @@ class AppImages {
   static const back_icon = 'assets/images/back_icon.png';
   static const profile_pic = 'assets/images/profile_pic_avatar.png';
   static const camera_icon = 'assets/images/camera_icon.png';
+  static const main_notification = 'assets/images/main_notification.png';
+  static const setting_icon = 'assets/images/setting_icon.png';
+  static const notification_card_image = 'assets/images/notification_card_image.png';
 
 
 }

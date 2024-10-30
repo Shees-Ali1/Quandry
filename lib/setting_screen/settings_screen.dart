@@ -5,9 +5,9 @@ import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:quandry/setting_screen/change_password/change_password.dart';
+import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
 import 'package:quandry/widgets/appbar_small.dart';
-import 'package:quandry/widgets/custom_button.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 
 class SettingsScreen extends StatefulWidget {
@@ -60,6 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SizedBox(height: 1.h),
                 Text("test@gmail.com", style: jost400(16.sp, AppColors.blueColor),),
                 SizedBox(height: 7.h),
+                /// Edit Button
                 GestureDetector(
                   onTap: (){
                     },
@@ -109,7 +110,7 @@ Get.to(ChangePassword());
                 /// Notifications Button
                 GestureDetector(
                   onTap: (){
-
+                    Get.to(NotificationScreenMain());
                   },
                   child: Container(
                       height:61.h,
