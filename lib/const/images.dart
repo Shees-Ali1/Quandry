@@ -17,6 +17,7 @@ class AppImages {
 
   /// Midhat
   static const home_icon = 'assets/images/home.png';
+  static const filter = 'assets/images/filter.png';
   static const attending_icon = 'assets/images/attending.png';
   static const calender_icon = 'assets/images/calender.png';
   static const profile_icon = 'assets/images/profile.png';
