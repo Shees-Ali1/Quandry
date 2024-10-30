@@ -5,6 +5,7 @@ class AppColors {
   static const bluegrey = Color.fromRGBO(10, 42, 58, 0.2);
   static const backgroundColor = Color.fromRGBO(255, 255, 255, 1);
   static const greenbutton = Color.fromRGBO(116, 178, 177, 1);
+  static const free = Color.fromRGBO(216, 229, 236, 1);
   static const primaryColor = Color(0xff134064);
   static const secondaryColor = Color(0xffC0D0DD);
   static const appBarColor = Color.fromRGBO(192, 208, 221, 1);

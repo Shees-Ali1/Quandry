@@ -58,7 +58,7 @@ class _AppNavBarState extends State<AppNavBar> {
 
     // Move bottomBarPages into build method to ensure userVM is accessible
     List<Widget> bottomBarPages = [
-      const HomeScreen(),
+       HomeScreen(),
       const AttendingScreenMain(),
       const CalendarScreenMain(),
       const ProfileScreenMain(),

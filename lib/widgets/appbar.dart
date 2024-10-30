@@ -61,7 +61,7 @@ class CustomAppBarL extends StatelessWidget implements PreferredSizeWidget {
 
               ],
             ),
-            SizedBox(height: 14.86.h), // Space between row and search field
+            SizedBox(height: 12.h), // Space between row and search field
             TextField(
               style: TextStyle(color: AppColors.appbartextColor), // Sets the text color
               decoration: InputDecoration(
