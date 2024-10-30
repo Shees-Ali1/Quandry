@@ -59,13 +59,13 @@ class _CustomTextFieldState extends State<CustomTextField1> {
       child: TextField(
         obscureText: _obscureText,
         obscuringCharacter: _obscuringCharacter ?? '*',
-        style: TextStyle(color: Color.fromRGBO(19, 64, 100, 1), fontSize: 14.sp),
+        style: TextStyle(color: Color.fromRGBO(19, 64, 100, 1), fontSize: 12.sp),
         decoration: InputDecoration(
           filled: false,
           hintText: widget.hintText,
           hintStyle: TextStyle(
             color: AppColors.blueColor,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w700,
             fontSize: widget.hintTextSize,
             fontFamily: 'jost',
           ),

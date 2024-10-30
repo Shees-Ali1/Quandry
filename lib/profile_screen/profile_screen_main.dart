@@ -5,10 +5,12 @@ import 'package:image_picker/image_picker.dart'; // Import the image_picker pack
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:quandry/setting_screen/settings_screen.dart';
 import 'dart:io';
-
 import 'package:quandry/widgets/appbar_small.dart';
+import 'package:quandry/widgets/custom_button.dart';
+import 'package:quandry/widgets/custom_textfield.dart';
 
 class ProfileScreenMain extends StatefulWidget {
   const ProfileScreenMain({super.key});
@@ -95,17 +97,16 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
       },
       child: Scaffold(
         appBar: AppbarSmall(
-//         // title: "My Custom Title", // Change title as needed
+        // title: "Settings", // Change title as needed
           iconImage: AppImages.drawer_icon, // Change icon as needed
           onIconTap: () {
-// Define the action when the icon is tapped
           },
         ),
         backgroundColor: AppColors.backgroundColor,
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 23.w),
-            child: Column(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 44.h),
 
@@ -155,7 +156,38 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                     ),
                   ),
                 ),
-                SizedBox(height: 56.h),
+                SizedBox(height: 43.h),
+                Text("Change Email", style: jost700(12.sp, AppColors.blueColor),),
+                SizedBox(height: 10.h),
+                Container(
+                  width: double.infinity,
+                  child: CustomTextField1(
+                      hintText: 'yousafayub65@gmail.com',
+                      prefixIcon: null,
+                    borderColor: AppColors.textfieldBorder,
+                    borderWidth: 1.w,
+                  ),
+                ),
+                SizedBox(height: 15.h),
+                Text("Change Password", style: jost700(12.sp, AppColors.blueColor),),
+                SizedBox(height: 10.h),
+                Container(
+                  width: double.infinity,
+                  child: CustomTextField1(
+                    borderColor: AppColors.textfieldBorder,borderWidth: 1.w,
+                    hintText: '*********',
+                    obscureText: true,
+                    obscuringCharacter: '*',
+                    suffixIcon: Icons.visibility,
+                    hintTextSize: 14.65.sp, prefixIcon: null,
+                  ),
+                ),
+                SizedBox(height: 31.h),
+
+                CustomButton(text: "Save", color: AppColors.blueColor, onPressed: (){
+                  Get.to(SettingsScreen());
+                }),
+
               ],
             ),
           ),
