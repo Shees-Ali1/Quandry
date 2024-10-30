@@ -4,8 +4,10 @@ import 'package:get/get.dart'; // Ensure GetX is imported
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
+import 'package:quandry/profile_screen/profile_screen_main.dart';
 import 'package:quandry/setting_screen/change_password/change_password.dart';
 import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
+import 'package:quandry/setting_screen/notification_setting/notification_setting.dart';
 import 'package:quandry/widgets/appbar_small.dart';
 
 
@@ -27,9 +29,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Scaffold(
         appBar: AppbarSmall(
           title: "Settings", // Set the title for the app bar
-          iconImage: AppImages.back_icon, // Set your custom back icon
+          iconImage: AppImages.drawer_icon, // Set your custom back icon
           onIconTap: () {
-            Get.back(); // Use GetX to navigate back
+
           },
         ),
         backgroundColor: AppColors.backgroundColor,
@@ -63,6 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 /// Edit Button
                 GestureDetector(
                   onTap: (){
+                    Get.to(ProfileScreenMain());
                     },
                   child: Container(
                       height:35.h,
@@ -126,6 +129,38 @@ Get.to(ChangePassword());
                           children: [
                             Text(
                               "Notifications",
+                              style: jost600(16.sp, AppColors.blueColor),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: AppColors.blueColor, // Customize the icon color if needed
+                              size: 16.sp, // Customize the icon size
+                            ),
+                          ],
+                        ),
+                      )
+                  ),
+                ),
+                SizedBox(height: 14.h),
+                /// Notifications Settings
+                GestureDetector(
+                  onTap: (){
+                    Get.to(NotificationSetting());
+                  },
+                  child: Container(
+                      height:61.h,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(13.31.r),
+                        color: AppColors.fillcolor,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 18.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Notifications Settings",
                               style: jost600(16.sp, AppColors.blueColor),
                             ),
                             Icon(

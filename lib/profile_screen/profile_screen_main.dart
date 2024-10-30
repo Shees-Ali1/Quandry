@@ -98,8 +98,9 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
       child: Scaffold(
         appBar: AppbarSmall(
         // title: "Settings", // Change title as needed
-          iconImage: AppImages.drawer_icon, // Change icon as needed
+          iconImage: AppImages.back_icon, // Change icon as needed
           onIconTap: () {
+            Get.back();
           },
         ),
         backgroundColor: AppColors.backgroundColor,
@@ -185,7 +186,7 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                 SizedBox(height: 31.h),
 
                 CustomButton(text: "Save", color: AppColors.blueColor, onPressed: (){
-                  Get.to(SettingsScreen());
+
                 }),
 
               ],

@@ -61,29 +61,40 @@ class CustomAppBarL extends StatelessWidget implements PreferredSizeWidget {
 
               ],
             ),
-            SizedBox(height: 14.86.h), // Space between row and search field
-            TextField(
-              style: TextStyle(color: AppColors.appbartextColor), // Sets the text color
-              decoration: InputDecoration(
-                hintText: 'Search for event availability',
-                hintStyle: TextStyle(color: AppColors.appbartextColor,fontSize:15.36.sp,fontWeight: FontWeight.w400, ), // Sets hint text color
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(8.0), // Adjust padding around the image as needed
-                  child: Container(
-                    height: 19.2.h,
-                    width: 19.2.w,
-                    child: Image.asset(
-                      AppImages.search_icon, // Replace with your image path
-                      color: AppColors.backgroundColor, // Applies color to image if needed
-                      fit: BoxFit.cover,
+            SizedBox(height: 19.86.h),
+            /// Search field
+            SizedBox(
+              height: 38.h, // Sets the height to 38.h
+              child: TextField(
+                style: TextStyle(color: AppColors.appbartextColor), // Sets the text color
+                textAlignVertical: TextAlignVertical.center, // Centers the text vertically
+                decoration: InputDecoration(
+                  isDense: true, // Reduces the default internal padding
+                  contentPadding: EdgeInsets.symmetric(vertical: 10.h), // Adjusts vertical padding
+                  hintText: 'Search for event availability',
+                  hintStyle: TextStyle(
+                    color: AppColors.appbartextColor,
+                    fontSize: 15.36.sp,
+                    fontWeight: FontWeight.w400,
+                  ), // Sets hint text color
+                  prefixIcon: Padding(
+                    padding: EdgeInsets.all(8.0), // Adjust padding around the image as needed
+                    child: Container(
+                      height: 19.2.h,
+                      width: 19.2.w,
+                      child: Image.asset(
+                        AppImages.search_icon, // Replace with your image path
+                        color: AppColors.backgroundColor, // Applies color to image if needed
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
-                filled: true,
-                fillColor: AppColors.blueColor, // Sets background color
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.r),
-                  borderSide: BorderSide.none,
+                  filled: true,
+                  fillColor: AppColors.blueColor, // Sets background color
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
             )

@@ -83,7 +83,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 SizedBox(height: 369.h),
                 /// Save Button
                 CustomButton(text: "Save", color: AppColors.blueColor, onPressed: (){
-                  Get.to(SettingsScreen());
+
                 }),
 
               ],
