@@ -1,139 +1,100 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quandry/const/colors.dart';
+import 'package:quandry/const/images.dart';
 
-
-import '../const/colors.dart';
-import '../const/textstyle.dart';
-
-class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MyAppBar({
-    super.key,
-    required this.isMenu,
-    required this.isNotification,
-    required this.isTitle,
-    this.title,
-    required this.isSecondIcon,
-    this.onBackTap,
-    this.onMenuTap,
-    this.isTextField = false, this.secondIcon, this.onSecondTap,
-  });
-
-  final bool isMenu;
-  final bool isNotification;
-  final bool isSecondIcon;
-  final bool isTitle;
-  final bool isTextField;
-  final String? title;
-  final String? secondIcon;
-  final VoidCallback? onBackTap;
-  final VoidCallback? onMenuTap;
-  final VoidCallback? onSecondTap;
-
+class CustomAppBarL extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 110.h,
-      padding: EdgeInsets.only(left: 13.w, right: 19.w, bottom: 10.h, top: 40.h),
+      height: 167.h,
+      width: double.infinity,
       decoration: BoxDecoration(
+        color: AppColors.blueColor, // Customize the color as needed
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(15.w),
-          bottomRight: Radius.circular(15.w),
+          bottomLeft: Radius.circular(15.r),
+          bottomRight: Radius.circular(15.r),
         ),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.18), // Adjust opacity if needed
-            offset: const Offset(0, 4), // (x = 0, y = 4)
-            blurRadius: 10.4, // blur 10.4
-            spreadRadius: 0, // spread 0
-          ),
-        ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          InkWell(
-            onTap: isMenu == true ? onMenuTap ?? (){} : onBackTap ?? (){},
-            // child: MySvg(
-            //   assetName: isMenu ? AppSvgs.menu : AppSvgs.back_button,
-            //   height: 38.h,
-            //   width: 38.w,
-            // ),
-          ),
-          if (isTitle == true || isTextField == true)
-            SizedBox(width: 12.w,),
-          if (isTitle == true && isTextField == false)
-            Expanded(
-              child: Text(
-                title ?? "",
-                style: jost600(22.sp, AppColors.blueColor),
-              ),
-            ),
-          if(isTextField == true && isTitle == false)
-            Expanded(
-              child: Container(
-                padding:  EdgeInsets.symmetric(horizontal: 13.w),
-                decoration: BoxDecoration(
-                  color: Colors.black, // Set the background color
-                  borderRadius: BorderRadius.circular(15.w), // Rounded edges
-                ),
-                child: Row(
-                  children: [
-                 //   MySvg(assetName: AppSvgs.search_icon, height: 19.2.h, width: 19.2.w,),
-                    SizedBox(width: 10.w), // Space between the icon and the text field
-                    Expanded(
-                      child: TextField(
-                        cursorColor: AppColors.blueColor,
-                        style: jost400(14.sp, AppColors.blueColor),
-                        decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 9.h),
-                          hintText: "Search for anything",
-                          hintStyle: jost400(14.sp, AppColors.blueColor),
-                          border: InputBorder.none, // Remove the underline border
-                        ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 25.w),
+        child: Column(
+          children: [
+            SizedBox(height: 48.86.h), // Top padding
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  height: 36.28.h,
+                  width: 36.28.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color:  AppColors.blueColor,
+                    border: Border.all(color: AppColors.backgroundColor)
+                  ),
+                  child: Center(
+                    child: Container(
+                      height: 12.03.h,
+                      width: 21.43.w,
+                      child: Image.asset(
+                        AppImages.drawer_icon,
                       ),
+                    ),
+                  ),
+                ),
+
+                Row(
+                  children: [
+                    Image.asset(
+                      AppImages.profile_image_small,
+                      height: 22.17.h,
+                      width: 22.17.w,
+                    ),
+                    SizedBox(width: 20.w), // Top padding
+                    Image.asset(
+                      AppImages.notification_icon_small,
+                      height: 19.h,
+                      width: 19.w,
                     ),
                   ],
                 ),
-              ),
-            ),
-          if(isTextField == true && isTitle == false)
-            SizedBox(width: 12.w,),
-          if(isTextField == false && isTitle == false)
-            Expanded(child: SizedBox()),
-          if(isSecondIcon == true )
-            GestureDetector(
-              onTap: onSecondTap,
-              // child: MySvg(
-              //   assetName: secondIcon ?? AppSvgs.menu,
-              //   height: 38.h,
-              //   width: 38.w,
-              // ),
-            ),
-          if (isNotification == true)
-            Container(
-              margin: EdgeInsets.only(left: isSecondIcon == true ? 7.w : 0),
-              height: 38.h,
-              width: 35.w,
-              decoration: BoxDecoration(
-                color: AppColors.blueColor,
-                borderRadius: BorderRadius.circular(14.w),
-              ),
-              alignment: Alignment.center,
-              // child: MySvg(
-              //   assetName: AppSvgs.notification,
-              //   height: 23.h,
-              //   width: 23.w,
-              // ),
-            ),
 
-        ],
+              ],
+            ),
+            SizedBox(height: 14.86.h), // Space between row and search field
+            TextField(
+              style: TextStyle(color: AppColors.appbartextColor), // Sets the text color
+              decoration: InputDecoration(
+                hintText: 'Search for event availability',
+                hintStyle: TextStyle(color: AppColors.appbartextColor,fontSize:15.36.sp,fontWeight: FontWeight.w400, ), // Sets hint text color
+                prefixIcon: Padding(
+                  padding: EdgeInsets.all(8.0), // Adjust padding around the image as needed
+                  child: Container(
+                    height: 19.2.h,
+                    width: 19.2.w,
+                    child: Image.asset(
+                      AppImages.search_icon, // Replace with your image path
+                      color: AppColors.backgroundColor, // Applies color to image if needed
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                filled: true,
+                fillColor: AppColors.blueColor, // Sets background color
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            )
+
+
+          ],
+        ),
       ),
     );
   }
 
-  // To set a fixed size for the AppBar
   @override
-  Size get preferredSize => Size.fromHeight(130.h);
+  Size get preferredSize => Size.fromHeight(167.h);
 }
