@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:quandry/auth/forgotPassword/forgot_reset.dart';
 import 'package:quandry/const/colors.dart';
+import 'package:quandry/const/textstyle.dart';
 import '../../controller/selectedtype_controller.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text.dart';
@@ -80,7 +82,7 @@ class _PhoneNumberAuthenticationViewState
                             shape: PinCodeFieldShape.box,
                             activeColor: AppColors.blueColor,
                             selectedColor: AppColors.blueColor,
-                            inactiveColor: AppColors.blueColor,
+                            inactiveColor: Color.fromRGBO(238, 239, 242, 1),
                             fieldHeight: 53.h,
                             fieldWidth: 53.w),
                       ),
@@ -98,7 +100,7 @@ class _PhoneNumberAuthenticationViewState
                       SizedBox(
                         height: 46.32.h,
                       ),
-                      CustomButton(text: 'Continue', color: AppColors.blueColor, onPressed: () {  },
+                      CustomButton(text: 'Continue', color: AppColors.blueColor, onPressed: () {Get.to(()=> ResetPasswordView(email: '', password: ''));  },
                         // height: 51.h,
                         // title: "Continue",
                         // textSize: 19.sp,
@@ -115,7 +117,15 @@ class _PhoneNumberAuthenticationViewState
                       SizedBox(
                         height: 12.25.h,
                       ),
-                      CustomButton(text: 'Resend Code', color: AppColors.blueColor, onPressed: () {  },
+                    Container(
+                      height: 51.h,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 2.w,color:  Color.fromRGBO(216, 229, 236, 1)),
+                        borderRadius: BorderRadius.circular(13.r)
+                      ),
+                      child: Center(child: Text("Resend Code",style: jost500(19.sp, AppColors.blueColor),)),
+                    )
 
                         // height: 51,
                         // title: "Resend Code",
@@ -123,7 +133,7 @@ class _PhoneNumberAuthenticationViewState
                         // color: transparentColor,
                         // titleColor: primaryColor,
                         // onTap: () {},
-                      ),
+
                     ],
                   ),
                 )

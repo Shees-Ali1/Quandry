@@ -42,10 +42,14 @@ class ForgetPasswordBackWidget extends StatelessWidget {
             ),
           ),
         ),
+        SizedBox(
+          height: 12.h,
+        ),
         Container(
-          height: 0.4.h,
+          height: 2.h,
           width: double.infinity,
-          color: Colors.grey.withOpacity(0.2),
+          color: Color.fromRGBO(188, 202, 214, 0.23)
+    ,
         )
       ],
     );

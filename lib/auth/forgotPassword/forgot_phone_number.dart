@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:quandry/const/colors.dart';
 
 import '../../controller/selectedtype_controller.dart';
-import '../../widgets/country_codePicker.dart';
+
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_phone_number.dart';
 import '../../widgets/custom_text.dart';
@@ -81,7 +81,7 @@ class _ForgetPasswordEmailPhoneViewState
                                       color: selectedTypeController
                                           .selectedType.value ==
                                           'email'
-                                          ? AppColors.blueColor
+                                          ? AppColors.backgroundColor
                                           : AppColors.transparentColor),
                                   child: Center(
                                     child: CustomText(
@@ -112,7 +112,7 @@ class _ForgetPasswordEmailPhoneViewState
                                       color: selectedTypeController
                                           .selectedType.value ==
                                           'phone'
-                                          ? AppColors.blueColor
+                                          ? AppColors.backgroundColor
                                           : AppColors.transparentColor),
                                   child: Center(
                                     child: CustomText(
@@ -142,6 +142,7 @@ class _ForgetPasswordEmailPhoneViewState
                             fontSize: 24.sp,
                             textColor: AppColors.blueColor,
                             fontWeight: FontWeight.w600,
+                                textAlign: TextAlign.start,
                           ),
                         ),
                         SizedBox(
@@ -157,6 +158,7 @@ class _ForgetPasswordEmailPhoneViewState
                          //   maxLines: 2,
                             fontWeight: FontWeight.w500,
                             textColor: Color(0xff6B7280),
+                                textAlign: TextAlign.start,
                           ),
                         ),
                         SizedBox(
@@ -231,7 +233,7 @@ class _ForgetPasswordEmailPhoneViewState
                         text: "Don't have an account?",
                         fontSize: 12.sp,
                         textColor: AppColors.blueColor,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w400,
                       ),
                       SizedBox(
                         width: 5.w,

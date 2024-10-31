@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:quandry/auth/further_details.dart';
 
 import 'package:quandry/auth/login.dart';
 import 'package:quandry/auth/signup.dart';
@@ -36,3 +37,32 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+// child: CustomPhoneNumberField(
+//   childWidget:  CountryCodePicker(
+//     hideSearch: false,
+//     enabled: true,
+//     showDropDownButton: false,
+//     onChanged: print,
+//     // countryFilter: ['IQ'],
+//     // initialSelection: 'IQ',
+//     // favorite: ['+964', ''],
+//     showCountryOnly: false,
+//     showOnlyCountryWhenClosed: false,
+//     alignLeft: false,
+//   ),
+//   controller: phoneController,
+//   hintText: "",
+//   passwordFunction: () {
+//     phoneController.clear();
+//     return null;
+//   },
+//   keyboardType: TextInputType.number,
+//   hintColor: AppColors.greyColor,
+//   hintTextSize: 15.sp,
+//   isBorder: true,
+//   borderRadius: 13.sp,
+//   fillColor: AppColors.transparentColor,
+//   suffixIcon: Icons.cancel,
+// ),

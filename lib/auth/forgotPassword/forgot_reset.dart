@@ -72,7 +72,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                             readOnly: false,
                             controller: _authController.newPasswordController.value,
                             hintText: '*********',
-                            hintColor: Colors.grey,
+                            hintColor: AppColors.blueColor,
                             hintTextSize: 11.sp,
                             onChange: (v) {
                               _authController.update();
@@ -233,7 +233,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                           readOnly: false,
                           controller: _authController.confirmPasswordController.value,
                           hintText: '*********',
-                          hintColor: Colors.grey,
+                          hintColor: AppColors.blueColor,
                           hintTextSize: 11.sp,
                           prefixIcon: AppImages.password,
                           isBorder: true,

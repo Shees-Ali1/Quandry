@@ -8,6 +8,7 @@ import '../const/images.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/custom_textfield.dart';
+import 'forgotPassword/forgot_password.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -135,7 +136,7 @@ class _LoginViewState extends State<LoginView> {
                       alignment: Alignment.topLeft,
                       child: GestureDetector(
                         onTap: () {
-                          //    Get.to(() => ForgetPasswordScreen());
+                              Get.to(() => ForgetPasswordScreen());
                         },
                         child: CustomText(
                           text: "Forgot password?",
