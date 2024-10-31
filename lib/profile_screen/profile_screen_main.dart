@@ -135,7 +135,7 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
 
                         /// Image Picker
                         Positioned(
-                          right: 0,
+                          right: 6,
                           bottom: 0,
                           child: GestureDetector(
                             onTap: () => _showImageSourceDialog(context),
@@ -144,7 +144,7 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                               width: 46.w,
                               height: 46.h,
                               child: CircleAvatar(
-                                backgroundColor: AppColors.blueColor,
+                                backgroundColor: Color.fromRGBO(18, 26, 26, 0.30),
                                 child: SizedBox(
                                   width: 23.w,
                                   height: 20.7.h,
@@ -160,45 +160,45 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                   ),
                 ),
                 SizedBox(height: 43.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.w),
-                  child: IntlPhoneField(
-
-                    flagsButtonPadding: EdgeInsets.only(left: 13.w),
-                    cursorColor: Colors.black,
-                    style: TextStyle(color: Colors.black),
-                    showDropdownIcon: false,
-                    decoration: InputDecoration(
-                      hintText: 'Your phone number',
-                      filled: true,
-                      fillColor: Color(0xffFAFAFA),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                      counterText: '',
-                      hintStyle: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'jost',
-                        fontSize: 14.65.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13.31.r),
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13.31.r),
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13.31.r),
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
+                Text("Change Phone Number", style: jost700(12.sp, AppColors.blueColor),),
+                SizedBox(height: 10.26.h),
+                /// Phone Number TextField
+                IntlPhoneField(
+                  flagsButtonPadding: EdgeInsets.only(left: 13.w),
+                  cursorColor: Colors.black,
+                  style: TextStyle(color: Colors.black),
+                  showDropdownIcon: false,
+                  decoration: InputDecoration(
+                    hintText: '0000000000',
+                    filled: true,
+                    fillColor: AppColors.fillcolor,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                    counterText: '',
+                    hintStyle: TextStyle(
+                      color: AppColors.calendartext,
+                      fontFamily: 'jost',
+                      fontSize: 14.65.sp,
+                      fontWeight: FontWeight.w400,
                     ),
-                    initialCountryCode: 'AE',
-                    onChanged: (phone) {
-                      print(phone.completeNumber);
-                    },
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(13.31.r),
+                      borderSide: BorderSide(color: AppColors.textfieldBorder),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(13.31.r),
+                      borderSide: BorderSide(color: AppColors.textfieldBorder),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(13.31.r),
+                      borderSide: BorderSide(color: AppColors.textfieldBorder),
+                    ),
                   ),
+                  initialCountryCode: 'AE',
+                  onChanged: (phone) {
+                    print(phone.completeNumber);
+                  },
                 ),
+                SizedBox(height: 17.94.h),
                 Text("Change Email", style: jost700(12.sp, AppColors.blueColor),),
                 SizedBox(height: 10.h),
                 Container(

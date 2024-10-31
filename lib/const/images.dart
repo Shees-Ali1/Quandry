@@ -33,6 +33,11 @@ class AppImages {
   static const main_notification = 'assets/images/main_notification.png';
   static const setting_icon = 'assets/images/setting_icon.png';
   static const notification_card_image = 'assets/images/notification_card_image.png';
+  static const online_support_icon = 'assets/images/online_support_icon.png';
+  static const privacy_policy_icon = 'assets/images/privacy_policy_icon.png';
+  static const term_condition_icon = 'assets/images/term_condition_icon.png';
+  static const logout_icon = 'assets/images/logout_icon.png';
+  static const Drawer_logo = 'assets/images/Drawer_logo.png';
 
 
 }

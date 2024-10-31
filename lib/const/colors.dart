@@ -17,7 +17,7 @@ class AppColors {
   static const calendardidigts = Color.fromRGBO(56, 44, 40, 1);
   static const eventcard_label = Color.fromRGBO(96, 125, 139, 1);
   static const appbar_text = Color.fromRGBO(216,229,236,1);
-  static const textfieldBorder = Color.fromRGBO(192, 209, 217, 1);
+  static const textfieldBorder = Color.fromRGBO(217, 223, 230, 1);
 
 
 
