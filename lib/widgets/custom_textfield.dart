@@ -46,8 +46,8 @@ class _CustomTextFieldState extends State<CustomTextField1> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 311.w,
-      height: 43.75.h,
+      width: double.infinity,
+      height: 47.h,
       decoration: BoxDecoration(
         color: widget.fillColor,
         borderRadius: BorderRadius.circular(widget.borderRadius),

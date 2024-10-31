@@ -11,6 +11,8 @@ import 'dart:io';
 import 'package:quandry/widgets/appbar_small.dart';
 import 'package:quandry/widgets/custom_button.dart';
 import 'package:quandry/widgets/custom_textfield.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+
 
 class ProfileScreenMain extends StatefulWidget {
   const ProfileScreenMain({super.key});
@@ -158,6 +160,45 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                   ),
                 ),
                 SizedBox(height: 43.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: IntlPhoneField(
+
+                    flagsButtonPadding: EdgeInsets.only(left: 13.w),
+                    cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black),
+                    showDropdownIcon: false,
+                    decoration: InputDecoration(
+                      hintText: 'Your phone number',
+                      filled: true,
+                      fillColor: Color(0xffFAFAFA),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                      counterText: '',
+                      hintStyle: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'jost',
+                        fontSize: 14.65.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(13.31.r),
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(13.31.r),
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(13.31.r),
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                    initialCountryCode: 'AE',
+                    onChanged: (phone) {
+                      print(phone.completeNumber);
+                    },
+                  ),
+                ),
                 Text("Change Email", style: jost700(12.sp, AppColors.blueColor),),
                 SizedBox(height: 10.h),
                 Container(
@@ -172,16 +213,13 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                 SizedBox(height: 15.h),
                 Text("Change Password", style: jost700(12.sp, AppColors.blueColor),),
                 SizedBox(height: 10.h),
-                Container(
-                  width: double.infinity,
-                  child: CustomTextField1(
-                    borderColor: AppColors.textfieldBorder,borderWidth: 1.w,
-                    hintText: '*********',
-                    obscureText: true,
-                    obscuringCharacter: '*',
-                    suffixIcon: Icons.visibility,
-                    hintTextSize: 14.65.sp, prefixIcon: null,
-                  ),
+                CustomTextField1(
+                  borderColor: AppColors.textfieldBorder,borderWidth: 1.w,
+                  hintText: 'Enter your new password',
+                  obscureText: true,
+                  obscuringCharacter: '*',
+                  suffixIcon: Icons.visibility,
+                  hintTextSize: 12.sp, prefixIcon: null,
                 ),
                 SizedBox(height: 31.h),
 
