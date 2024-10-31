@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/textstyle.dart';
+import 'package:intl/intl.dart';
 
 class CustomCalendar extends StatefulWidget {
   @override
@@ -11,27 +12,33 @@ class CustomCalendar extends StatefulWidget {
 class _CustomCalendarState extends State<CustomCalendar> {
   int? selectedDate; // Variable to hold the selected date
   List<bool> buttonStates = [false, false, false]; // State for bottom buttons
+  DateTime currentMonth = DateTime.now(); // Keeps track of the displayed month
 
   @override
   Widget build(BuildContext context) {
+    // Format the month name
+    String monthName = DateFormat('MMMM').format(currentMonth);
+
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       body: Column(
         children: [
-        Container(
-        height: 240.h,
-        decoration: BoxDecoration(
-          color: AppColors.fillcolor,
-          borderRadius: BorderRadius.circular(11.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2), // Adjust shadow color and opacity
-              blurRadius: 8.r, // Softness of the shadow
-              spreadRadius: 2.r, // Extent of the shadow
-              offset: Offset(0, 4), // Horizontal and vertical offset of the shadow
+          /// calendar Container
+          Container(
+            height: 240.h,
+            decoration: BoxDecoration(
+              color: AppColors.fillcolor,
+              borderRadius: BorderRadius.circular(11.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2), // Adjust shadow color and opacity
+                  blurRadius: 8.r, // Softness of the shadow
+                  spreadRadius: 2.r, // Extent of the shadow
+                  offset: Offset(0, 2), // Horizontal and vertical offset of the shadow
+                ),
+              ],
             ),
-          ],
-        ),
-          child: Padding(
+            child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.53.w),
               child: Column(
                 children: [
@@ -46,12 +53,17 @@ class _CustomCalendarState extends State<CustomCalendar> {
                       Row(
                         children: [
                           Text(
-                            "February",
+                            monthName,
                             style: jost500(8.88.sp, AppColors.blueColor),
                           ),
                           IconButton(
                             icon: Icon(Icons.arrow_forward_ios, size: 12.w, color: AppColors.iconcolorcalendar),
-                            onPressed: () {},
+                            onPressed: () {
+                              setState(() {
+                                // Move to the next month
+                                currentMonth = DateTime(currentMonth.year, currentMonth.month + 1);
+                              });
+                            },
                           ),
                         ],
                       ),
@@ -61,7 +73,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
 
                   /// Day Labels Row
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal:12.w ),
+                    padding: EdgeInsets.symmetric(horizontal: 12.w),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -81,14 +93,14 @@ class _CustomCalendarState extends State<CustomCalendar> {
                       physics: NeverScrollableScrollPhysics(), // Keep GridView non-scrollable
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 7,
-                        childAspectRatio: 32.13 / 20.27, // Set this ratio based on your desired width/height                  crossAxisSpacing: 2.w,
+                        childAspectRatio: 32.13 / 20.27, // Set this ratio based on your desired width/height
                         mainAxisSpacing: 5.h,
-                        crossAxisSpacing: 10.w
+                        crossAxisSpacing: 10.w,
                       ),
-                      itemCount: 31,
+                      itemCount: DateTime(currentMonth.year, currentMonth.month + 1, 0).day, // Set itemCount based on the number of days in the month
                       itemBuilder: (context, index) {
                         bool isSelected = selectedDate == index + 1; // Check if date is selected
-                        return  GestureDetector(
+                        return GestureDetector(
                           onTap: () {
                             setState(() {
                               selectedDate = index + 1; // Update selected date
@@ -112,8 +124,6 @@ class _CustomCalendarState extends State<CustomCalendar> {
                             ),
                           ),
                         );
-
-
                       },
                     ),
                   ),
@@ -122,6 +132,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
             ),
           ),
           SizedBox(height: 13.h),
+
           /// Bottom Buttons Row
           Container(
             height: 65.37.h,
@@ -133,12 +144,12 @@ class _CustomCalendarState extends State<CustomCalendar> {
                   color: Colors.black.withOpacity(0.2), // Adjust shadow color and opacity
                   blurRadius: 8.r, // Softness of the shadow
                   spreadRadius: 2.r, // Extent of the shadow
-                  offset: Offset(0, 4), // Horizontal and vertical offset of the shadow
+                  offset: Offset(0, 2), // Horizontal and vertical offset of the shadow
                 ),
               ],
             ),
             child: Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 18.28.w),
+              padding: EdgeInsets.symmetric(horizontal: 18.28.w),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -192,14 +203,14 @@ class _CustomCalendarState extends State<CustomCalendar> {
       child: Container(
         height: 33.63.h,
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.blueColor: AppColors.fillcolor,
+          color: isSelected ? AppColors.blueColor : AppColors.fillcolor,
           borderRadius: BorderRadius.circular(8.31.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2), // Adjust shadow color and opacity
+              color: Colors.black.withOpacity(0.1), // Adjust shadow color and opacity
               blurRadius: 8.r, // Softness of the shadow
               spreadRadius: 2.r, // Extent of the shadow
-              offset: Offset(0, 4), // Horizontal and vertical offset of the shadow
+              offset: Offset(0, 2), // Horizontal and vertical offset of the shadow
             ),
           ],
         ),
@@ -231,5 +242,4 @@ class _CustomCalendarState extends State<CustomCalendar> {
       ),
     );
   }
-
 }

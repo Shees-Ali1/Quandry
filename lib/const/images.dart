@@ -18,6 +18,7 @@ class AppImages {
 
   /// Midhat
   static const home_icon = 'assets/images/home.png';
+  static const filter = 'assets/images/filter.png';
   static const attending_icon = 'assets/images/attending.png';
   static const calender_icon = 'assets/images/calender.png';
   static const profile_icon = 'assets/images/profile.png';
@@ -30,6 +31,9 @@ class AppImages {
   static const back_icon = 'assets/images/back_icon.png';
   static const profile_pic = 'assets/images/profile_pic_avatar.png';
   static const camera_icon = 'assets/images/camera_icon.png';
+  static const main_notification = 'assets/images/main_notification.png';
+  static const setting_icon = 'assets/images/setting_icon.png';
+  static const notification_card_image = 'assets/images/notification_card_image.png';
 
 
 }
