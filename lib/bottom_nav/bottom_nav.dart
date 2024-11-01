@@ -106,7 +106,6 @@ class _AppNavBarState extends State<AppNavBar> {
             activeItem: Image.asset(
               AppImages.home_icon,
               fit: BoxFit.contain,
-
               alignment: Alignment.center,
             ),
             itemLabel: 'Home'.tr,
@@ -145,7 +144,7 @@ class _AppNavBarState extends State<AppNavBar> {
         onTap: (index) {
           _pageController.jumpToPage(index);
         },
-        kIconSize: 22.sp,
+        kIconSize: 19.sp,
       ),
     );
   }

@@ -112,7 +112,7 @@ class EventCard extends StatelessWidget {
                       SizedBox(height: 5.h),
                       Row(
                         children: [
-                          Icon(FontAwesomeIcons.ticket, size: 12.0, color: AppColors.backgroundColor),
+                          Icon(FontAwesomeIcons.tag, size: 12.0, color: AppColors.backgroundColor),
                           SizedBox(width: 5.w),
                           Text(priceRange, style: jost600(10.sp, AppColors.backgroundColor),),
                         ],

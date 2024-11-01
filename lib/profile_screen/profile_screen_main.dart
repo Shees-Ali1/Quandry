@@ -5,8 +5,6 @@ import 'package:image_picker/image_picker.dart'; // Import the image_picker pack
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:quandry/setting_screen/settings_screen.dart';
 import 'dart:io';
 import 'package:quandry/widgets/appbar_small.dart';
 import 'package:quandry/widgets/custom_button.dart';

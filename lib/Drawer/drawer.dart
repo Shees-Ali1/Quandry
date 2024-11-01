@@ -14,7 +14,7 @@ class MyDrawer extends StatelessWidget {
       backgroundColor: AppColors.blueColor,
       child: SafeArea(
         child: Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 24.w),
+          padding:  EdgeInsets.symmetric(horizontal: 20.w),
           child: Column(
             children: [
               Row(mainAxisAlignment: MainAxisAlignment.start,
