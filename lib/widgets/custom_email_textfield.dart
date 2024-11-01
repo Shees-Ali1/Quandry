@@ -232,21 +232,22 @@ class EmailCustomTextFiled extends StatelessWidget {
         border: isBorder == true
             ? OutlineInputBorder(
           borderRadius: BorderRadius.circular(13.31.r),
-          borderSide: const BorderSide(color: AppColors.redColor, width: 1),
+          borderSide:  BorderSide(color: AppColors.border, width: 3.w),
         )
             : InputBorder.none,
         errorBorder: isErrorBorder == true
             ? OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red),
+          borderSide:  BorderSide(color: AppColors.border),
           borderRadius: BorderRadius.circular(13.31.r),
         )
             : InputBorder.none,
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppColors.redColor, width: 1),
+          borderSide:  BorderSide(color: AppColors.border, width: 3.w
+          ),
           borderRadius: BorderRadius.circular(13.31.r),
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppColors.redColor, width: 1),
+          borderSide:  BorderSide(color: AppColors.border, width: 3.w),
           borderRadius: BorderRadius.circular(13.31.r),
         ),
       ),

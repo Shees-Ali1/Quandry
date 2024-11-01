@@ -54,7 +54,7 @@ class OnBoardingFive extends StatelessWidget {
               style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
           ),),
           SizedBox(
-            height: 32.9.h,
+            height: 45.h,
           ),
           // Background Blue Circle Image & Center Image
           Expanded(
@@ -67,11 +67,11 @@ class OnBoardingFive extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 89.h,
+                    height: 103.h,
                   ),
                   SizedBox(
-                      height: 267.h,
-                      width: 222.w,
+                      height: 256.h,
+                      width: 274.w,
                       child: Image.asset(
                         AppImages.onboard5,
                         fit: BoxFit.contain,

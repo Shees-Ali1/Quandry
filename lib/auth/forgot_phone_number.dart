@@ -2,20 +2,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:quandry/auth/signup.dart';
 import 'package:quandry/const/colors.dart';
-
+import 'package:intl_phone_field/intl_phone_field.dart';
 import '../../controller/selectedtype_controller.dart';
-import '../../widgets/country_codePicker.dart';
+
 import '../../widgets/custom_button.dart';
-import '../../widgets/custom_phone_number.dart';
 import '../../widgets/custom_text.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/forget_back_widget.dart';
+import 'forgot_phone_auth.dart';
+import 'forgot_reset.dart';
 
 
 class ForgetPasswordEmailPhoneView extends StatefulWidget {
   const ForgetPasswordEmailPhoneView({super.key});
-
   @override
   State<ForgetPasswordEmailPhoneView> createState() =>
       _ForgetPasswordEmailPhoneViewState();
@@ -27,7 +28,7 @@ class _ForgetPasswordEmailPhoneViewState
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   bool isLoading = false;
-  // Function to generate a random 6-digit number
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +82,7 @@ class _ForgetPasswordEmailPhoneViewState
                                       color: selectedTypeController
                                           .selectedType.value ==
                                           'email'
-                                          ? AppColors.blueColor
+                                          ? AppColors.backgroundColor
                                           : AppColors.transparentColor),
                                   child: Center(
                                     child: CustomText(
@@ -112,7 +113,7 @@ class _ForgetPasswordEmailPhoneViewState
                                       color: selectedTypeController
                                           .selectedType.value ==
                                           'phone'
-                                          ? AppColors.blueColor
+                                          ? AppColors.backgroundColor
                                           : AppColors.transparentColor),
                                   child: Center(
                                     child: CustomText(
@@ -142,6 +143,7 @@ class _ForgetPasswordEmailPhoneViewState
                             fontSize: 24.sp,
                             textColor: AppColors.blueColor,
                             fontWeight: FontWeight.w600,
+                                textAlign: TextAlign.start,
                           ),
                         ),
                         SizedBox(
@@ -157,6 +159,7 @@ class _ForgetPasswordEmailPhoneViewState
                          //   maxLines: 2,
                             fontWeight: FontWeight.w500,
                             textColor: Color(0xff6B7280),
+                                textAlign: TextAlign.start,
                           ),
                         ),
                         SizedBox(
@@ -174,40 +177,46 @@ class _ForgetPasswordEmailPhoneViewState
                             fillColor: AppColors.transparentColor,
                           ),
                         )
-                            : SizedBox(
-                          height: 43.75.h,
-                          // child: CustomPhoneNumberField(
-                          //   childWidget:  CountryCodePicker(
-                          //     hideSearch: false,
-                          //     enabled: true,
-                          //     showDropDownButton: false,
-                          //     onChanged: print,
-                          //     // countryFilter: ['IQ'],
-                          //     // initialSelection: 'IQ',
-                          //     // favorite: ['+964', ''],
-                          //     showCountryOnly: false,
-                          //     showOnlyCountryWhenClosed: false,
-                          //     alignLeft: false,
-                          //   ),
-                          //   controller: phoneController,
-                          //   hintText: "",
-                          //   passwordFunction: () {
-                          //     phoneController.clear();
-                          //     return null;
-                          //   },
-                          //   keyboardType: TextInputType.number,
-                          //   hintColor: AppColors.greyColor,
-                          //   hintTextSize: 15.sp,
-                          //   isBorder: true,
-                          //   borderRadius: 13.sp,
-                          //   fillColor: AppColors.transparentColor,
-                          //   suffixIcon: Icons.cancel,
-                          // ),
+                            :
+                        IntlPhoneField(
+                          flagsButtonPadding: EdgeInsets.only(left: 13.w),
+                          cursorColor: Colors.black,
+                          style: TextStyle(color: Colors.black),
+                          showDropdownIcon: false,
+                          decoration: InputDecoration(
+                            hintText: '0000000000',
+                            filled: true,
+                            fillColor: AppColors.fillcolor,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                            counterText: '',
+                            hintStyle: TextStyle(
+                              color: AppColors.calendartext,
+                              fontFamily: 'jost',
+                              fontSize: 14.65.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(13.31.r),
+                              borderSide: BorderSide(color: AppColors.textfieldBorder),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(13.31.r),
+                              borderSide: BorderSide(color: AppColors.textfieldBorder),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(13.31.r),
+                              borderSide: BorderSide(color: AppColors.textfieldBorder),
+                            ),
+                          ),
+                          initialCountryCode: 'AE',
+                          onChanged: (phone) {
+                            print(phone.completeNumber);
+                          },
                         ),
                         SizedBox(
                           height: 24.h,
                         ),
-                        CustomButton(text: 'Send', color: AppColors.blueColor, onPressed: () {  },
+                        CustomButton(text: 'Send', color: AppColors.blueColor, onPressed: () { Get.to(()=>PhoneNumberAuthenticationView());  },
                             // height: 51.h,
                             // title: "Send",
                             // color: primaryColor,
@@ -231,7 +240,7 @@ class _ForgetPasswordEmailPhoneViewState
                         text: "Don't have an account?",
                         fontSize: 12.sp,
                         textColor: AppColors.blueColor,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w400,
                       ),
                       SizedBox(
                         width: 5.w,

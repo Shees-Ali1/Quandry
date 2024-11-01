@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:quandry/calendar_screen/event_details.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
+import 'package:get/get.dart';
 
 class EventCard extends StatelessWidget {
   final String imageAsset;  // Change this to imageAsset
@@ -124,7 +126,7 @@ class EventCard extends StatelessWidget {
                         height: 24.h,
                         child: ElevatedButton(
                           onPressed: () {
-                            // Add your view button logic here
+                          Get.to(()=> EventDetail());
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.fillcolor,

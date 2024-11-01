@@ -5,7 +5,7 @@ import 'package:quandry/const/colors.dart';
 
 class CustomTextField1 extends StatefulWidget {
   final String hintText;
-  final IconData? prefixIcon; // Allows Font Awesome icons
+  final IconData? prefixIcon;
   final IconData? suffixIcon;
   final bool obscureText;
   final String? obscuringCharacter;
@@ -65,7 +65,7 @@ class _CustomTextFieldState extends State<CustomTextField1> {
           hintText: widget.hintText,
           hintStyle: TextStyle(
             color: AppColors.blueColor,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w400,
             fontSize: widget.hintTextSize,
             fontFamily: 'jost',
           ),
@@ -73,15 +73,15 @@ class _CustomTextFieldState extends State<CustomTextField1> {
               ? Icon(
             widget.prefixIcon,
             size: 16.sp,
-            color: Color.fromRGBO(19, 64, 100, 1),
+            color: AppColors.blueColor,
           )
               : null,
           suffixIcon: widget.suffixIcon != null
               ? IconButton(
             icon: Icon(
               size: 15.sp,
-              _obscureText ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash,
-              color: Color.fromRGBO(19, 64, 100, 1),
+              _obscureText ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
+              color: AppColors.blueColor,
             ),
             onPressed: () {
               setState(() {
@@ -91,7 +91,7 @@ class _CustomTextFieldState extends State<CustomTextField1> {
           )
               : null,
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+          contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 14.w),
         ),
       ),
     );

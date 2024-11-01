@@ -68,18 +68,15 @@ class OnBoardingTwo extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 67.h,
+                    height: 96.h,
                   ),
                   SizedBox(
-                      height: 274.h,
-                      width: 309.w,
+                      height: 250.h,
+                      width: 321.w,
                       child: Image.asset(
                         AppImages.onboard2,
                         fit: BoxFit.contain,
                       )),
-                  SizedBox(
-                    height: 50.h,
-                  ),
 
                 ],
               ),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -10,6 +9,7 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_email_textfield.dart';
 import '../../widgets/custom_text.dart';
 import '../../widgets/forget_back_widget.dart';
+import 'forgot_phone_auth.dart';
 
 
 class ResetPasswordView extends StatefulWidget {
@@ -71,8 +71,8 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                           child: EmailCustomTextFiled(
                             readOnly: false,
                             controller: _authController.newPasswordController.value,
-                            hintText: '*********',
-                            hintColor: Colors.grey,
+                            hintText: '***',
+                            hintColor: AppColors.blueColor,
                             hintTextSize: 11.sp,
                             onChange: (v) {
                               _authController.update();
@@ -232,8 +232,8 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                         child: EmailCustomTextFiled(
                           readOnly: false,
                           controller: _authController.confirmPasswordController.value,
-                          hintText: '*********',
-                          hintColor: Colors.grey,
+                          hintText: '***',
+                          hintColor: AppColors.blueColor,
                           hintTextSize: 11.sp,
                           prefixIcon: AppImages.password,
                           isBorder: true,
@@ -253,7 +253,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                         ),
                       ),
                       SizedBox(height: 42.25.h),
-                      CustomButton(text: 'Reset Password', color: AppColors.blueColor, onPressed: () {  },
+                      CustomButton(text: 'Reset Password', color: AppColors.blueColor, onPressed: () { },
                         // height: 51.h,
                         // title: "Reset Password",
                         // textSize: 19.sp,

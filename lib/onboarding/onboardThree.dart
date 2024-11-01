@@ -64,13 +64,15 @@ class OnBoardingThree extends StatelessWidget {
                       image: AssetImage(AppImages.onboardingellipse),
                       fit: BoxFit.fill)),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // SizedBox(
+                  //   height: 63.h,
+                  // ),
                   SizedBox(
-                    height: 93.h,
-                  ),
-                  SizedBox(
-                      height: 263.h,
-                      width: 266.w,
+                      height: 286.h,
+                      width: 272.w,
                       child: Image.asset(
                         AppImages.onboard3,
                         fit: BoxFit.contain,

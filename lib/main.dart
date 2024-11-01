@@ -5,12 +5,11 @@ import 'package:quandry/Homepage/homepage.dart';
 import 'package:quandry/auth/login.dart';
 import 'package:quandry/auth/signup.dart';
 import 'package:quandry/bottom_nav/bottom_nav.dart';
+import 'package:quandry/calendar_screen/event_details.dart';
 import 'package:quandry/onboarding/main_onbaording.dart';
+import 'package:quandry/onboarding/splash_Screen.dart';
 
-import 'auth/forgotPassword/forgot_password.dart';
-import 'auth/forgotPassword/forgot_phone_auth.dart';
-import 'auth/forgotPassword/forgot_phone_number.dart';
-import 'auth/forgotPassword/forgot_reset.dart';
+
 
 
 void main() {
@@ -29,7 +28,7 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'QWANDERY',
-          home: MainOnBoardingView(),
+            home: SplashScreen(),
         );
       },
     );

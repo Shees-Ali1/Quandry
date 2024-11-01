@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:quandry/auth/forgot_password.dart';
 import 'package:quandry/bottom_nav/bottom_nav.dart';
 import 'package:quandry/const/colors.dart';
 
@@ -8,6 +9,7 @@ import '../const/images.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/custom_textfield.dart';
+
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -135,7 +137,7 @@ class _LoginViewState extends State<LoginView> {
                       alignment: Alignment.topLeft,
                       child: GestureDetector(
                         onTap: () {
-                          //    Get.to(() => ForgetPasswordScreen());
+                              Get.to(() => ForgetPasswordScreen());
                         },
                         child: CustomText(
                           text: "Forgot password?",

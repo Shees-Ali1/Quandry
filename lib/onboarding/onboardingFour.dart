@@ -68,11 +68,11 @@ class OnBoardingFour extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 65.h,
+                    height: 112.h,
                   ),
                   SizedBox(
-                      height: 286.h,
-                      width: 287.w,
+                      height: 245.h,
+                      width: 234.w,
                       child: Image.asset(
                         AppImages.onboard4,
                         fit: BoxFit.contain,
