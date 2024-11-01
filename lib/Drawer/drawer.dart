@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:quandry/Drawer/online_Support/online_support.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
+
+import 'privacy_policy_screen/privacy_policy.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -55,7 +58,9 @@ class MyDrawer extends StatelessWidget {
               DrawerItemsWidget(
                 text: 'Online Support',
                 image: AppImages.online_support_icon,
-                onTap: () {},
+                onTap: () {
+                  Get.to(TechnicalSupportChatScreen());
+                },
               ),
               DrawerItemsWidget(
                 text: 'Terms and conditions',
@@ -65,7 +70,9 @@ class MyDrawer extends StatelessWidget {
               DrawerItemsWidget(
                 text: 'Privacy Policy',
                 image: AppImages.privacy_policy_icon,
-                onTap: () {},
+                onTap: () {
+                  Get.to(PrivacyPolicy());
+                },
               ),
               // DrawerItemsWidget(
               //   onTap: () {

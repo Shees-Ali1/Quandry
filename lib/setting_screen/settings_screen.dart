@@ -6,6 +6,7 @@ import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:quandry/profile_screen/profile_screen_main.dart';
+import 'package:quandry/setting_screen/change_language_screen/select_language_screen.dart';
 import 'package:quandry/setting_screen/change_password/change_password.dart';
 import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
 import 'package:quandry/setting_screen/notification_setting/notification_setting.dart';
@@ -181,7 +182,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SizedBox(height: 14.h),
                 /// Change Language Button
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(SelectLanguageScreen());
+                  },
                   child: Container(
                     height: 61.h,
                     width: double.infinity,
