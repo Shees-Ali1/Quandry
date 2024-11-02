@@ -42,7 +42,7 @@ class OnBoardingThree extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 33.h,
+            height: 40.h,
           ),
           Padding(
             padding:  EdgeInsets.symmetric(horizontal: 5.w),
@@ -67,16 +67,16 @@ class OnBoardingThree extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // SizedBox(
-                  //   height: 63.h,
-                  // ),
-                  SizedBox(
-                      height: 286.h,
-                      width: 272.w,
-                      child: Image.asset(
-                        AppImages.onboard3,
-                        fit: BoxFit.contain,
-                      )),
+
+                  Padding(
+                    padding:  EdgeInsets.only(left: 40.w),
+                    child: Image.asset(
+                      AppImages.onboard3,
+                      height: 290.h,
+
+
+                    ),
+                  ),
                   SizedBox(
                     height: 50.h,
                   ),

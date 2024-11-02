@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:quandry/auth/further_details.dart';
 import 'package:quandry/auth/login.dart';
 import 'package:quandry/const/colors.dart';
 import 'dart:io';
@@ -117,7 +118,7 @@ class _SignupViewState extends State<SignupView> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: 30.h,
+                      height: 40.h,
                     ),
                     SizedBox(
                       height: 83.h,
@@ -137,7 +138,7 @@ class _SignupViewState extends State<SignupView> {
                       ),
                     ),
                     SizedBox(
-                      height: 43.h,
+                      height: 30.h,
                     ),
                     Align(
                       alignment: Alignment.center,
@@ -149,7 +150,7 @@ class _SignupViewState extends State<SignupView> {
                       ),
                     ),
                     SizedBox(
-                      height: 34.h,
+                      height: 30.h,
                     ),
 
                     /// Image Upload
@@ -228,7 +229,7 @@ class _SignupViewState extends State<SignupView> {
                       color: AppColors.greenbutton,
                       text: "Continue",
                       onPressed: () {
-                        Get.to(() => LoginView());
+                        Get.to(() => FurtherDetails());
                       },
                     ),
                     SizedBox(height: 14.25.h),
@@ -290,7 +291,7 @@ class _SignupViewState extends State<SignupView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 45.h),
+                    SizedBox(height: 35.h),
 
                     /// Already have an Account
                     GestureDetector(

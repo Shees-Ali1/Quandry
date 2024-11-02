@@ -192,7 +192,7 @@ class HomeScreen extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 width: 145.w,
-                padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+                padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 16.w),
                 decoration: BoxDecoration(
 
                   color:AppColors.free,

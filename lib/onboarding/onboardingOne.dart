@@ -73,7 +73,7 @@ class OnBoardingOne extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 101.h,
+                    height:120.h,
                   ),
                   SizedBox(
                     height: 256.h,

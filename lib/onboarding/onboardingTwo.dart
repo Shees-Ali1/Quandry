@@ -56,7 +56,7 @@ class OnBoardingTwo extends StatelessWidget {
               ),
           ),
           SizedBox(
-            height: 31.h,
+            height: 35.h,
           ),
           Expanded(
             child: Container(
@@ -68,7 +68,7 @@ class OnBoardingTwo extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 96.h,
+                    height: 120.h,
                   ),
                   SizedBox(
                       height: 250.h,

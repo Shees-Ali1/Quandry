@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quandry/bottom_nav/bottom_nav.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,6 +10,7 @@ import 'package:quandry/widgets/custom_textfield.dart';
 import 'package:quandry/widgets/forget_back_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../const/images.dart';
+import 'package:get/get.dart';
 
 import '../widgets/custom_text.dart';
 
@@ -25,46 +27,38 @@ class FurtherDetails extends StatelessWidget {
             height: 50.h,
           ),
       Container(
-        color: Colors.black, // Set the background color to black
+        color: AppColors.backgroundColor, // Set the background color to black
         padding: EdgeInsets.all(16.w), // Optional padding for better spacing
         child: Column(
+
           children: [
-            Padding(
-              padding: EdgeInsets.only(left: 25.w),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Row(
-                  children: [
-                    Image.asset(
-                      AppImages.bigArrow,
-                      color: AppColors.redColor,
-                      scale: 2,
-                    ),
-                    Image.asset(
-                      AppImages.bigArrow,
-                      color: AppColors.redColor,
-                      scale: 3,
-                    ),
-                    CustomText(
-                      text: "  Back",
-                      textColor: AppColors.redColor,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20.sp,
-                    ),
-                  ],
-                ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Row(
+                children: [
+                  Image.asset(
+                    AppImages.bigArrow,
+                    color: AppColors.blueColor,
+                    scale: 1.5,
+                  ),
+                  Image.asset(
+                    AppImages.bigArrow,
+                    color: AppColors.blueColor,
+                    scale: 3,
+                  ),
+                  CustomText(
+                    text: "  Back",
+                    textColor: AppColors.blueColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20.sp,
+                  ),
+                ],
               ),
             ),
-            SizedBox(
-              height: 12.h,
-            ),
-            Container(
-              height: 2.h,
-              width: double.infinity,
-              color: Color.fromRGBO(188, 202, 214, 0.23),
-            ),
+
+
           ],
         ),
       ),
@@ -97,7 +91,7 @@ class FurtherDetails extends StatelessWidget {
                   hintText: 'Select your Interests',
                   borderWidth: 1.w,
                   borderColor: AppColors.border,
-                  prefixImage: 'assets/images/interests.jpg',
+                  prefixImage: 'assets/images/interests.png',
                   onChanged: (value) {
                     print('Selected: $value');
                   },
@@ -110,7 +104,7 @@ class FurtherDetails extends StatelessWidget {
                   hintText: 'Organization type',
                   borderWidth: 1.w,
                   borderColor: AppColors.border,
-                  prefixImage: 'assets/images/building.png',
+                  prefixImage: 'assets/images/organization.png',
                   onChanged: (value) {
                     print('Selected: $value');
                   },
@@ -123,7 +117,7 @@ class FurtherDetails extends StatelessWidget {
                   hintText: 'Your role',
                   borderWidth: 1.w,
                   borderColor: AppColors.border,
-                  prefixImage: 'assets/images/user.png',
+                  prefixImage: 'assets/images/role.png',
                   onChanged: (value) {
                     print('Selected: $value');
                   },
@@ -132,7 +126,9 @@ class FurtherDetails extends StatelessWidget {
                   height: 127.h,
                 ),
                 CustomButton(
-                    text: "Complete", color: AppColors.blueColor, onPressed: () {}),
+                    text: "Complete", color: AppColors.blueColor, onPressed: () {
+                      Get.to(AppNavBar());
+                }),
               ],
             ),
           ),

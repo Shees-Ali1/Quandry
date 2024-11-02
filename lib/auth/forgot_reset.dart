@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:quandry/auth/login.dart';
 import 'package:quandry/const/colors.dart';
 
 import '../../const/images.dart';
@@ -253,7 +254,9 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                         ),
                       ),
                       SizedBox(height: 42.25.h),
-                      CustomButton(text: 'Reset Password', color: AppColors.blueColor, onPressed: () { },
+                      CustomButton(text: 'Reset Password', color: AppColors.blueColor, onPressed: () {
+                        Get.to(LoginView());
+                      },
                         // height: 51.h,
                         // title: "Reset Password",
                         // textSize: 19.sp,

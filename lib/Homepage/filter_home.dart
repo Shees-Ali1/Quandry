@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quandry/widgets/custom_button.dart';
+import 'package:get/get.dart';
+
 
 import '../const/images.dart';
 
@@ -29,6 +32,7 @@ class _FilterContentState extends State<FilterContent> {
       isIncrementSelected = false;
     });
   }
+
   // void _incrementNumber() => setState(() => _number++);
   // void _decrementNumber() => setState(() => _number > 0 ? _number-- : null);
   bool isUpArrowClicked = false;
@@ -63,7 +67,32 @@ class _FilterContentState extends State<FilterContent> {
           SizedBox(height: 20.h),
           _buildPriceSection(),
           SizedBox(height: 20.h),
-          _buildFooter(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distributes space evenly between buttons
+            children: [
+              CustomButton(
+                text: 'CANCEL',
+                color: AppColors.appbar_text,
+                onPressed: () {
+                  Get.back();
+                },
+                width: 112.w,
+                textColor: AppColors.blueColor,
+                fontSize: 13.sp,
+
+              ),
+              SizedBox(width: 20.w), // Add spacing between buttons
+              CustomButton(
+                text: 'APPLY',
+                color: AppColors.blueColor,
+                onPressed: () {},
+                width: 160.w,
+                textColor: AppColors.backgroundColor,
+                fontSize: 13.sp,
+              ),
+            ],
+          ),
+          SizedBox(height: 20.h),
         ],
       ),
     );
@@ -150,6 +179,7 @@ class _FilterContentState extends State<FilterContent> {
       ),
     );
   }
+
   Widget _buildTimeDateSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,19 +194,12 @@ class _FilterContentState extends State<FilterContent> {
               .map((entry) => _buildSelectableContainer(entry.value, entry.key))
               .toList(),
         ),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //   children: ['Today', 'Tomorrow', 'This week']
-        //       .asMap()
-        //       .entries
-        //       .map((entry) => _buildSelectableContainer(entry.value, entry.key))
-        //       .toList(),
-        // ),
-        SizedBox(height: 10.h),
+        SizedBox(height: 18.65.h),
         _buildCalendarSelector(),
       ],
     );
   }
+
   Widget _buildSelectableContainer(String label, int index) {
     bool isSelected = selectedIndex == index;
     return GestureDetector(
@@ -202,28 +225,10 @@ class _FilterContentState extends State<FilterContent> {
       ),
     );
   }
-  // Widget _buildSelectableContainer(String label, int index) {
-  //   bool isSelected = selectedIndex == index;
-  //   return GestureDetector(
-  //     onTap: () => setState(() => selectedIndex = index),
-  //     child: Container(
-  //       width: 100.w,
-  //       padding: EdgeInsets.symmetric(vertical: 8.h),
-  //       decoration: BoxDecoration(
-  //         color: isSelected ? AppColors.appbar_text : Colors.transparent,
-  //         border: Border.all(color: Colors.grey.shade300),
-  //         borderRadius: BorderRadius.circular(8.r),
-  //       ),
-  //       child: Center(
-  //           child: Text(label,
-  //               style: TextStyle(fontSize: 12.sp, color: AppColors.blueColor))),
-  //     ),
-  //   );
-  // }
 
   Widget _buildCalendarSelector() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 6.94.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.grey.shade300),
@@ -253,7 +258,7 @@ class _FilterContentState extends State<FilterContent> {
         Text('Location', style: jost600(13.sp, AppColors.blueColor)),
         SizedBox(height: 10.h),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+          padding: EdgeInsets.symmetric(horizontal: 6.94.w, vertical: 10.h),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: Colors.grey.shade300),
@@ -292,87 +297,49 @@ class _FilterContentState extends State<FilterContent> {
         ),
         SizedBox(height: 10.h),
         Container(
-        padding: EdgeInsets.only(left: 20.w),
-        decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(width: 1.w, color: AppColors.border),
-        ),
-        child: Row(
-        children: [
-        Text(
-        '$_number',
-        style: jost500(18.94.sp, AppColors.blueColor)
-        ),
-        Spacer(),
-        Column(
-        children: [
-    GestureDetector(
-    onTap: _incrementNumber,
-    child: Icon(
-    Icons.arrow_drop_up_sharp,
-    size: 24.0,
-    color: isIncrementSelected ?  AppColors.blueColor : AppColors.appbar_text,
-    ),
-    ),
-    GestureDetector(
-    onTap: _decrementNumber,
-    child: Icon(
-    Icons.arrow_drop_down,
-    size: 24.0,
-    color: !isIncrementSelected ? AppColors.blueColor: AppColors.appbar_text,
-    ),
-    ),
-    ],
-    ),
-    ],
-    ),
-    )
+          padding: EdgeInsets.only(left: 20.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.r),
+            border: Border.all(width: 1.w, color: AppColors.border),
+          ),
+          child: Row(
+            children: [
+              Text('$_number', style: jost500(18.94.sp, AppColors.blueColor)),
+              Spacer(),
+              Column(
+                children: [
+                  GestureDetector(
+                    onTap: _incrementNumber,
+                    child: Icon(
+                      Icons.arrow_drop_up_sharp,
+                      size: 24.0,
+                      color: isIncrementSelected
+                          ? AppColors.blueColor
+                          : AppColors.appbar_text,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: _decrementNumber,
+                    child: Icon(
+                      Icons.arrow_drop_down,
+                      size: 24.0,
+                      color: !isIncrementSelected
+                          ? AppColors.blueColor
+                          : AppColors.appbar_text,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        )
       ],
     );
   }
 
   Widget _buildFooter() {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildFooterButton(
-            'CANCEL',
-            AppColors.appbar_text,
-            AppColors.blueColor,
-            onTap: () => Navigator.pop(context),
-          ),
-          SizedBox(width: 20.w),
-          _buildFooterButton(
-            'APPLY',
-            AppColors.blueColor,
-            AppColors.backgroundColor,
-            onTap: () => Navigator.pop(context),
-
-          ),
-        ],
-      )
+    return Row(
+      children: [],
     );
   }
-
-  Widget _buildFooterButton(String label, Color bgColor, Color textColor,
-      {required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 140.w,
-        height: 45.h,
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(11.r),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: jost500(13.sp, textColor),
-          ),
-        ),
-      ),
-    );
-  }}
+}

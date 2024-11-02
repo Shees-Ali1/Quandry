@@ -42,7 +42,7 @@ class OnBoardingFive extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 32.9.h,
+            height: 42.h,
           ),
           /// Long Text
           Padding(

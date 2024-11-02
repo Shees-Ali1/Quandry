@@ -233,7 +233,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   text: "Don't have an account?",
                   textColor: AppColors.blueColor,
                   fontWeight: FontWeight.w400,
-                  fontSize: 15,
+                  fontSize: 15.sp,
                 ),
                 SizedBox(
                   width: 5.w,
@@ -242,7 +242,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   text: "Sign Up",
                   textColor: AppColors.redColor,
                   fontWeight: FontWeight.w500,
-                  fontSize: 15,
+                  fontSize: 15.sp,
                 ),
               ],
             ),

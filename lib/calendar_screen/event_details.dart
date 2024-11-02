@@ -22,8 +22,8 @@ class EventDetail extends StatelessWidget {
                 width: double.infinity,
               ),
               Positioned(
-                  top: 40,
-                  left: 10,
+                  top: 50,
+                  left: 25,
                   child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
@@ -41,9 +41,6 @@ class EventDetail extends StatelessWidget {
                     maxLines: 2,
                   )),
             ]),
-            SizedBox(
-              height: 14.h,
-            ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: Column(
@@ -251,7 +248,7 @@ class EventDetail extends StatelessWidget {
                     style: jost400(14.sp, Color.fromRGBO(52, 51, 51, 1)),
                   ),
                   SizedBox(
-                    height: 3.h,
+                    height: 14.h,
                   ),
                   Container(
                       alignment: AlignmentDirectional.topStart,

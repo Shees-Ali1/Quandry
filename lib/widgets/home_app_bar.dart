@@ -11,6 +11,7 @@ class CustomAppBarH extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       body: Container(
         height: 100.h,
         width: double.infinity,
@@ -148,5 +149,5 @@ class CustomAppBarH extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(50.h);
+  Size get preferredSize => Size.fromHeight(65.h);
 }

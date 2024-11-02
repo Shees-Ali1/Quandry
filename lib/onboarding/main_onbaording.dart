@@ -46,7 +46,7 @@ class _MainOnBoardingViewState extends State<MainOnBoardingView> {
         children: [
           // PageView with disabled scroll
           PageView(
-            //physics: const NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             controller: pageController,
             onPageChanged: (index) {
               setState(() {

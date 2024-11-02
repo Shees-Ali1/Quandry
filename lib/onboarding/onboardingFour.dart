@@ -43,7 +43,7 @@ class OnBoardingFour extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 31.h,
+            height: 30.h,
           ),
           /// Long Text
           Padding(
@@ -55,7 +55,7 @@ class OnBoardingFour extends StatelessWidget {
               style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
             )),
           SizedBox(
-            height: 15.9.h,
+            height: 27.h,
           ),
           /// Background Blue Circle Image & Center Image
           Expanded(
