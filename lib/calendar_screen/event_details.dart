@@ -368,7 +368,7 @@ class EventDetail extends StatelessWidget {
                     children: [
                       Container(
                         height: 46.h,
-                        width: 171.h,
+                        width: 168.h,
                         decoration: BoxDecoration(
                             color: AppColors.blueColor,
                             borderRadius: BorderRadius.circular(10.r)),
@@ -395,7 +395,7 @@ class EventDetail extends StatelessWidget {
                       SizedBox(width: 11.w),
                       Container(
                         height: 46.h,
-                        width: 171.h,
+                        width: 160.w,
                         decoration: BoxDecoration(
                             color: AppColors.blueColor,
                             borderRadius: BorderRadius.circular(10.r)),
@@ -455,7 +455,7 @@ class EventDetail extends StatelessWidget {
                       SizedBox(width: 11.w),
                       Container(
                         height: 46.h,
-                        width: 171.h,
+                        width: 160.w,
                         decoration: BoxDecoration(
                             color: AppColors.blueColor,
                             borderRadius: BorderRadius.circular(22.r)),

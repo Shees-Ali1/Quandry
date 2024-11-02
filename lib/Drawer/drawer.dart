@@ -7,6 +7,7 @@ import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
 
 import 'privacy_policy_screen/privacy_policy.dart';
+import 'terms_and_condition/terms_and_condition.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -43,7 +44,9 @@ class MyDrawer extends StatelessWidget {
               DrawerItemsWidget(
                 text: 'Home',
                 image: AppImages.home_icon,
-                onTap: () {},
+                onTap: () {
+
+                },
               ),
               DrawerItemsWidget(
                 text: 'Calendar',
@@ -65,7 +68,9 @@ class MyDrawer extends StatelessWidget {
               DrawerItemsWidget(
                 text: 'Terms and conditions',
                 image: AppImages.term_condition_icon,
-                onTap: () {},
+                onTap: () {
+                  Get.to(TermsAndConditions());
+                },
               ),
               DrawerItemsWidget(
                 text: 'Privacy Policy',

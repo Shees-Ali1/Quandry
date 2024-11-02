@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/textstyle.dart';
 
+import '../Drawer/drawer.dart';
 import '../calendar_screen/event_card.dart';
 import '../const/images.dart';
 import '../widgets/appbar.dart';
@@ -34,9 +35,10 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBarH(),
 
+      drawer: MyDrawer(),
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
         child: ListView(
           children: [
             // Section Title - Attending
@@ -212,110 +214,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _buildEventCard(Map<String, String> event) {
-  //   return Padding(
-  //     padding: EdgeInsets.only(right: 12.w),
-  //     child: Container(
-  //       width: 223.w,
-  //       height: 120.h,// Adjusted width for better match
-  //       padding: EdgeInsets.all(8.w),
-  //       decoration: BoxDecoration(
-  //         color: AppColors.blueColor,
-  //         borderRadius: BorderRadius.circular(16.r), // Smooth rounded corners
-  //       ),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           // Row for Image + Title
-  //           Row(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               // Event Image (Placeholder)
-  //               ClipRRect(
-  //                 borderRadius: BorderRadius.circular(12.r),
-  //                 child: Container(
-  //                   width: 42.39.w,
-  //                   height: 41.27.h,
-  //                   color: Colors.grey[300], // Placeholder color
-  //                 ),
-  //               ),
-  //               SizedBox(width: 12.w), // Spacing between image and text
-  //
-  //               // Event Title
-  //               Expanded(
-  //                 child: Text(
-  //                   event["title"]!,
-  //                   style: jost700(10.54.sp, AppColors.backgroundColor),
-  //                   maxLines: 2,
-  //                   overflow: TextOverflow.ellipsis,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //           SizedBox(height: 12.h), // Spacing below title
-  //
-  //           // Row for Labels (Date/Time, Location, Credits)
-  //           Row(
-  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //             children: [
-  //               Text(
-  //                 'Date/Time',
-  //                 style: jost700(10.54.sp, AppColors.backgroundColor),
-  //               ),
-  //               Text(
-  //                 'Location',
-  //                 style: jost700(10.54.sp, AppColors.backgroundColor),
-  //               ),
-  //               Text(
-  //                 'Credits',
-  //                 style: jost700(10.54.sp, AppColors.backgroundColor),
-  //               ),
-  //             ],
-  //           ),
-  //           SizedBox(height: 8.h), // Spacing between label and values
-  //
-  //           // Row for Values (Date, Location, Credits)
-  //           Row(
-  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //             children: [
-  //               Text(
-  //                 event["date"]!,
-  //                 style: jost500(8.78.sp, AppColors.backgroundColor),
-  //               ),
-  //               Text(
-  //                 event["location"]!,
-  //                 style: jost500(8.78.sp, AppColors.backgroundColor),
-  //               ),
-  //               Text(
-  //                 event["credits"]!,
-  //                 style: jost500(8.78.sp, AppColors.backgroundColor),
-  //               ),
-  //             ],
-  //           ),
-  //           Spacer(), // Pushes the price tag to the bottom
-  //
-  //           // Price Tag with Rounded Background
-  //           Align(
-  //             alignment: Alignment.bottomCenter,
-  //             child: Container(
-  //               width: 145.w,
-  //               padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
-  //               decoration: BoxDecoration(
-  //                 color: Colors.grey[200],
-  //                 borderRadius: BorderRadius.circular(12.r),
-  //               ),
-  //               child: Text(
-  //                 event["price"]!,
-  //                 style: jost700(12.sp, AppColors.blueColor),
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
 
   Widget _buildDetailedEventCard(Map<String, String> event) {

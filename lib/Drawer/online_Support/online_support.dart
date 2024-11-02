@@ -15,7 +15,7 @@ class TechnicalSupportChatScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: AppbarSmall(
-        title: "Technical Support Team",
+        title: "Online Support",
         iconImage: AppImages.back_icon, // Set your custom back icon
         onIconTap: () {
           Get.back();

@@ -38,7 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
         ),
         backgroundColor: AppColors.backgroundColor,
-        drawer: MyDrawer(), // Your custom drawer widget
+        drawer: MyDrawer(), // Provide navigateToPage here
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 23.w),
