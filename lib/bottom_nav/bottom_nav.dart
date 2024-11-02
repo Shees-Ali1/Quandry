@@ -14,23 +14,17 @@ import 'package:quandry/setting_screen/settings_screen.dart';
 
 import '../../const/images.dart';
 import '../../controllers/nav_bar_controller.dart';
-
-
 class AppNavBar extends StatefulWidget {
   const AppNavBar({super.key});
 
   @override
-  State<AppNavBar> createState() => _AppNavBarState();
+  State<AppNavBar> createState() => AppNavBarState();
 }
 
-class _AppNavBarState extends State<AppNavBar> {
+class AppNavBarState extends State<AppNavBar> {
   final UserController userVM = Get.put(UserController());
-
   final _pageController = PageController(initialPage: 0);
-
   final _controller = NotchBottomBarController(index: 0);
-
-  int maxCount = 4;
 
   @override
   void dispose() {
@@ -40,26 +34,19 @@ class _AppNavBarState extends State<AppNavBar> {
 
   final NavBarController navBarController = Get.put(NavBarController());
 
-  void _navigateToPage(int pageIndex) {
+  void navigateToPage(int pageIndex) {
     _pageController.jumpToPage(pageIndex);
-    _controller.jumpTo(pageIndex);
-    Navigator.pop(context); // Close the drawer after navigation
+    _controller.jumpTo(pageIndex); // Update selected item in bottom bar
   }
-
   @override
   Widget build(BuildContext context) {
     bool isIpad = MediaQuery.of(context).size.width > 600;
     double screenHeight = MediaQuery.of(context).size.height;
-
-    // Calculate the dynamic icon height (e.g., 5% of the screen height)
-    double iconHeight = screenHeight * 0.05; // Adjust the percentage as needed
-
-    // Determine the scale factor for the icons
+    double iconHeight = screenHeight * 0.05;
     double iconScale = iconHeight / 20;
 
-    // Move bottomBarPages into build method to ensure userVM is accessible
     List<Widget> bottomBarPages = [
-       HomeScreen(),
+      HomeScreen(),
       const AttendingScreenMain(),
       const CalendarScreenMain(),
       const SettingsScreen(),
@@ -69,7 +56,6 @@ class _AppNavBarState extends State<AppNavBar> {
       resizeToAvoidBottomInset: false,
       key: navBarController.scaffoldKey,
       drawer: const MyDrawer(),
-
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
@@ -79,7 +65,6 @@ class _AppNavBarState extends State<AppNavBar> {
         ),
       ),
       extendBody: true,
-
       bottomNavigationBar: AnimatedNotchBottomBar(
         showBlurBottomBar: false,
         showShadow: false,
@@ -103,49 +88,163 @@ class _AppNavBarState extends State<AppNavBar> {
         bottomBarItems: [
           BottomBarItem(
             inActiveItem: Image.asset(AppImages.home_icon),
-            activeItem: Image.asset(
-              AppImages.home_icon,
-              fit: BoxFit.contain,
-              alignment: Alignment.center,
-            ),
+            activeItem: Image.asset(AppImages.home_icon, fit: BoxFit.contain),
             itemLabel: 'Home'.tr,
           ),
           BottomBarItem(
             inActiveItem: Image.asset(AppImages.attending_icon),
-            activeItem: Image.asset(
-              fit: BoxFit.contain,
-              alignment: Alignment.center,
-
-              AppImages.attending_icon,
-            ),
+            activeItem: Image.asset(AppImages.attending_icon, fit: BoxFit.contain),
             itemLabel: 'Attending'.tr,
           ),
           BottomBarItem(
             inActiveItem: Image.asset(AppImages.calender_icon),
-            activeItem: Image.asset(
-              alignment: Alignment.center,
-              fit: BoxFit.contain,
-
-              AppImages.calender_icon,
-            ),
+            activeItem: Image.asset(AppImages.calender_icon, fit: BoxFit.contain),
             itemLabel: 'Calendar'.tr,
           ),
           BottomBarItem(
             inActiveItem: Image.asset(AppImages.profile_icon),
-            activeItem: Image.asset(
-              alignment: Alignment.center,
-              fit: BoxFit.contain,
-
-              AppImages.profile_icon,
-            ),
+            activeItem: Image.asset(AppImages.profile_icon, fit: BoxFit.contain),
             itemLabel: 'Profile'.tr,
           ),
         ],
         onTap: (index) {
-          _pageController.jumpToPage(index);
+          navigateToPage(index); // Use the public `navigateToPage` method
         },
         kIconSize: 19.sp,
       ),
     );
   }
 }
+// class AppNavBar extends StatefulWidget {
+//   const AppNavBar({super.key});
+//
+//   @override
+//   State<AppNavBar> createState() => _AppNavBarState();
+// }
+//
+// class _AppNavBarState extends State<AppNavBar> {
+//   final UserController userVM = Get.put(UserController());
+//
+//   final _pageController = PageController(initialPage: 0);
+//
+//   final _controller = NotchBottomBarController(index: 0);
+//
+//   int maxCount = 4;
+//
+//   @override
+//   void dispose() {
+//     _pageController.dispose();
+//     super.dispose();
+//   }
+//
+//   final NavBarController navBarController = Get.put(NavBarController());
+//
+//   void _navigateToPage(int pageIndex) {
+//     _pageController.jumpToPage(pageIndex);
+//     _controller.jumpTo(pageIndex);
+//     Navigator.pop(context); // Close the drawer after navigation
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     bool isIpad = MediaQuery.of(context).size.width > 600;
+//     double screenHeight = MediaQuery.of(context).size.height;
+//
+//     // Calculate the dynamic icon height (e.g., 5% of the screen height)
+//     double iconHeight = screenHeight * 0.05; // Adjust the percentage as needed
+//
+//     // Determine the scale factor for the icons
+//     double iconScale = iconHeight / 20;
+//
+//     // Move bottomBarPages into build method to ensure userVM is accessible
+//     List<Widget> bottomBarPages = [
+//        HomeScreen(),
+//       const AttendingScreenMain(),
+//       const CalendarScreenMain(),
+//       const SettingsScreen(),
+//     ];
+//
+//     return Scaffold(
+//       resizeToAvoidBottomInset: false,
+//       key: navBarController.scaffoldKey,
+//       drawer: const MyDrawer(),
+//
+//       body: PageView(
+//         controller: _pageController,
+//         physics: const NeverScrollableScrollPhysics(),
+//         children: List.generate(
+//           bottomBarPages.length,
+//               (index) => bottomBarPages[index],
+//         ),
+//       ),
+//       extendBody: true,
+//
+//       bottomNavigationBar: AnimatedNotchBottomBar(
+//         showBlurBottomBar: false,
+//         showShadow: false,
+//         itemLabelStyle: TextStyle(
+//           color: AppColors.backgroundColor,
+//           fontWeight: FontWeight.w400,
+//           fontSize: isIpad ? 5.sp : 8.sp,
+//         ),
+//         blurFilterY: 10,
+//         blurFilterX: 10,
+//         notchBottomBarController: _controller,
+//         notchColor: AppColors.blueColor,
+//         color: AppColors.blueColor,
+//         showLabel: true,
+//         shadowElevation: 0,
+//         kBottomRadius: 15.0,
+//         bottomBarWidth: 100.w,
+//         bottomBarHeight: 11.h,
+//         removeMargins: false,
+//         durationInMilliSeconds: 300,
+//         bottomBarItems: [
+//           BottomBarItem(
+//             inActiveItem: Image.asset(AppImages.home_icon),
+//             activeItem: Image.asset(
+//               AppImages.home_icon,
+//               fit: BoxFit.contain,
+//               alignment: Alignment.center,
+//             ),
+//             itemLabel: 'Home'.tr,
+//           ),
+//           BottomBarItem(
+//             inActiveItem: Image.asset(AppImages.attending_icon),
+//             activeItem: Image.asset(
+//               fit: BoxFit.contain,
+//               alignment: Alignment.center,
+//
+//               AppImages.attending_icon,
+//             ),
+//             itemLabel: 'Attending'.tr,
+//           ),
+//           BottomBarItem(
+//             inActiveItem: Image.asset(AppImages.calender_icon),
+//             activeItem: Image.asset(
+//               alignment: Alignment.center,
+//               fit: BoxFit.contain,
+//
+//               AppImages.calender_icon,
+//             ),
+//             itemLabel: 'Calendar'.tr,
+//           ),
+//           BottomBarItem(
+//             inActiveItem: Image.asset(AppImages.profile_icon),
+//             activeItem: Image.asset(
+//               alignment: Alignment.center,
+//               fit: BoxFit.contain,
+//
+//               AppImages.profile_icon,
+//             ),
+//             itemLabel: 'Profile'.tr,
+//           ),
+//         ],
+//         onTap: (index) {
+//           _pageController.jumpToPage(index);
+//         },
+//         kIconSize: 19.sp,
+//       ),
+//     );
+//   }
+// }

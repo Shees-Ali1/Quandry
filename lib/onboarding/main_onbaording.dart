@@ -6,6 +6,7 @@ import 'package:quandry/bottom_nav/bottom_nav.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../auth/login.dart';
 import 'onboardThree.dart';
 import 'onboardingFive.dart';
 import 'onboardingFour.dart';
@@ -31,7 +32,7 @@ class _MainOnBoardingViewState extends State<MainOnBoardingView> {
         curve: Curves.ease,
       );
     } else if (currentpage == 4) {
-      Get.offAll(SignupView());
+      Get.offAll(LoginView());
     }
   }
 

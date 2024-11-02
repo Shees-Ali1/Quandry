@@ -307,12 +307,18 @@ class _SignupViewState extends State<SignupView> {
                             textColor: Color(0xff111827),
                             fontWeight: FontWeight.w300,
                           ),
-                          CustomText(
-                            textAlign: TextAlign.center,
-                            text: 'Sign in',
-                            textColor: AppColors.redColor,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 15.sp,
+                          GestureDetector(
+                            onTap: (){
+                              Get.to(()=>LoginView());
+
+                            },
+                            child: CustomText(
+                              textAlign: TextAlign.center,
+                              text: 'Sign in',
+                              textColor: AppColors.redColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 15.sp,
+                            ),
                           ),
                         ],
                       ),

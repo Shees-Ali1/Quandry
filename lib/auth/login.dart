@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:quandry/auth/forgot_password.dart';
+import 'package:quandry/auth/signup.dart';
 import 'package:quandry/bottom_nav/bottom_nav.dart';
 import 'package:quandry/const/colors.dart';
 
@@ -181,11 +182,17 @@ class _LoginViewState extends State<LoginView> {
                         textColor: Color.fromRGBO(192, 208, 221, 1),
                         fontWeight: FontWeight.w400,
                       ),
-                      CustomText(
-                        text: ' Sign Up',
-                        fontSize: 15.sp,
-                        textColor: AppColors.redColor,
-                        fontWeight: FontWeight.w400,
+                      GestureDetector(
+                       onTap: (){
+                         Get.to(()=>SignupView());
+
+                       },
+                        child: CustomText(
+                          text: ' Sign Up',
+                          fontSize: 15.sp,
+                          textColor: AppColors.redColor,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ],
                   ),

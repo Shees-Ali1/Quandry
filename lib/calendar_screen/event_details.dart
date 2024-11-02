@@ -425,10 +425,11 @@ class EventDetail extends StatelessWidget {
                     height: 20.h,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                         height: 46.h,
-                        width: 171.h,
+                        width: 168.h,
                         decoration: BoxDecoration(
                             color: AppColors.blueColor,
                             borderRadius: BorderRadius.circular(22.r)),

@@ -15,6 +15,8 @@ class AppImages {
   static const password = 'assets/images/password.png';
   static const tickIcon = 'assets/images/tickIcon.png';
   static const bigArrow = 'assets/images/bigArrow.png';
+  static const locationnew = 'assets/images/locationnew.jpeg';
+  static const calenderr = 'assets/images/calender.jpeg';
 
 
 
