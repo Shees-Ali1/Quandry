@@ -34,62 +34,72 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarH(),
-
       drawer: MyDrawer(),
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-        child: ListView(
-          children: [
-            // Section Title - Attending
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: Text(
-                "Attending",
-                style: jost700(16.37.sp, AppColors.blueColor),
-              ),
-            ),
-            // ListView.builder for Event Cards
-            SizedBox(
-              height: 148.h,// Adjusted width for better match
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: events.length,
-                itemBuilder: (context, index) {
-                  return _buildEventCard(events[index]);
-                },
-              ),
-            ),
-            // Section Title - Events
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: Text(
-                "Events",
-                style: TextStyle(
-                  fontSize: 16.37.sp,
-                  fontWeight: FontWeight.bold,
+      body: GestureDetector(
+        onTap: (){
+          FocusScope.of(context).unfocus(); // Close the keyboard when tapping outside
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    // Section Title - Attending
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: Text(
+                        "Attending",
+                        style: jost700(16.37.sp, AppColors.blueColor),
+                      ),
+                    ),
+                    // ListView.builder for Event Cards
+                    SizedBox(
+                      height: 148.h,// Adjusted width for better match
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: events.length,
+                        itemBuilder: (context, index) {
+                          return _buildEventCard(events[index]);
+                        },
+                      ),
+                    ),
+                    // Section Title - Events
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: Text(
+                        "Events",
+                        style: TextStyle(
+                          fontSize: 16.37.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    // Single Event Card (Detailed)
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(), // Disable inner scrolling
+                      shrinkWrap: true,
+                      itemCount: 2, // Number of events you want to display
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 10.0), // Adjust the space between items
+                          child: EventCard(
+                            imageAsset: AppImages.event_card_image, // Use imageAsset instead of imageUrl
+                            title: 'Utah Fall Conference on Substance Use',
+                            date: 'Oct 23-25, 2024',
+                            location: 'St. George, UT',
+                            credits: '10 CE Credits',
+                            priceRange: 'Free - \$500/seat',
+                          ),
+                        );
+                      },
+                    ),          ],
                 ),
               ),
-            ),
-            // Single Event Card (Detailed)
-            ListView.builder(
-              physics: NeverScrollableScrollPhysics(), // Disable inner scrolling
-              shrinkWrap: true,
-              itemCount: 2, // Number of events you want to display
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(bottom: 10.0), // Adjust the space between items
-                  child: EventCard(
-                    imageAsset: AppImages.event_card_image, // Use imageAsset instead of imageUrl
-                    title: 'Utah Fall Conference on Substance Use',
-                    date: 'Oct 23-25, 2024',
-                    location: 'St. George, UT',
-                    credits: '10 CE Credits',
-                    priceRange: 'Free - \$500/seat',
-                  ),
-                );
-              },
-            ),          ],
+            ],
+          ),
         ),
       ),
     );
