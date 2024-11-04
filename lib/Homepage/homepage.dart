@@ -41,23 +41,21 @@ class HomeScreen extends StatelessWidget {
           FocusScope.of(context).unfocus(); // Close the keyboard when tapping outside
         },
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding:  EdgeInsets.symmetric(horizontal: 10.w,vertical: 19.h),
           child: Column(
             children: [
               Expanded(
                 child: ListView(
                   children: [
                     // Section Title - Attending
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.h),
-                      child: Text(
-                        "Attending",
-                        style: jost700(16.37.sp, AppColors.blueColor),
-                      ),
+                    Text(
+                      "Attending",
+                      style: jost700(16.37.sp, AppColors.blueColor),
                     ),
+                    SizedBox(height: 10,),
                     // ListView.builder for Event Cards
-                    SizedBox(
-                      height: 148.h,// Adjusted width for better match
+                    Container(
+                      height: 120.h,// Adjusted width for better match
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: events.length,
@@ -107,41 +105,40 @@ class HomeScreen extends StatelessWidget {
 
   // Widget to build a horizontal event card
   Widget _buildEventCard(Map<String, String> event) {
-    return Padding(
-      padding: EdgeInsets.only(right: 12.w),
-      child: Container(
-        width: 223.w,
-        height: 120.h, // Fixed height for the card
-        child: Stack(
-          children: [
-            // Main Card Content (Background with Title and Event Info)
-            Container(
-              padding: EdgeInsets.all(8.w),
-              decoration: BoxDecoration(
-                color: AppColors.blueColor,
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Row for Image + Title
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+    return
+        // Main Card Content (Background with Title and Event Info)
+        Padding(
+          padding: EdgeInsets.only(left: 4.w),
+          child: Container(
+            width: 223.w,
+            height: 119.h,
+            decoration: BoxDecoration(
+              color: AppColors.blueColor,
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Column(
+
+              children: [
+                // Row for Image + Title
+                Padding(
+                  padding: EdgeInsets.only(left: 8.w,top: 6.01.h),
+                  child: Row(
+
                     children: [
                       // Event Image (Placeholder)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12.r),
                         child: Image.asset(
-                          AppImages.event_card_image
-                          ,width: 42.39.w,
+                          AppImages.event_card_image,
+                          width: 42.39.w,
                           height: 41.27.h,
                           fit: BoxFit.cover,
                         ),
                       ),
+                     SizedBox(width: 10.w,),
 
-                      SizedBox(width: 12.w), // Spacing between image and text
 
-                      // Event Title
+                     // Event Title
                       Expanded(
                         child: Text(
                           event["title"]!,
@@ -152,10 +149,13 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 12.h), // Spacing below title
+                ),
+                SizedBox(height: 6.h), // Spacing below title
 
-                  // Row for Labels (Date/Time, Location, Credits)
-                  Row(
+                // Row for Labels (Date/Time, Location, Credits)
+                Padding(
+                  padding: EdgeInsets.only(left: 8.w,right: 8.w),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
@@ -170,13 +170,15 @@ class HomeScreen extends StatelessWidget {
                         'Credits',
                         style: jost700(10.54.sp, AppColors.backgroundColor),
                       ),
-
                     ],
                   ),
-                  SizedBox(height: 8.h), // Spacing between label and values
+                ),
+                SizedBox(height: 1.68.h), // Spacing between label and values
 
-                  // Row for Values (Date, Location, Credits)
-                  Row(
+                // Row for Values (Date, Location, Credits)
+                Padding(
+                  padding: EdgeInsets.only(left: 8.w,right: 11.w),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
@@ -193,36 +195,35 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-
-            // Price Tag aligned at the bottom-center inside the Stack
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                width: 145.w,
-                padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 16.w),
-                decoration: BoxDecoration(
-
-                  color:AppColors.free,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12.r), // Top-left corner radius
-                    topRight: Radius.circular(12.r), // Top-right corner radius
-                    bottomLeft: Radius.zero,         // Bottom-left corner with no radius
-                    bottomRight: Radius.zero,        // Bottom-right corner with no radius
-                  ),                ),
-                child: Text(
-                  event["price"]!,
-                  style: jost600(10.sp, AppColors.blueColor),
-                  textAlign: TextAlign.center,
                 ),
-              ),
+                  SizedBox(height: 10.2.h),
+                  // Price Tag aligned at the bottom-center inside the Stack with reduced width
+                  Align(alignment: Alignment.center,
+                    child: Container(
+                      width: 120.w,  // Reduced width
+                      padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 16.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.free,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12.r), // Top-left corner radius
+                          topRight: Radius.circular(12.r), // Top-right corner radius
+                        ),
+                      ),
+                      child: Text(
+                        event["price"]!,
+                        style: jost600(10.sp, AppColors.blueColor),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+
+
+              ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        );
+
+
   }
 
 
@@ -233,7 +234,7 @@ class HomeScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Container(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(16),
         child: Row(
           children: [
             // Event Image Placeholder
