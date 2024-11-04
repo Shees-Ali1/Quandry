@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:quandry/Drawer/online_Support/online_support.dart';
+import 'package:quandry/auth/login.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
@@ -100,7 +101,9 @@ class MyDrawer extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: () async {},
+                    onTap: ()  {
+                      Get.offAll(LoginView()); // Clears the entire navigation stack
+                    },
                     child: Row(
                       children: [
                         Container(
