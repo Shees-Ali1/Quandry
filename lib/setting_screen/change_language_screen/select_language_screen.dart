@@ -21,10 +21,7 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
     {'name': 'English', 'flag': "assets/images/us_flag.jpg", 'code': 'en'},
     {'name': 'French', 'flag': "assets/images/france.jpg", 'code': 'fr'},
     {'name': 'Spanish', 'flag': "assets/images/spain.jpg", 'code': 'es'},
-    {'name': 'Denmark', 'flag': "assets/images/denmark.png", 'code': 'de'},
-    {'name': 'Denmark', 'flag': "assets/images/denmark.png", 'code': 'de'},
-    {'name': 'Denmark', 'flag': "assets/images/denmark.png", 'code': 'de'},
-    {'name': 'Denmark', 'flag': "assets/images/denmark.png", 'code': 'de'},
+    {'name': 'Danish', 'flag': "assets/images/denmark.png", 'code': 'da'},
   ];
 
   @override
@@ -39,7 +36,7 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
       ),
       backgroundColor: AppColors.backgroundColor,
       body: Padding(
-        padding:  EdgeInsets.symmetric(horizontal: 11.w),
+        padding: EdgeInsets.symmetric(horizontal: 11.w),
         child: Column(
           children: [
             SizedBox(height: 40.h),
@@ -50,65 +47,66 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
             SizedBox(height: 40.h),
             Container(
               height: 400.h,
-              child: Expanded(
-                child: ListView.builder(
-                  itemCount: languages.length,
-                  itemBuilder: (context, index) {
-                    final language = languages[index];
-                    final isSelected = selectedIndex == index;
+              child: ListView.builder(
+                itemCount: languages.length,
+                itemBuilder: (context, index) {
+                  final language = languages[index];
+                  final isSelected = selectedIndex == index;
 
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedIndex = index;
-                        });
-                        print('Selected Language: ${language['name']}');
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric( vertical: 4.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: isSelected ? AppColors.blueColor : Colors.transparent,
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedIndex = index;
+                      });
+                      print('Selected Language: ${language['name']}');
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isSelected ? AppColors.blueColor : Colors.transparent,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ListTile(
+                          leading: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ListTile(
-                            leading: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.asset(
-                                language['flag']!,
-                                width: 40,
-                                height: 30,
-                                fit: BoxFit.cover,
-                              ),
+                            child: Image.asset(
+                              language['flag']!,
+                              width: 40,
+                              height: 30,
+                              fit: BoxFit.cover,
                             ),
-                            title: Text(
-                              language['name']!,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: isSelected ? Colors.white : Colors.black87,
-                              ),
-                            ),
-                            trailing: isSelected
-                                ? const Icon(
-                              Icons.check_circle,
-                              color: AppColors.backgroundColor,
-                              size: 24,
-                            )
-                                : null,
                           ),
+                          title: Text(
+                            language['name']!,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: isSelected ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                          trailing: isSelected
+                              ? const Icon(
+                            Icons.check_circle,
+                            color: AppColors.backgroundColor,
+                            size: 24,
+                          )
+                              : null,
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ),
             SizedBox(height: 40.h),
-
-            CustomButton(text: "Select", color: AppColors.blueColor, onPressed: (){
-
-            }),
+            CustomButton(
+              text: "Select",
+              color: AppColors.blueColor,
+              onPressed: () {
+                // Handle button press
+              },
+            ),
           ],
         ),
       ),
