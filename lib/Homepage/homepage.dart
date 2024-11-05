@@ -27,6 +27,27 @@ class HomeScreen extends StatelessWidget {
       "date": "Oct 23-25, 2024",
       "credits": "10 CE Credits",
       "price": "Free - \$500/seat",
+    },{
+      "title": "California Art Festival 2024",
+      "location": "Dana Point, CA",
+      "date": "Oct 23-25 10PM",
+      "credits": "10 CE",
+      "price": "Free - \$500/seat",
+    },
+    {
+      "title": "Utah Fall Conference on Substance Use",
+      "location": "St. George, UT",
+      "date": "Oct 23-25, 2024",
+      "credits": "10 CE Credits",
+      "price": "Free - \$500/seat",
+    },
+
+    {
+      "title": "Utah Fall Conference on Substance Use",
+      "location": "St. George, UT",
+      "date": "Oct 23-25, 2024",
+      "credits": "10 CE Credits",
+      "price": "Free - \$500/seat",
     },
   ];
 
@@ -85,7 +106,7 @@ class HomeScreen extends StatelessWidget {
                           padding: EdgeInsets.only(bottom: 10.0), // Adjust the space between items
                           child: EventCard(
                             imageAsset: AppImages.event_card_image, // Use imageAsset instead of imageUrl
-                            title: 'Utah Fall Conference on Substance Use',
+                            title: 'Utah Fall Conference \non Substance Use',
                             date: 'Oct 23-25, 2024',
                             location: 'St. George, UT',
                             credits: '10 CE Credits',
@@ -121,7 +142,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 // Row for Image + Title
                 Padding(
-                  padding: EdgeInsets.only(left: 8.w,top: 6.01.h),
+                  padding: EdgeInsets.only(left: 12.w,top: 6.01.h,right: 12.w),
                   child: Row(
 
                     children: [
@@ -150,11 +171,10 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 6.h), // Spacing below title
 
                 // Row for Labels (Date/Time, Location, Credits)
                 Padding(
-                  padding: EdgeInsets.only(left: 8.w,right: 8.w),
+                  padding: EdgeInsets.only(left: 12.w,top: 6.01.h,right: 12.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

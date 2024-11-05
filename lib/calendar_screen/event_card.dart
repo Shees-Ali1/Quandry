@@ -8,7 +8,7 @@ import 'package:quandry/const/textstyle.dart';
 import 'package:get/get.dart';
 
 class EventCard extends StatelessWidget {
-  final String imageAsset;  // Change this to imageAsset
+  final String imageAsset; // Change this to imageAsset
   final String title;
   final String date;
   final String location;
@@ -17,7 +17,7 @@ class EventCard extends StatelessWidget {
 
   const EventCard({
     Key? key,
-    required this.imageAsset,  // Update constructor parameter
+    required this.imageAsset, // Update constructor parameter
     required this.title,
     required this.date,
     required this.location,
@@ -30,7 +30,7 @@ class EventCard extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: 162.h,
+          height: 200.h, // Increased height for better spacing
           decoration: BoxDecoration(
             color: AppColors.blueColor,
             borderRadius: BorderRadius.circular(12.0),
@@ -43,95 +43,99 @@ class EventCard extends StatelessWidget {
             ],
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+            padding: EdgeInsets.all(12.0.w), // Increased overall padding
             child: Row(
               children: [
                 /// Main Image on the Left
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(5.18.r),
+                  borderRadius: BorderRadius.circular(8.0.r), // Slightly larger radius
                   child: Container(
                     height: double.infinity, // Use responsive height
-                    width: 144.w,  // Use responsive width
+                    width: 150.w, // Adjusted width for image
                     child: Image.asset(
                       AppImages.event_card_image,
-                      fit: BoxFit.cover, // This will ensure the image covers the entire area
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                SizedBox(width: 10.w),
+                SizedBox(width: 12.w), // Increased spacing between image and text
                 /// Details Column
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       // Title and Bookmark Icon
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Event Title
-                          Expanded(
-                            child: Text(
-                              title,
-                              style: jost700(12.sp, AppColors.backgroundColor),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        title,
+                        style: jost700(12.sp, AppColors.backgroundColor), // Slightly larger font
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 5.h),
+                      SizedBox(height: 8.h), // Added spacing between title and other elements
+
                       /// Date and Location Row
                       Row(
                         children: [
-                          Icon(FontAwesomeIcons.calendar, size: 12.0, color: AppColors.backgroundColor),
-                          SizedBox(width: 5.w),
-                          Text(date,
-                            style: jost600(10.sp, AppColors.backgroundColor),
+                          Icon(FontAwesomeIcons.calendar, size: 14.0.sp, color: AppColors.backgroundColor),
+                          SizedBox(width: 6.w),
+                          Text(
+                            date,
+                            style: jost600(11.sp, AppColors.backgroundColor),
                           ),
                         ],
                       ),
-                      SizedBox(height: 5.h),
+                      SizedBox(height: 8.h),
                       Row(
                         children: [
-                          Icon(Icons.location_on, size: 12.0, color: AppColors.backgroundColor),
-                          SizedBox(width: 5.w),
-                          Text(location, style: jost600(10.sp, AppColors.backgroundColor),),
+                          Icon(Icons.location_on, size: 14.0, color: AppColors.backgroundColor),
+                          SizedBox(width: 6.w),
+                          Text(
+                            location,
+                            style: jost600(11.sp, AppColors.backgroundColor),
+                          ),
                         ],
                       ),
-                      SizedBox(height: 5.h),
+                      SizedBox(height: 8.h),
                       Row(
                         children: [
                           FaIcon(
-                            FontAwesomeIcons.bookOpen, // Use the Font Awesome book icon
-                            size: 10.0,
+                            FontAwesomeIcons.bookOpen,
+                            size: 12.0,
                             color: AppColors.backgroundColor,
                           ),
-                          SizedBox(width: 5.w),
-                          Text(credits, style: jost600(10.sp, AppColors.backgroundColor),),
+                          SizedBox(width: 6.w),
+                          Text(
+                            credits,
+                            style: jost600(11.sp, AppColors.backgroundColor),
+                          ),
                         ],
                       ),
-                      SizedBox(height: 5.h),
+                      SizedBox(height: 8.h),
                       Row(
                         children: [
-                          Icon(FontAwesomeIcons.tag, size: 12.0, color: AppColors.backgroundColor),
-                          SizedBox(width: 5.w),
-                          Text(priceRange, style: jost600(10.sp, AppColors.backgroundColor),),
+                          Icon(FontAwesomeIcons.tag, size: 14.0, color: AppColors.backgroundColor),
+                          SizedBox(width: 6.w),
+                          Text(
+                            priceRange,
+                            style: jost600(11.sp, AppColors.backgroundColor),
+                          ),
                         ],
                       ),
-                      SizedBox(height: 5.h),
+                      SizedBox(height: 10.h),
+
                       /// View Button
                       SizedBox(
-                        width: 98.w,
-                        height: 24.h,
+                        width: 100.w,
+                        height: 28.h,
                         child: ElevatedButton(
                           onPressed: () {
-                          Get.to(()=> EventDetail());
+                            Get.to(() => EventDetail());
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.fillcolor,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(9.r),
+                              borderRadius: BorderRadius.circular(10.r),
                             ),
                           ),
                           child: Text(
@@ -152,27 +156,31 @@ class EventCard extends StatelessWidget {
             ),
           ),
         ),
+
         /// Bookmark Icon
         Positioned(
-          right: 0.w, // Adjusted to ensure it stays within the card
-             // Position it within the card's bounds
+          right: 0.w,
+          top: 0.h,
           child: GestureDetector(
             onTap: () {
-              // Add your bookmark toggle logic here
-              print('Bookmark tapped!'); // Example action
+              print('Bookmark tapped!');
             },
             child: Container(
-              height: 25.h,
-              width: 26.w,
+              height: 28.h,
+              width: 28.w,
               decoration: BoxDecoration(
                 color: AppColors.eventcard_label,
                 borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(5.87.r),
-                  bottomLeft: Radius.circular(5.87.r),
+                  topRight: Radius.circular(8.r),
+                  bottomLeft: Radius.circular(8.r),
                 ),
               ),
               child: Center(
-                child: Image.asset(AppImages.Bookmark, height: 17.h, width: 17.w,),
+                child: Image.asset(
+                  AppImages.Bookmark,
+                  height: 18.h,
+                  width: 18.w,
+                ),
               ),
             ),
           ),
