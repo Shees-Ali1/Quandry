@@ -153,60 +153,106 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 30.h),
-                /// Online Support
+                SizedBox(height: 14.h),
+                /// online Settings
                 GestureDetector(
-                  onTap: (){
-
+                  onTap: () {
                     Get.to(TechnicalSupportChatScreen());
                   },
-                  child: Row(
-                    children: [
-                      Image.asset(AppImages.online_support_icon,height: 21.h,width: 15.w,color: AppColors.blueColor,),
-                      SizedBox(width: 7.2.w),
-                      Text(
-                        "Online Support",
-                        style: jost600(16.sp, AppColors.blueColor),
+                  child: Container(
+                    height: 61.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(13.31.r),
+                      color: AppColors.fillcolor,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Online Support",
+                            style: jost600(16.sp, AppColors.blueColor),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: AppColors.blueColor, // Customize the icon color if needed
+                            size: 16.sp, // Customize the icon size
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-                SizedBox(height: 30.h),
-                /// Terms and conditions
-                GestureDetector(
-                  onTap: (){
+                SizedBox(height: 14.h),
 
+                /// privacy Settings
+                GestureDetector(
+                  onTap: () {
                     Get.to(TermsAndConditions());
                   },
-                  child: Row(
-                    children: [
-                      Image.asset(AppImages.term_condition_icon,height: 21.h,width: 15.w,color: AppColors.blueColor,),
-                      SizedBox(width: 7.2.w),
-                      Text(
-                        "Terms and conditions",
-                        style: jost600(16.sp, AppColors.blueColor),
+                  child: Container(
+                    height: 61.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(13.31.r),
+                      color: AppColors.fillcolor,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Terms and conditions",
+                            style: jost600(16.sp, AppColors.blueColor),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: AppColors.blueColor, // Customize the icon color if needed
+                            size: 16.sp, // Customize the icon size
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-                SizedBox(height: 30.h),
-                /// Privacy Policy
+                SizedBox(height: 14.h),
+                /// Notifications Settings
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Get.to(PrivacyPolicy());
                   },
-                  child: Row(
-                    children: [
-                      Image.asset(AppImages.privacy_policy_icon,height: 18.h,width: 15.w,color: AppColors.blueColor,),
-                      SizedBox(width: 7.2.w),
-                      Text(
-                        "Privacy Policy",
-                        style: jost600(16.sp, AppColors.blueColor),
+                  child: Container(
+                    height: 61.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(13.31.r),
+                      color: AppColors.fillcolor,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Privacy Policy",
+                            style: jost600(16.sp, AppColors.blueColor),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: AppColors.blueColor, // Customize the icon color if needed
+                            size: 16.sp, // Customize the icon size
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-                SizedBox(height: 40.h),
+
+                SizedBox(height: 30.h),
+
                 /// Sign Out Button
                 GestureDetector(
                   onTap: () {

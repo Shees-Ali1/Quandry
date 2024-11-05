@@ -36,7 +36,7 @@ class AppbarSmall extends StatelessWidget implements PreferredSizeWidget {
         padding: EdgeInsets.symmetric(horizontal: 22.w),
         child: Column(
           children: [
-            SizedBox(height: 48.86.h), // Top padding
+            SizedBox(height: 48.86.h), // Top paddingP
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -49,6 +49,7 @@ class AppbarSmall extends StatelessWidget implements PreferredSizeWidget {
                         height: iconHeight!.h, // Use custom height
                         width: iconWidth!.w, // Use custom width
                         child: Image.asset(iconImage!),
+
                       ),
                     ),
                   ),
