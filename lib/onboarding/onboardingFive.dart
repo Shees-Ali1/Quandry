@@ -62,18 +62,20 @@ class OnBoardingFive extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(AppImages.onboardingellipse),
+
+                      image: AssetImage(AppImages.onboardingellipse,),
                       fit: BoxFit.fill)),
               child: Column(
                 children: [
                   SizedBox(
-                    height: 103.h,
+                    height: 50.h,
                   ),
                   SizedBox(
-                      height: 256.h,
+                      height: 376.h,
                       width: 274.w,
                       child: Image.asset(
-                        AppImages.onboard5,
+                        'assets/images/premium1.png',
+                        // AppImages.onboard5,
                         fit: BoxFit.contain,
                       )),
                   SizedBox(

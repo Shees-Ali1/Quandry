@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/images.dart';
+import 'package:get/get.dart';
+
 import 'package:quandry/const/textstyle.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:quandry/suggestions.dart';
 
 class EventDetail extends StatelessWidget {
   const EventDetail({super.key});
@@ -250,6 +253,22 @@ class EventDetail extends StatelessWidget {
                   SizedBox(
                     height: 14.h,
                   ),
+
+                  GestureDetector(
+                    onTap: (){
+                      Get.to(SuggestEventForm());
+                    },
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Container(
+                        height: 40.h,
+                        width: 150.w,
+                        decoration: BoxDecoration(color: AppColors.blueColor,borderRadius: BorderRadius.circular(10.r)),
+                        child: Center(child: Text('Suggest Edits',style: montserrat600(12.sp, AppColors.whiteColor),)),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8.h,),
                   Container(
                       alignment: AlignmentDirectional.topStart,
                       child: Text(
@@ -512,6 +531,7 @@ class EventDetail extends StatelessWidget {
                           decoration: BoxDecoration(color: AppColors.blueColor,borderRadius: BorderRadius.circular(10.r)),
                           child: Center(child: Text('Rate',style: montserrat600(12.sp, AppColors.whiteColor),)),
                         ),
+
                         SizedBox(height: 11.h,),
                       ],
                     ),

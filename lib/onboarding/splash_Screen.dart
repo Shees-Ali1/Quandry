@@ -22,12 +22,11 @@ class _SplashScreenState extends State<SplashScreen> {
     return  Scaffold(
       backgroundColor: AppColors.blueColor,
       body: Column(
-
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 267.h,),
-          Center(child: Image.asset(AppImages.quanderyLogo,height: 133.h,width: 133.w,)),
-          SizedBox(height: 38.h,),
-          Image.asset(AppImages.quanderyText,height: 37.h,width:296.w,)
+    //      SizedBox(height: 267.h,),
+          Center(child: Image.asset(AppImages.quanderyText,height: 353.h,width: 353.w,)),
         ],
       ),
     );
