@@ -20,6 +20,8 @@ class TechnicalSupportChatScreen extends StatelessWidget {
         onIconTap: () {
           Get.back();
         },
+        iconHeight: 15.h, // Custom height
+        iconWidth: 20.w,
       ),
       body:
       /// Chat Field

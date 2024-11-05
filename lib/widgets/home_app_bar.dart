@@ -26,31 +26,6 @@ class CustomAppBarH extends StatelessWidget implements PreferredSizeWidget {
             SizedBox(height: 52.h),
             Row(
               children: [
-                // Drawer Button
-                GestureDetector(
-                  onTap: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                  child: Container(
-                    height: 36.28.h,
-                    width: 36.28.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.blueColor,
-                      border: Border.all(color: AppColors.backgroundColor),
-                    ),
-                    child: Center(
-                      child: Container(
-                        height: 12.03.h,
-                        width: 21.43.w,
-                        child: Image.asset(
-                          AppImages.drawer_icon,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10.h),
                 // Search Bar
                 Expanded(
                   child: Container(

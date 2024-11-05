@@ -4,9 +4,12 @@ import 'package:quandry/calendar_screen/event_card.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
+import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
 import 'package:quandry/widgets/appbar.dart';
 import 'package:quandry/widgets/custom_calendar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart'; // Ensure GetX is imported
+
 
 class CalendarScreenMain extends StatefulWidget {
   const CalendarScreenMain({super.key});
@@ -25,10 +28,10 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
         FocusScope.of(context).unfocus(); // Dismiss the keyboard
       },
       child: Scaffold(
-        key: _scaffoldKey, // Assign the scaffold key
+        // Assign the scaffold key
 
         appBar: CustomAppBarL(onDrawerTap: () {
-          _scaffoldKey.currentState?.openDrawer(); // Open drawer on icon tap
+          Get.to(NotificationScreenMain());
 
         },),
         backgroundColor: AppColors.backgroundColor,

@@ -21,6 +21,8 @@ class NotificationScreenMain extends StatelessWidget {
         onIconTap: () {
           Get.back();
         },
+        iconHeight: 15.h, // Custom height
+        iconWidth: 20.w,
       ),
 
       backgroundColor: AppColors.backgroundColor,

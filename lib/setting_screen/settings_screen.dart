@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart'; // Ensure GetX is imported
 import 'package:quandry/Drawer/drawer.dart';
+import 'package:quandry/Drawer/online_Support/online_support.dart';
+import 'package:quandry/Drawer/privacy_policy_screen/privacy_policy.dart';
+import 'package:quandry/Drawer/terms_and_condition/terms_and_condition.dart';
+import 'package:quandry/auth/login.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
@@ -20,7 +24,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,22 +33,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
         FocusScope.of(context).unfocus(); // Close the keyboard when tapping outside
       },
       child: Scaffold(
-        key: _scaffoldKey, // Assign the scaffold key
+
         appBar: AppbarSmall(
           title: "Settings", // Set the title for the app bar
-          iconImage: AppImages.drawer_icon, // Set your custom back icon
+          iconImage: AppImages.notification_icon_small, // Set your custom back icon
           onIconTap: () {
-            _scaffoldKey.currentState?.openDrawer(); // Open drawer on icon tap
+            Get.to(NotificationScreenMain());// Open drawer on icon tap
           },
+          iconHeight: 25.h, // Custom height
+          iconWidth: 30.w, // Custom width
         ),
         backgroundColor: AppColors.backgroundColor,
-        drawer: MyDrawer(), // Provide navigateToPage here
+
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 23.w),
             child: Column(
               children: [
-                SizedBox(height: 44.h),
+                SizedBox(height: 30.h),
                 /// Profile Image
                 Align(
                   alignment: Alignment.center,
@@ -116,38 +122,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 SizedBox(height: 14.h),
-                /// Notifications Button
-                GestureDetector(
-                  onTap: () {
-                    Get.to(NotificationScreenMain());
-                  },
-                  child: Container(
-                    height: 61.h,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(13.31.r),
-                      color: AppColors.fillcolor,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 18.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Notifications",
-                            style: jost600(16.sp, AppColors.blueColor),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            color: AppColors.blueColor, // Customize the icon color if needed
-                            size: 16.sp, // Customize the icon size
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 14.h),
                 /// Notifications Settings
                 GestureDetector(
                   onTap: () {
@@ -179,38 +153,82 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 14.h),
-                /// Change Language Button
+                SizedBox(height: 30.h),
+                /// Online Support
+                GestureDetector(
+                  onTap: (){
+
+                    Get.to(TechnicalSupportChatScreen());
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset(AppImages.online_support_icon,height: 21.h,width: 15.w,color: AppColors.blueColor,),
+                      SizedBox(width: 7.2.w),
+                      Text(
+                        "Online Support",
+                        style: jost600(16.sp, AppColors.blueColor),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 30.h),
+                /// Terms and conditions
+                GestureDetector(
+                  onTap: (){
+
+                    Get.to(TermsAndConditions());
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset(AppImages.term_condition_icon,height: 21.h,width: 15.w,color: AppColors.blueColor,),
+                      SizedBox(width: 7.2.w),
+                      Text(
+                        "Terms and conditions",
+                        style: jost600(16.sp, AppColors.blueColor),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 30.h),
+                /// Privacy Policy
+                GestureDetector(
+                  onTap: (){
+                    Get.to(PrivacyPolicy());
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset(AppImages.privacy_policy_icon,height: 18.h,width: 15.w,color: AppColors.blueColor,),
+                      SizedBox(width: 7.2.w),
+                      Text(
+                        "Privacy Policy",
+                        style: jost600(16.sp, AppColors.blueColor),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 40.h),
+                /// Sign Out Button
                 GestureDetector(
                   onTap: () {
-                    Get.to(SelectLanguageScreen());
+                    Get.offAll(LoginView());
                   },
                   child: Container(
-                    height: 61.h,
+                    height: 51.h,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(13.31.r),
-                      color: AppColors.fillcolor,
+                      color: AppColors.blueColor,
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 18.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Change Language",
-                            style: jost600(16.sp, AppColors.blueColor),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            color: AppColors.blueColor, // Customize the icon color if needed
-                            size: 16.sp, // Customize the icon size
-                          ),
-                        ],
+                    child: Center(
+                      child: Text(
+                        "Sign Out",
+                        style: jost500(16.sp, AppColors.backgroundColor),
                       ),
                     ),
                   ),
                 ),
+                SizedBox(height: 140.h),
+
               ],
             ),
           ),

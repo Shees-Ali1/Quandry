@@ -20,6 +20,8 @@ class NotificationsDetail extends StatelessWidget {
         onIconTap: () {
           Get.back(); // Use GetX to navigate back
         },
+        iconHeight: 15.h, // Custom height
+        iconWidth: 20.w,
       ),
       backgroundColor: AppColors.backgroundColor,
       body: Padding(

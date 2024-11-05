@@ -8,12 +8,16 @@ class AppbarSmall extends StatelessWidget implements PreferredSizeWidget {
   final String? title; // Optional title
   final String? iconImage; // Optional icon image asset path
   final VoidCallback? onIconTap; // Optional tap callback for the icon
+  final double? iconHeight; // Custom height for icon
+  final double? iconWidth; // Custom width for icon
 
   const AppbarSmall({
     Key? key,
     this.title,
     this.iconImage,
     this.onIconTap,
+    this.iconHeight = 30.0, // Default height for icon
+    this.iconWidth = 30.0, // Default width for icon
   }) : super(key: key);
 
   @override
@@ -40,20 +44,11 @@ class AppbarSmall extends StatelessWidget implements PreferredSizeWidget {
                 if (iconImage != null) // Only display icon if iconImage is provided
                   GestureDetector(
                     onTap: onIconTap ?? () {}, // Use provided onTap or default to empty function
-                    child: Container(
-                      height: 36.28.h,
-                      width: 36.28.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.blueColor,
-                        border: Border.all(color: AppColors.backgroundColor),
-                      ),
-                      child: Center(
-                        child: Container(
-                          height: 12.03.h,
-                          width: 21.43.w,
-                          child: Image.asset(iconImage!),
-                        ),
+                    child: Center(
+                      child: Container(
+                        height: iconHeight!.h, // Use custom height
+                        width: iconWidth!.w, // Use custom width
+                        child: Image.asset(iconImage!),
                       ),
                     ),
                   ),

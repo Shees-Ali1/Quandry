@@ -30,7 +30,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   void dispose() {
     // Dispose the controllers when the widget is disposed to free resources
     firstname.dispose();
-
+    super.dispose(); // Call the superclass dispose method
   }
 
   @override
@@ -47,6 +47,8 @@ class _ChangePasswordState extends State<ChangePassword> {
           onIconTap: () {
             Get.back();
           },
+          iconHeight: 15.h, // Custom height
+          iconWidth: 20.w,
         ),
         backgroundColor: AppColors.backgroundColor,
         body: SingleChildScrollView(
