@@ -43,12 +43,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       child: Scaffold(
         appBar: AppbarSmall(
           title: "Change Password", // Change title as needed
-          iconImage: AppImages.back_icon, // Change icon as needed
-          onIconTap: () {
-            Get.back();
-          },
-          iconHeight: 15.h, // Custom height
-          iconWidth: 20.w,
+        
         ),
         backgroundColor: AppColors.backgroundColor,
         body: SingleChildScrollView(

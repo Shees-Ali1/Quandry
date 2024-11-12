@@ -97,13 +97,8 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
       },
       child: Scaffold(
         appBar: AppbarSmall(
-        // title: "Settings", // Change title as needed
-          iconImage: AppImages.back_icon, // Change icon as needed
-          onIconTap: () {
-            Get.back();
-          },
-          iconHeight: 15.h, // Custom height
-          iconWidth: 20.w,
+         title: "Settings", // Change title as needed
+
         ),
         backgroundColor: AppColors.backgroundColor,
         body: SingleChildScrollView(

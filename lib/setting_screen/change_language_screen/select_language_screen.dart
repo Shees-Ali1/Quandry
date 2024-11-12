@@ -29,10 +29,7 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
     return Scaffold(
       appBar: AppbarSmall(
         title: "Languages",
-        iconImage: AppImages.back_icon,
-        onIconTap: () {
-          Navigator.pop(context);
-        },
+
       ),
       backgroundColor: AppColors.backgroundColor,
       body: Padding(

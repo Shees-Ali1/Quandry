@@ -16,12 +16,7 @@ class TechnicalSupportChatScreen extends StatelessWidget {
       backgroundColor: AppColors.backgroundColor,
       appBar: AppbarSmall(
         title: "Online Support",
-        iconImage: AppImages.back_icon, // Set your custom back icon
-        onIconTap: () {
-          Get.back();
-        },
-        iconHeight: 15.h, // Custom height
-        iconWidth: 20.w,
+
       ),
       body:
       /// Chat Field

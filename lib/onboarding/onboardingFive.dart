@@ -72,9 +72,9 @@ class OnBoardingFive extends StatelessWidget {
                   ),
                   SizedBox(
                       height: 376.h,
-                      width: 274.w,
+                      width: 254.w,
                       child: Image.asset(
-                        'assets/images/premium1.png',
+                        'assets/images/Premium.png',
                         // AppImages.onboard5,
                         fit: BoxFit.contain,
                       )),

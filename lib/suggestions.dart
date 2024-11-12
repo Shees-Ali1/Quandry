@@ -28,62 +28,63 @@ class SuggestEventForm extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
-      appBar: PreferredSize(
-        preferredSize:
-            Size.fromHeight(60.h), // Set the height of the custom app bar
-        child: AppBar(
-          automaticallyImplyLeading: false, // Remove the default back arrow
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              color: AppColors.blueColor,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(15.r),
-                bottomRight: Radius.circular(15.r),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.h),
+          child: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                color: AppColors.blueColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(15.r),
+                  bottomRight: Radius.circular(15.r),
+                ),
               ),
-            ),
-            child: Row(
-
-              children: [
-                SizedBox(width: 20.w,),
-                Padding(
-                  padding: EdgeInsets.only(top: 20.h),
-                  child: GestureDetector(
-                    onTap: (){
-                     Navigator.pop(context);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 0.5.w), // White border with desired width
-                        borderRadius: BorderRadius.circular(20.r), // Optional: rounded corners for the border
-                      ),
-                      child: Image.asset(
-                        AppImages.back_icon,
-                        height: 12.h,
-                        width: 13.w,
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(width: 60.w,),
-                Center(
-                  child: Padding(
+              child: Row(
+                children: [
+                  SizedBox(width: 20.w),
+                  Padding(
                     padding: EdgeInsets.only(top: 20.h),
-                    child: Text(
-                      'Event Suggestions',
-                      style: jost700(16.sp, Colors.white), // Custom font style
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white, width: 0.5.w),
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Image.asset(
+                          AppImages.back_icon,
+                          height: 12.h,
+                          width: 13.w,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  Spacer(), // Spacer to push the title to the center
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 20.h),
+                      child: Text(
+                        'Event Suggestions',
+                        style: jost700(16.sp, Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  Spacer(), // Spacer to balance the right side
+                  SizedBox(width: 20.w), // Matching left padding for symmetry
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      body: Padding(
+
+        body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,

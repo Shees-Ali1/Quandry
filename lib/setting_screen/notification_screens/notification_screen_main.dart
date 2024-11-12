@@ -17,12 +17,8 @@ class NotificationScreenMain extends StatelessWidget {
     return  Scaffold(
       appBar: AppbarSmall(
         title: "Notification",
-        iconImage: AppImages.back_icon,
-        onIconTap: () {
-          Get.back();
-        },
-        iconHeight: 15.h, // Custom height
-        iconWidth: 20.w,
+
+
       ),
 
       backgroundColor: AppColors.backgroundColor,

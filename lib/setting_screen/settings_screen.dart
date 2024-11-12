@@ -34,15 +34,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
       },
       child: Scaffold(
 
-        appBar: AppbarSmall(
-          title: "Settings", // Set the title for the app bar
-          iconImage: AppImages.notification_icon_small, // Set your custom back icon
-          onIconTap: () {
-            Get.to(NotificationScreenMain());// Open drawer on icon tap
-          },
-          iconHeight: 25.h, // Custom height
-          iconWidth: 30.w, // Custom width
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.h), // Set the height of the custom app bar
+          child: AppBar(
+            automaticallyImplyLeading: false, // Remove the default back arrow
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                color: AppColors.blueColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(15.r),
+                  bottomRight: Radius.circular(15.r),
+                ),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(width: 20.w),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.h),
+                    child: GestureDetector(
+                      onTap: () {
+                       Get.to(NotificationScreenMain());
+                      },
+                      child: Image.asset(
+                      'assets/images/notification_icon_small.png',
+                         height: 28.h,
+                         width: 28.w,
+                      ),
+                    ),
+                  ),
+                  // Spacer to push the title to the center
+                  Expanded(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 20.h),
+                        child: Text(
+                          'Settings',
+                          style: jost700(16.sp, Colors.white), // Custom font style
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 63.w), // Adjust width to balance layout symmetry
+                ],
+              ),
+            ),
+          ),
         ),
+
         backgroundColor: AppColors.backgroundColor,
 
         body: SingleChildScrollView(
@@ -59,9 +100,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: SizedBox(
                       height: 126.h,
                       width: 126.w,
-                      child: CircleAvatar(
+                      child: const CircleAvatar(
                         backgroundImage: AssetImage(AppImages.profile_pic),
-                        radius: 50, // Optional: customize radius if needed
+                        radius: 50,
                       ),
                     ),
                   ),

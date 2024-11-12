@@ -12,12 +12,7 @@ class TermsAndConditions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppbarSmall(
-        iconImage: AppImages.back_icon, // Set your custom back icon
-        onIconTap: () {
-          Get.back();
-        },
-        iconHeight: 15.h, // Custom height
-        iconWidth: 20.w,
+      title: '',
       ),
       backgroundColor: AppColors.blueColor,
       body: SingleChildScrollView(

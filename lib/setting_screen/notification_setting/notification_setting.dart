@@ -20,12 +20,7 @@ class NotificationSetting extends StatelessWidget {
     return  Scaffold(
       appBar: AppbarSmall(
         title: "Notifications", // Set the title for the app bar
-        iconImage: AppImages.back_icon, // Set your custom back icon
-        onIconTap: () {
-          Get.back(); // Use GetX to navigate back
-        },
-        iconHeight: 15.h, // Custom height
-        iconWidth: 20.w,
+
       ),
       backgroundColor: AppColors.backgroundColor,
       body: Padding(
