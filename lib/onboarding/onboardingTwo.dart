@@ -30,7 +30,7 @@ class OnBoardingTwo extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Search, Filter, and Save',
+                    text: 'Discover More CE Opportunities',
                     style: GoogleFonts.jost(
                       fontSize: 24.sp,
                       color: AppColors.blueColor,
@@ -50,7 +50,7 @@ class OnBoardingTwo extends StatelessWidget {
             padding:  EdgeInsets.symmetric(horizontal: 5.w),
 
             child: Text(
-                'Easily search by CE credits, location, topics, and more. Bookmark your favorite events.',
+                'Search & filter conferences, courses, and trainings by available credits, price range, location, topics of interest and more.',
               textAlign: TextAlign.center,
               style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
               ),

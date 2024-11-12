@@ -30,7 +30,7 @@ class OnBoardingFour extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Suggest Events and Stay Informed',
+                    text: 'Community Contributions, Reviewed and Verified',
                     style: GoogleFonts.jost(
                       fontSize: 24.sp,
                       color: AppColors.blueColor,
@@ -50,7 +50,7 @@ class OnBoardingFour extends StatelessWidget {
             padding:  EdgeInsets.symmetric(horizontal: 5.w),
 
             child: Text(
-                "Know about the latest events or suggest new ones to enhance our event database.",
+                "Help the community stay informed by suggesting new events, or suggesting corrections, reviewed by our staff and your fellow professionals.",
               textAlign: TextAlign.center,
               style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
             )),

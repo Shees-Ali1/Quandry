@@ -11,6 +11,7 @@ import 'onboardThree.dart';
 import 'onboardingFive.dart';
 import 'onboardingFour.dart';
 import 'onboardingOne.dart';
+import 'onboardingSix.dart';
 import 'onboardingTwo.dart';
 
 class MainOnBoardingView extends StatefulWidget {
@@ -26,19 +27,19 @@ class _MainOnBoardingViewState extends State<MainOnBoardingView> {
 
   void _moveToNextPage() {
     // Check if there is a next page
-    if (currentpage < 4) {
+    if (currentpage < 5) {
       pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
       );
-    } else if (currentpage == 4) {
+    } else if (currentpage == 5) {
       Get.offAll(LoginView());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    double progress = (currentpage + 1) / 5;
+    double progress = (currentpage + 1) / 6;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -59,6 +60,7 @@ class _MainOnBoardingViewState extends State<MainOnBoardingView> {
               OnBoardingThree(),
               OnBoardingFour(),
               OnBoardingFive(),
+              OnBoardingSix(),
             ],
           ),
 
@@ -80,7 +82,7 @@ class _MainOnBoardingViewState extends State<MainOnBoardingView> {
                       dotColor: Colors.white,
                     ),
                     controller: pageController,
-                    count: 5,
+                    count: 6,
                   ),
 
                   // Arrow button with circular progress

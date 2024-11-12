@@ -29,7 +29,7 @@ class OnBoardingThree extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Track Your CE Journey',
+                    text: 'Save Events & Track Your Progress',
                     style: GoogleFonts.jost(
                       fontSize: 24.sp,
                       color: AppColors.blueColor,
@@ -48,7 +48,7 @@ class OnBoardingThree extends StatelessWidget {
             padding:  EdgeInsets.symmetric(horizontal: 5.w),
 
             child: Text(
-                'Keep a record of your attended, upcoming, and favorite events all in one place.',
+                'Bookmark your favorite events and keep track of your attended, upcoming, and favorite events—all in one convenient place.',
               textAlign: TextAlign.center,
               style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
                ),

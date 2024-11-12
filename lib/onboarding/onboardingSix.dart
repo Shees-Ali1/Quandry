@@ -1,16 +1,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quandry/const/colors.dart';
-import 'package:quandry/const/textstyle.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../const/images.dart';
+import '../const/textstyle.dart';
 
-class OnBoardingOne extends StatelessWidget {
-  const OnBoardingOne({super.key});
+class OnBoardingSix extends StatelessWidget {
+  const OnBoardingSix({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,77 +18,74 @@ class OnBoardingOne extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Column(
-
         children: [
           SizedBox(
             height: 80.h,
           ),
-          /// Text The best Medical Device Library in the world.
+          ///  Incredible Keyword Search Engine.
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w),
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Welcome to CE Pathfinder, by Qwandery',
+                    text: 'Community Guidelines',
                     style: GoogleFonts.jost(
                       fontSize: 24.sp,
                       color: AppColors.blueColor,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-
                 ],
               ),
             ),
           ),
           SizedBox(
-            height: 26.81.h,
+            height: 42.h,
           ),
+          /// Long Text
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w),
+            padding:  EdgeInsets.symmetric(horizontal: 5.w),
+
             child: Text(
-              'As a mental health professional, find your way to the Continuing Education credits you need to meet requirements and advance your career.',
+              "By using Qwandery, you're agreeing to contribute respectfully and accurately, and to avoid submitting false or harmful content.",
               textAlign: TextAlign.center,
               style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
-
-            )
-
-          ),
+            ),),
           SizedBox(
-            height: 30.19.h,
+            height: 45.h,
           ),
+          // Background Blue Circle Image & Center Image
           Expanded(
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                image: DecorationImage(
+                  image: DecorationImage(
 
-                  image: AssetImage(AppImages.onboardingellipse,),
-                  fit: BoxFit.fill,
-                ),
-              ),
+                      image: AssetImage(AppImages.onboardingellipse,),
+                      fit: BoxFit.fill)),
               child: Column(
                 children: [
                   SizedBox(
-                    height:120.h,
+                    height: 50.h,
                   ),
                   SizedBox(
-                    height: 256.h,
-                    width: 249.w,
-                    child: Image.asset(
-                      AppImages.onboard1,
-                      fit: BoxFit.contain,
-                    ),
+                      height: 376.h,
+                      width: 274.w,
+                      child: Image.asset(
+                        'assets/images/premium1.png',
+                        // AppImages.onboard5,
+                        fit: BoxFit.contain,
+                      )),
+                  SizedBox(
+                    height: 33.h,
                   ),
-                  // SizedBox(
-                  //   height: 60.h,
-                  // ),
+
                 ],
               ),
             ),
-          ),
+          )
         ],
       ),
     );

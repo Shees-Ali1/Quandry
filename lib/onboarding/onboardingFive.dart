@@ -30,7 +30,7 @@ class OnBoardingFive extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Go Ad-Free with Premium',
+                    text: 'Join our Pro Network to Eliminate Ads',
                     style: GoogleFonts.jost(
                       fontSize: 24.sp,
                       color: AppColors.blueColor,
@@ -49,7 +49,7 @@ class OnBoardingFive extends StatelessWidget {
             padding:  EdgeInsets.symmetric(horizontal: 5.w),
 
             child: Text(
-                "Upgrade to remove ads and enjoy a seamless experience for a small yearly fee.",
+                "For a small annual fee, upgrade to enjoy an ad-free experience, and connect with other professionals.",
               textAlign: TextAlign.center,
               style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
           ),),
