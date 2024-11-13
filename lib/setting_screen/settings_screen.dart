@@ -15,6 +15,7 @@ import 'package:quandry/setting_screen/change_language_screen/select_language_sc
 import 'package:quandry/setting_screen/change_password/change_password.dart';
 import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
 import 'package:quandry/setting_screen/notification_setting/notification_setting.dart';
+import 'package:quandry/subscription_screen.dart';
 import 'package:quandry/widgets/appbar_small.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -151,37 +152,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
                 SizedBox(height: 22.h),
-                // GestureDetector(
-                //   onTap: () {
-                //     Get.to(UserProfilePage());
-                //   },
-                //   child: Container(
-                //     height: 61.h,
-                //     width: double.infinity,
-                //     decoration: BoxDecoration(
-                //       borderRadius: BorderRadius.circular(13.31.r),
-                //       color: AppColors.fillcolor,
-                //     ),
-                //     child: Padding(
-                //       padding: EdgeInsets.symmetric(horizontal: 18.w),
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //           Text(
-                //             "My Profile",
-                //             style: jost600(16.sp, AppColors.blueColor),
-                //           ),
-                //           Icon(
-                //             Icons.arrow_forward_ios,
-                //             color: AppColors.blueColor, // Customize the icon color if needed
-                //             size: 16.sp, // Customize the icon size
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                SizedBox(height: 14.h),
+
                 /// Change Password Button
                 GestureDetector(
                   onTap: () {
@@ -342,7 +313,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
-
+                SizedBox(height: 14.h),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(SubscriptionScreen());
+                  },
+                  child: Container(
+                    height: 61.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(13.31.r),
+                      color: AppColors.fillcolor,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Buy Premium Membership",
+                            style: jost600(16.sp, AppColors.blueColor),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: AppColors.blueColor, // Customize the icon color if needed
+                            size: 16.sp, // Customize the icon size
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 14.h),
                 SizedBox(height: 30.h),
 
                 /// Sign Out Button

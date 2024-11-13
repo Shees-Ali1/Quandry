@@ -10,6 +10,7 @@ import 'package:quandry/onboarding/main_onbaording.dart';
 import 'package:quandry/onboarding/splash_Screen.dart';
 import 'package:quandry/setting_screen/change_language_screen/select_language_screen.dart';
 import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
+import 'package:quandry/subscription_screen.dart';
 import 'package:quandry/suggestions.dart';
 
 void main() {

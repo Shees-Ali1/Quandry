@@ -34,7 +34,7 @@ class _CustomAppBarHState extends State<CustomAppBarH> {
   }
 
   void _onSearchChanged() {
-    setState(() {}); // Update UI when search text changes
+    setState(() {});
   }
 
   @override
@@ -138,7 +138,6 @@ class _CustomAppBarHState extends State<CustomAppBarH> {
               ],
             ),
             SizedBox(height: 10.h),
-            // Display static user search result when search text is not empty
             if (_searchController.text.isNotEmpty)
               _buildStaticUserSearchResult(context),
           ],
@@ -147,12 +146,12 @@ class _CustomAppBarHState extends State<CustomAppBarH> {
     );
   }
 
-  // Helper function to display the static user search result
+
   Widget _buildStaticUserSearchResult(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to the User Profile Page when tapped
-        Get.to(UserProfilePage()); // Replace with your profile page
+
+        Get.to(UserProfilePage());
       },
       child: Container(
         height: 60.h,

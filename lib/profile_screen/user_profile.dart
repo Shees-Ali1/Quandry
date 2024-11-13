@@ -122,9 +122,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                             textAlign: TextAlign.start,
                           ),
                         ),
-                        SizedBox(width: 15.w), // Space between button and bio
+            //      SizedBox(width: 2.w),
+                        Image.asset('assets/images/verified.png',height: 28.h,width: 28.w,),
+                        SizedBox(width: 5.w), // Space between button and bio
                         SizedBox(
-                          width: 200.w,
+                          width: 170.w,
                           child: ElevatedButton(
 
                             onPressed: toggleFollow,
@@ -145,9 +147,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
                       ],
                     ),
-
-
-                    SizedBox(height: 0.0),
                     Text(
                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod ",
                       style: TextStyle(fontSize: 14.sp, color: Colors.black87),
