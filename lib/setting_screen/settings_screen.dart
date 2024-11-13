@@ -10,6 +10,7 @@ import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:quandry/profile_screen/profile_screen_main.dart';
+import 'package:quandry/profile_screen/user_profile.dart';
 import 'package:quandry/setting_screen/change_language_screen/select_language_screen.dart';
 import 'package:quandry/setting_screen/change_password/change_password.dart';
 import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
@@ -24,7 +25,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-
+  bool isProfilePrivate = true;
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +132,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 SizedBox(height: 22.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Profile: ${isProfilePrivate ? "Private" : "Active"}',
+                      style: jost600(16.sp, AppColors.blueColor),
+                    ),
+                    Switch(
+                      value: isProfilePrivate,
+                      activeColor: AppColors.blueColor,
+                      onChanged: (value) {
+                        setState(() {
+                          isProfilePrivate = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(height: 22.h),
+                // GestureDetector(
+                //   onTap: () {
+                //     Get.to(UserProfilePage());
+                //   },
+                //   child: Container(
+                //     height: 61.h,
+                //     width: double.infinity,
+                //     decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(13.31.r),
+                //       color: AppColors.fillcolor,
+                //     ),
+                //     child: Padding(
+                //       padding: EdgeInsets.symmetric(horizontal: 18.w),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Text(
+                //             "My Profile",
+                //             style: jost600(16.sp, AppColors.blueColor),
+                //           ),
+                //           Icon(
+                //             Icons.arrow_forward_ios,
+                //             color: AppColors.blueColor, // Customize the icon color if needed
+                //             size: 16.sp, // Customize the icon size
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                SizedBox(height: 14.h),
                 /// Change Password Button
                 GestureDetector(
                   onTap: () {
