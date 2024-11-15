@@ -24,7 +24,7 @@ class OnBoardingFour extends StatelessWidget {
           ),
           ///  Incredible Keyword Search Engine.
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -47,7 +47,7 @@ class OnBoardingFour extends StatelessWidget {
           ),
           /// Long Text
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 5.w),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
 
             child: Text(
                 "Help the community stay informed by suggesting new events, or suggesting corrections, reviewed by our staff and your fellow professionals.",

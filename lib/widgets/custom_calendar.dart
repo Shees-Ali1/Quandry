@@ -131,62 +131,62 @@ class _CustomCalendarState extends State<CustomCalendar> {
               ),
             ),
           ),
-          SizedBox(height: 13.h),
+          // SizedBox(height: 13.h),
 
           /// Bottom Buttons Row
-          Container(
-            height: 65.37.h,
-            decoration: BoxDecoration(
-              color: AppColors.fillcolor,
-              borderRadius: BorderRadius.circular(11.r),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2), // Adjust shadow color and opacity
-                  blurRadius: 8.r, // Softness of the shadow
-                  spreadRadius: 2.r, // Extent of the shadow
-                  offset: Offset(0, 2), // Horizontal and vertical offset of the shadow
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 18.28.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildBottomButton(
-                    title: "Today, 23 Mar",
-                    subtitle: "No event",
-                    isSelected: buttonStates[0],
-                    onTap: () {
-                      setState(() {
-                        buttonStates[0] = !buttonStates[0]; // Toggle selection
-                      });
-                    },
-                  ),
-                  _buildBottomButton(
-                    title: "Tomorrow, 24 Mar",
-                    subtitle: "Available",
-                    isSelected: buttonStates[1],
-                    onTap: () {
-                      setState(() {
-                        buttonStates[1] = !buttonStates[1]; // Toggle selection
-                      });
-                    },
-                  ),
-                  _buildBottomButton(
-                    title: "Thu, 25 Mar",
-                    subtitle: "Available",
-                    isSelected: buttonStates[2],
-                    onTap: () {
-                      setState(() {
-                        buttonStates[2] = !buttonStates[2]; // Toggle selection
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
+          // Container(
+          //   height: 65.37.h,
+          //   decoration: BoxDecoration(
+          //     color: AppColors.fillcolor,
+          //     borderRadius: BorderRadius.circular(11.r),
+          //     boxShadow: [
+          //       BoxShadow(
+          //         color: Colors.black.withOpacity(0.2), // Adjust shadow color and opacity
+          //         blurRadius: 8.r, // Softness of the shadow
+          //         spreadRadius: 2.r, // Extent of the shadow
+          //         offset: Offset(0, 2), // Horizontal and vertical offset of the shadow
+          //       ),
+          //     ],
+          //   ),
+          //   child: Padding(
+          //     padding: EdgeInsets.symmetric(horizontal: 18.28.w),
+          //     child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: [
+          //         _buildBottomButton(
+          //           title: "Today, 23 Mar",
+          //           subtitle: "No event",
+          //           isSelected: buttonStates[0],
+          //           onTap: () {
+          //             setState(() {
+          //               buttonStates[0] = !buttonStates[0]; // Toggle selection
+          //             });
+          //           },
+          //         ),
+          //         _buildBottomButton(
+          //           title: "Tomorrow, 24 Mar",
+          //           subtitle: "Available",
+          //           isSelected: buttonStates[1],
+          //           onTap: () {
+          //             setState(() {
+          //               buttonStates[1] = !buttonStates[1]; // Toggle selection
+          //             });
+          //           },
+          //         ),
+          //         _buildBottomButton(
+          //           title: "Thu, 25 Mar",
+          //           subtitle: "Available",
+          //           isSelected: buttonStates[2],
+          //           onTap: () {
+          //             setState(() {
+          //               buttonStates[2] = !buttonStates[2]; // Toggle selection
+          //             });
+          //           },
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

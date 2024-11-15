@@ -23,8 +23,7 @@ class OnBoardingThree extends StatelessWidget {
           ),
           ///  Text Latest MedTech Innovations & Updates..
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w),
-            child: RichText(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),            child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
                 children: [
@@ -45,8 +44,7 @@ class OnBoardingThree extends StatelessWidget {
             height: 40.h,
           ),
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 5.w),
-
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Text(
                 'Bookmark your favorite events and keep track of your attended, upcoming, and favorite events—all in one convenient place.',
               textAlign: TextAlign.center,

@@ -1,6 +1,6 @@
 class AppImages {
   static const quanderyLogo = 'assets/images/qwandery.png';
-  static const quanderyText = 'assets/images/qwandweryLOGO.png';
+  static const quanderyText = 'assets/images/qwandery-logo-square-600px-Photoroom.png';
   static const quanderySplash = 'assets/images/onboarding_ellipse.png';
   static const onboard1 = 'assets/images/onboard1.png';
   static const onboard2 = 'assets/images/onboard2.png';
@@ -21,7 +21,7 @@ class AppImages {
   /// Midhat
   static const home_icon = 'assets/images/home.png';
   static const filter = 'assets/images/filter.png';
-  static const attending_icon = 'assets/images/attending.png';
+  static const attending_icon = 'assets/images/path.png';
   static const calender_icon = 'assets/images/calender.png';
   static const profile_icon = 'assets/images/profile.png';
   static const drawer_icon = 'assets/images/drawer_icon1.png';

@@ -42,11 +42,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(width: 20.w),
+
 
               Center(
                 child: Padding(
-                  padding: EdgeInsets.only(top: 20.h),
+                  padding: EdgeInsets.only(top: 40.h),
                   child: Text(
                     '@ali_321',
                     textAlign: TextAlign.center,
@@ -157,7 +157,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           ),
                         ),
             //      SizedBox(width: 2.w),
-                        Image.asset('assets/images/verified.png',height: 28.h,width: 28.w,),
+                        Image.asset('assets/images/qwandery-verified-professional.png',height: 18.h,width: 18.w,),
                         SizedBox(width: 5.w),
                         SizedBox(
                             width: 170.w,

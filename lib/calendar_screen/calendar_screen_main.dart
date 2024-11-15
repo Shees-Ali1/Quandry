@@ -45,13 +45,13 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Container(
-                    height: 321.h, // Set a specific height for the calendar
+                    height: 280.h, // Set a specific height for the calendar
                     child: CustomCalendar(),
                   ),
                 ),
-                SizedBox(height: 18.63.h),
+                // SizedBox(height: 18.63.h),
                 Text(
-                  "   5 Events Available in Tomorrow",
+                  " Events Scheduled for Attendance",
                   style: jost700(16.37.sp, AppColors.blueColor),
                 ),
                 SizedBox(height: 12.h),

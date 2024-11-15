@@ -27,8 +27,7 @@ class OnBoardingSix extends StatelessWidget {
           ),
           ///  Incredible Keyword Search Engine.
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
-            child: RichText(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),            child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
                 children: [
@@ -49,8 +48,7 @@ class OnBoardingSix extends StatelessWidget {
           ),
           /// Long Text
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 7.w),
-
+            padding: EdgeInsets.symmetric(horizontal: 21.2.w),
             child: Text(
               "By using Qwandery, you're agreeing to contribute respectfully and accurately,\nand to avoid submitting false or harmful content.",
               textAlign: TextAlign.center,

@@ -24,8 +24,7 @@ class OnBoardingFive extends StatelessWidget {
           ),
           ///  Incredible Keyword Search Engine.
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
-            child: RichText(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),            child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
                 children: [
@@ -46,15 +45,14 @@ class OnBoardingFive extends StatelessWidget {
           ),
           /// Long Text
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 8.w),
-
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Text(
                 "For a small annual fee, upgrade to enjoy an ad-free experience, and stand out as a verified professional.",
               textAlign: TextAlign.center,
               style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
           ),),
           SizedBox(
-            height: 45.h,
+            height: 25.h,
           ),
           // Background Blue Circle Image & Center Image
           Expanded(

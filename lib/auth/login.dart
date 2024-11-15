@@ -47,20 +47,13 @@ class _LoginViewState extends State<LoginView> {
                 SizedBox(height: 97.71.h),
                 Center(
                   child: SizedBox(
-                    height: 133.h,
-                    width: 133.w,
-                    child: Image.asset("assets/images/qwandery.png"),
+                    height: 250.h,
+                    width: 250.w,
+                    child: Image.asset("assets/images/qwandery-logo-square-600px-Photoroom.png",fit: BoxFit.fill,),
                   ),
                 ),
-                SizedBox(height: 43.64.h),
-                Center(
-                  child: SizedBox(
-                    height: 37.h,
-                    width: 296.w,
-                    child: Image.asset("assets/images/qwandery_logo.png"),
-                  ),
-                ),
-                SizedBox(height: 43.64.h),
+
+
 
                 CustomText(
                   text: 'Login',

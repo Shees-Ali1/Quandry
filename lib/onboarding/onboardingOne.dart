@@ -26,7 +26,7 @@ class OnBoardingOne extends StatelessWidget {
           ),
           /// Text The best Medical Device Library in the world.
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -48,7 +48,7 @@ class OnBoardingOne extends StatelessWidget {
             height: 26.81.h,
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Text(
               'As a mental health professional, find your way to the Continuing Education credits you need to meet requirements and advance your career.',
               textAlign: TextAlign.center,

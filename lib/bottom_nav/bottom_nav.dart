@@ -48,7 +48,7 @@ class AppNavBarState extends State<AppNavBar> {
 
     List<Widget> bottomBarPages = [
       HomeScreen(),
-      const AttendingScreenMain(),
+      // const AttendingScreenMain(),
       const CalendarScreenMain(),
        UserProfilePage(),
     ];
@@ -92,15 +92,16 @@ class AppNavBarState extends State<AppNavBar> {
             activeItem: Image.asset(AppImages.home_icon, fit: BoxFit.contain),
             itemLabel: 'Home'.tr,
           ),
+          // BottomBarItem(
+          //   inActiveItem: Image.asset(AppImages.attending_icon,width: 40,height: 40,fit: BoxFit.fill,color: Colors.white,),
+          //   activeItem: Image.asset(AppImages.attending_icon, width: 40,height: 40,fit: BoxFit.fill
+          //     ,color: Colors.white,),
+          //   itemLabel: 'My Path'.tr,
+          // ),
           BottomBarItem(
-            inActiveItem: Image.asset(AppImages.attending_icon),
-            activeItem: Image.asset(AppImages.attending_icon, fit: BoxFit.contain),
-            itemLabel: 'Attending'.tr,
-          ),
-          BottomBarItem(
-            inActiveItem: Image.asset(AppImages.calender_icon),
-            activeItem: Image.asset(AppImages.calender_icon, fit: BoxFit.contain),
-            itemLabel: 'Calendar'.tr,
+            inActiveItem: Image.asset(AppImages.attending_icon,color: Colors.white,),
+            activeItem: Image.asset(AppImages.attending_icon, fit: BoxFit.contain,color: Colors.white,),
+            itemLabel: 'My Path'.tr,
           ),
           BottomBarItem(
             inActiveItem: Image.asset(AppImages.profile_icon),

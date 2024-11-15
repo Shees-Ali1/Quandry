@@ -24,8 +24,7 @@ class OnBoardingTwo extends StatelessWidget {
           ),
           ///  Text Interactive Learning Courses & Quizzes.
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w),
-            child: RichText(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),            child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
                 children: [
@@ -47,8 +46,7 @@ class OnBoardingTwo extends StatelessWidget {
           ),
           // Text long
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 5.w),
-
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Text(
                 'Search & filter conferences, courses, and trainings by available credits, price range, location, topics of interest and more.',
               textAlign: TextAlign.center,
