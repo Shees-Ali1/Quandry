@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:quandry/setting_screen/settings_screen.dart';
 
+import '../const/images.dart';
+import '../const/textstyle.dart';
 import '../widgets/appbar_small.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -22,8 +26,36 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: AppbarSmall(
-        title: 'User Profile',
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            color: AppColors.blueColor,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(15.r),
+              bottomRight: Radius.circular(15.r),
+            ),
+          ),
+          child: Row(
+            children: [
+              SizedBox(width: 20.w),
+
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 20.h),
+                  child: Text(
+                    '@ali_321',
+                    textAlign: TextAlign.center,
+                    style: jost700(19.sp, Colors.white),
+                  ),
+                ),
+              ),
+
+            ],
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -124,26 +156,45 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         ),
             //      SizedBox(width: 2.w),
                         Image.asset('assets/images/verified.png',height: 28.h,width: 28.w,),
-                        SizedBox(width: 5.w), // Space between button and bio
+                        SizedBox(width: 5.w),
                         SizedBox(
-                          width: 170.w,
-                          child: ElevatedButton(
-
-                            onPressed: toggleFollow,
-                            child: Text(
-                              isFollowing ? "Unfollow" : "Follow",
-                              style: TextStyle(color: AppColors.backgroundColor),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: isFollowing
-                                  ? AppColors.greenbutton
-                                  : AppColors.blueColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
+                            width: 170.w,
+                            child: ElevatedButton(
+                              onPressed: (){
+                                Get.to(SettingsScreen());
+                              },
+                              child: Text(
+                              'Edit Profile',
+                                style: TextStyle(color: AppColors.backgroundColor),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                     AppColors.blueColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        // SizedBox(
+                        //   width: 170.w,
+                        //   child: ElevatedButton(
+                        //
+                        //     onPressed: toggleFollow,
+                        //     child: Text(
+                        //       isFollowing ? "Unfollow" : "Follow",
+                        //       style: TextStyle(color: AppColors.backgroundColor),
+                        //     ),
+                        //     style: ElevatedButton.styleFrom(
+                        //       backgroundColor: isFollowing
+                        //           ? AppColors.greenbutton
+                        //           : AppColors.blueColor,
+                        //       shape: RoundedRectangleBorder(
+                        //         borderRadius: BorderRadius.circular(8.0),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
 
                       ],
                     ),

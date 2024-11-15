@@ -8,7 +8,8 @@ import 'package:quandry/setting_screen/notification_screens/notification_screen_
 import 'package:quandry/widgets/appbar.dart';
 import 'package:quandry/widgets/custom_calendar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart'; // Ensure GetX is imported
+import 'package:get/get.dart';
+import 'package:quandry/widgets/tabs_appbar.dart'; // Ensure GetX is imported
 
 
 class CalendarScreenMain extends StatefulWidget {
@@ -30,12 +31,9 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
       child: Scaffold(
         // Assign the scaffold key
 
-        appBar: CustomAppBarL(onDrawerTap: () {
-          Get.to(NotificationScreenMain());
-
-        },),
+        appBar:TabsAppBar(),
         backgroundColor: AppColors.backgroundColor,
-        drawer: MyDrawer(), // Your custom drawer widget
+     //   drawer: MyDrawer(), // Your custom drawer widget
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 7.w),

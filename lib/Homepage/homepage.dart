@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:get/get.dart';
+import 'package:quandry/widgets/tabs_appbar.dart';
 
 import '../Drawer/drawer.dart';
 import '../calendar_screen/event_card.dart';
@@ -82,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarH(), // Use the CustomAppBarH as the app bar
+      appBar: TabsAppBar(),
       drawer: MyDrawer(),
       backgroundColor: Colors.white,
       body: GestureDetector(

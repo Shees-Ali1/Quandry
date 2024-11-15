@@ -14,7 +14,7 @@ class CustomAppBarL extends StatelessWidget implements PreferredSizeWidget {
       height: 100.h,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.blueColor, // Customize the color as needed
+        color: AppColors.blueColor,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(15.r),
           bottomRight: Radius.circular(15.r),
@@ -30,34 +30,34 @@ class CustomAppBarL extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 /// Search field
                 SizedBox(
-                  height: 38.h, // Sets the height to 38.h
-                  width: 216.w, // Sets the height to 38.h
+                  height: 38.h,
+                  width: 216.w,
                   child: TextField(
-                    style: TextStyle(color: AppColors.appbartextColor), // Sets the text color
-                    textAlignVertical: TextAlignVertical.center, // Centers the text vertically
+                    style: TextStyle(color: AppColors.appbartextColor),
+                    textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
-                      isDense: true, // Reduces the default internal padding
-                      contentPadding: EdgeInsets.symmetric(vertical: 10.h), // Adjusts vertical padding
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 10.h),
                       hintText: 'Search for event availability',
                       hintStyle: TextStyle(
                         color: AppColors.appbartextColor,
                         fontSize: 15.36.sp,
                         fontWeight: FontWeight.w400,
-                      ), // Sets hint text color
+                      ),
                       prefixIcon: Padding(
-                        padding: EdgeInsets.all(8.0), // Adjust padding around the image as needed
+                        padding: EdgeInsets.all(8.0),
                         child: Container(
                           height: 19.2.h,
                           width: 19.2.w,
                           child: Image.asset(
-                            AppImages.search_icon, // Replace with your image path
-                            color: AppColors.backgroundColor, // Applies color to image if needed
+                            AppImages.search_icon,
+                            color: AppColors.backgroundColor,
                             fit: BoxFit.contain,
                           ),
                         ),
                       ),
                       filled: true,
-                      fillColor: AppColors.blueColor, // Sets background color
+                      fillColor: AppColors.blueColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
                         borderSide: BorderSide.none,

@@ -9,6 +9,7 @@ import 'package:quandry/calendar_screen/calendar_screen_main.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/controllers/user_controller.dart';
 import 'package:quandry/profile_screen/profile_screen_main.dart';
+import 'package:quandry/profile_screen/user_profile.dart';
 import 'package:quandry/setting_screen/settings_screen.dart';
 
 
@@ -49,7 +50,7 @@ class AppNavBarState extends State<AppNavBar> {
       HomeScreen(),
       const AttendingScreenMain(),
       const CalendarScreenMain(),
-      const SettingsScreen(),
+       UserProfilePage(),
     ];
 
     return Scaffold(
