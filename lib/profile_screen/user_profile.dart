@@ -39,6 +39,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(width: 20.w),
 

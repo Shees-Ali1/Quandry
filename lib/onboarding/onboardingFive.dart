@@ -46,10 +46,10 @@ class OnBoardingFive extends StatelessWidget {
           ),
           /// Long Text
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 5.w),
+            padding:  EdgeInsets.symmetric(horizontal: 8.w),
 
             child: Text(
-                "For a small annual fee, upgrade to enjoy an ad-free experience, and connect with other professionals.",
+                "For a small annual fee, upgrade to enjoy an ad-free experience, and stand out as a verified professional.",
               textAlign: TextAlign.center,
               style: jost500(20.sp, Color.fromRGBO(73, 73, 73, 1)),
           ),),

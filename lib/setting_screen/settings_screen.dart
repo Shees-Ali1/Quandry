@@ -84,27 +84,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 22.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Profile: ${isProfilePrivate ? "Private" : "Active"}',
-                      style: jost600(16.sp, AppColors.blueColor),
-                    ),
-                    Switch(
-                      value: isProfilePrivate,
-                      activeColor: AppColors.blueColor,
-                      onChanged: (value) {
-                        setState(() {
-                          isProfilePrivate = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(height: 22.h),
 
+                SizedBox(height: 22.h),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(ChangePassword());
+                  },
+                  child: Container(
+                    height: 61.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(13.31.r),
+                      color: AppColors.fillcolor,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+
+                          Text(
+                            'Profile: ${isProfilePrivate ? "Private" : "Public"}',
+                            style: jost600(16.sp, AppColors.blueColor),
+                          ),
+                          Switch(
+                            value: isProfilePrivate,
+                            activeColor: AppColors.blueColor,
+                            onChanged: (value) {
+                              setState(() {
+                                isProfilePrivate = value;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 14.h),
                 /// Change Password Button
                 GestureDetector(
                   onTap: () {

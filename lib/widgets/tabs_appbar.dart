@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
+import 'package:quandry/profile_screen/user_profile.dart';
+import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
+import 'package:quandry/setting_screen/notification_setting/notification_setting.dart';
+import 'package:get/get.dart';
 
 import '../Homepage/filter_home.dart';
+import '../bottom_nav/bottom_nav.dart';
 
 class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -29,7 +34,7 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 /// Search field
                 Container(
                   height: 38.h,
-                  width: 255.w,
+                  width: 256.w,
                   child: TextField(
                     style: TextStyle(color: AppColors.appbartextColor),
                     textAlignVertical: TextAlignVertical.center,
@@ -100,7 +105,7 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                   children: [
                     /// notification Button
                     GestureDetector(
-                      onTap: () {},
+                      onTap:(){ Get.to(NotificationScreenMain());},
                       child: Container(
                         padding: EdgeInsets.all(2.0),
                         decoration: BoxDecoration(
@@ -115,12 +120,18 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 10.w), // Top padding
+                    SizedBox(width: 7.w), // Top padding
 
-                    Image.asset(
-                      AppImages.profile_image_small,
-                      height: 27.h,
-                      width: 27.w,
+                    GestureDetector(
+                      onTap: (){
+                        final navBarState = context.findAncestorStateOfType<AppNavBarState>();
+                        navBarState?.navigateToPage(3);
+                      },
+                      child: Image.asset(
+                        AppImages.profile_image_small,
+                        height: 29.h,
+                        width: 29.w,
+                      ),
                     ),
                   ],
                 ),
