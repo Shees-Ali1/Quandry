@@ -9,8 +9,16 @@ import 'package:quandry/const/textstyle.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quandry/suggestions.dart';
 
+import '../otherUser/OtherUserProfile.dart';
+
 class EventDetail extends StatelessWidget {
-  const EventDetail({super.key});
+  final List<Map<String, String>> userProfiles = List.generate(
+    17, // Number of followers
+        (index) => {
+      "name": "@shees$index",
+      "profilePic": "https://i.pravatar.cc/150?img=${index + 1}", // Random online avatar
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -137,24 +145,29 @@ class EventDetail extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 22.0.h),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Following",
-                                style:
-                                jost600(14.sp, AppColors.backgroundColor),
-                              ),
-                              SizedBox(
-                                height: 8.h,
-                              ),
-                              Text(
-                                "17",
-                                style:
-                                jost700(24.sp, AppColors.backgroundColor),
-                              ),
-                            ],
+                        GestureDetector(
+                          onTap: () {
+                            _showFollowingDialog(context, userProfiles);
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 22.0.h),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Following",
+                                  style:
+                                  jost600(14.sp, AppColors.backgroundColor),
+                                ),
+                                SizedBox(
+                                  height: 8.h,
+                                ),
+                                Text(
+                                  "17",
+                                  style:
+                                  jost700(24.sp, AppColors.backgroundColor),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Container(
@@ -547,4 +560,71 @@ class EventDetail extends StatelessWidget {
       ),
     );
   }
+  void _showFollowingDialog(BuildContext context, List<Map<String, String>> profiles) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor:       Color.fromRGBO(216, 229, 236, 1),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Following",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.blueColor
+                  ),
+                ),
+                SizedBox(height: 8),
+                Divider(
+                  color: AppColors.blueColor,
+                ),
+                SizedBox(
+                  height: 300, // Adjust height for list
+                  child: ListView.builder(
+                    itemCount: profiles.length,
+                    itemBuilder: (context, index) {
+                      final profile = profiles[index];
+                      return ListTile(
+                        onTap: (){
+                          Get.to(OtherUserProfilePage(profilePic: profile['profilePic']!, userName: profile['name']!,));
+                        },
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage(profile['profilePic']!),
+                        ),
+                        title: Text(profile['name']!,style: TextStyle(color: AppColors.blueColor),),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Close"),
+
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.blueColor,
+foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }
