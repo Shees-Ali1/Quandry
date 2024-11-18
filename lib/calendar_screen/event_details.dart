@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quandry/const/colors.dart';
@@ -12,14 +14,34 @@ import 'package:quandry/suggestions.dart';
 import '../otherUser/OtherUserProfile.dart';
 
 class EventDetail extends StatelessWidget {
+  // Random name generator list
+  static const List<String> randomNames = [
+    "Alex", "Jordan", "Taylor", "Morgan", "Casey", "Drew", "Skyler", "Logan",
+    "Harper", "Reese", "Quinn", "Dakota", "Blake", "Avery", "Jamie", "Peyton",
+    "Riley", "Hunter"
+  ];
+
+  static const List<String> fullNames = [
+    "Alex Johnson", "Jordan Smith", "Taylor Brown", "Morgan Davis",
+    "Casey Wilson", "Drew Anderson", "Skyler Wilson", "Logan Martinez",
+    "Harper Garcia", "Reese Alais", "Quinn Lopez", "Dakota Hill",
+    "Blake Allen", "Avery Young", "Jamie Hall", "Peyton King",
+    "Riley Wright", "Hunter Green"
+  ];
+
+  // Generate user profiles with random names, full names, and verified statuses
   final List<Map<String, String>> userProfiles = List.generate(
     17, // Number of followers
-        (index) => {
-      "name": "@shees$index",
-      "profilePic": "https://i.pravatar.cc/150?img=${index + 1}", // Random online avatar
+        (index) {
+      final isVerified = Random().nextBool();
+      return {
+        "username": "@${randomNames[Random().nextInt(randomNames.length)]}$index",
+        "fullName": fullNames[Random().nextInt(fullNames.length)],
+        "verified": isVerified.toString(), // Convert bool to String
+        "profilePic": "https://i.pravatar.cc/150?img=${index + 1}",
+      };
     },
   );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -594,12 +616,48 @@ class EventDetail extends StatelessWidget {
                       final profile = profiles[index];
                       return ListTile(
                         onTap: (){
-                          Get.to(OtherUserProfilePage(profilePic: profile['profilePic']!, userName: profile['name']!,));
+                          Get.to(OtherUserProfilePage(profilePic: profile['profilePic']!, userName: profile['username']!, verified:profile['verified']!, fullName:   profile['fullName']!,));
                         },
                         leading: CircleAvatar(
                           backgroundImage: NetworkImage(profile['profilePic']!),
                         ),
-                        title: Text(profile['name']!,style: TextStyle(color: AppColors.blueColor),),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      profile['fullName']!,
+                                      style: TextStyle(color:AppColors.blueColor, fontWeight: FontWeight.bold),
+                                    ),
+                                    profile['verified'] == 'true'
+                                        ? Padding(
+                                      padding: const EdgeInsets.only(left: 4.0),
+                                      child: Image.asset(
+                                        'assets/images/qwandery-verified-professional.png',
+                                        height: 12.h,
+                                        width: 12.w
+                                        ,
+                                      ),
+                                    )
+                                        : SizedBox(),
+                                  ],
+                                ),
+                                Text(
+                                  profile['username']!,
+                                  style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
+                                ),
+                              ],
+                            ),
+
+
+                          ],
+                        ),
                       );
                     },
                   ),

@@ -10,9 +10,11 @@ import '../widgets/appbar_small.dart';
 
 class OtherUserProfilePage extends StatefulWidget {
   final String profilePic; // URL or asset path for the profile picture
+  final String fullName; // URL or asset path for the profile picture
   final String userName;   // User's username
+  final String verified;   // User's username
 
-  OtherUserProfilePage({required this.profilePic, required this.userName});
+  OtherUserProfilePage({required this.profilePic, required this.userName,required this.verified,required this.fullName});
 
   @override
   _OtherUserProfilePageState createState() => _OtherUserProfilePageState();
@@ -43,12 +45,13 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage> {
               bottomRight: Radius.circular(15.r),
             ),
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          child: Stack(
+            alignment: Alignment.center, // Centers the title
             children: [
-              // Back arrow button
-              Padding(
-                padding: EdgeInsets.only(top: 40.h, left: 16.w),
+              // Back arrow button on the left
+              Positioned(
+                left: 16.w,
+                top: 55.h,
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
@@ -60,23 +63,17 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage> {
                 ),
               ),
 
-              // Spacer for centering the username
-              // Spacer(),
-
-              // Username in the center
+              // Title in the center
               Center(
                 child: Padding(
-                  padding: EdgeInsets.only(top: 40.h,left: 85.w),
+                  padding: EdgeInsets.only(top: 40.h),
                   child: Text(
-                    '${widget.userName}',
+                    '${widget.fullName}',
                     textAlign: TextAlign.center,
                     style: jost700(19.sp, Colors.white),
                   ),
                 ),
               ),
-
-              // Spacer for balance
-              Spacer(),
             ],
           ),
         ),
@@ -165,23 +162,51 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage> {
                     ),
 
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Align(
                           alignment: Alignment.topLeft,
-                          child: Text(
-                            '${widget.userName}',
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.blueColor,
-                            ),
-                            textAlign: TextAlign.start,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    '${widget.fullName}',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.blueColor,
+                                    ),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  SizedBox(width: 2,),
+                                  widget.verified == 'true'
+                                      ? Padding(
+                                    padding: const EdgeInsets.only(top: 2.0, left: 2.0),
+                                    child: Image.asset(
+                                      'assets/images/qwandery-verified-professional.png',
+                                      height: 14,
+                                      width: 14,
+                                    ),
+                                  )
+                                      : SizedBox(),
+                                ],
+                              ),Text(
+                                '${widget.userName}',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blueGrey.shade700
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
                           ),
                         ),
                         //      SizedBox(width: 2.w),
-                        Image.asset('assets/images/qwandery-verified-professional.png',height: 18.h,width: 18.w,),
-                        SizedBox(width: 5.w),
+                                          SizedBox(width: 5.w),
                         // SizedBox(
                         //   width: 170.w,
                         //   child: ElevatedButton(
