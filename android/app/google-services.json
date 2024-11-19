@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "379065380713",
+    "project_id": "quandry-46ed9",
+    "storage_bucket": "quandry-46ed9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379065380713:android:430c56946d6af21f5957f8",
+        "android_client_info": {
+          "package_name": "com.example.quandry"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbUeHmxRYuyErV3Wivlv66qF29v-84lmw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

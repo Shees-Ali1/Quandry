@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart'; // Ensure GetX is imported
+import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quandry/Drawer/drawer.dart';
 import 'package:quandry/Drawer/online_Support/online_support.dart';
 import 'package:quandry/Drawer/privacy_policy_screen/privacy_policy.dart';
@@ -27,6 +29,57 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool isProfilePrivate = true;
+  String profileName = '';
+  String profileEmail = '';
+  String profileImageUrl = '';
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserData();
+  }
+
+  // Fetch user data from Firestore
+  Future<void> _getUserData() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      try {
+        // Fetch the user document from Firestore using the current user's UID
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .get();
+
+        if (userDoc.exists) {
+          // Set the user data to the state
+          setState(() {
+            profileName = userDoc['name'] ?? 'Name not available';
+            profileEmail = userDoc['email'] ?? 'Email not available';
+            // Fetch the profile image URL from the 'profilePicture' field
+            profileImageUrl = userDoc['profilePicture'] ?? AppImages.profile_pic;
+            isLoading = false;  // Hide the loading spinner
+          });
+        } else {
+          setState(() {
+            isLoading = false;
+          });
+          print("User document not found.");
+        }
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+        print("Error fetching user data: $e");
+      }
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      print("No user is logged in.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +88,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-
-        appBar:AppbarSmall(title: 'Profile Settings'),
-
+        appBar: AppbarSmall(title: 'Profile Settings'),
         backgroundColor: AppColors.backgroundColor,
-
-        body: SingleChildScrollView(
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 23.w),
             child: Column(
@@ -54,8 +106,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: SizedBox(
                       height: 126.h,
                       width: 126.w,
-                      child: const CircleAvatar(
-                        backgroundImage: AssetImage(AppImages.profile_pic),
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(profileImageUrl),
                         radius: 50,
                       ),
                     ),
@@ -63,9 +115,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 SizedBox(height: 14.h),
                 /// Profile Name
-                Text("Muhammad Ali", style: jost700(16.sp, AppColors.blueColor)),
+                Text(profileName, style: jost700(16.sp, AppColors.blueColor)),
                 SizedBox(height: 1.h),
-                Text("test@gmail.com", style: jost400(16.sp, AppColors.blueColor)),
+                Text(profileEmail, style: jost400(16.sp, AppColors.blueColor)),
                 SizedBox(height: 7.h),
                 /// Edit Button
                 GestureDetector(
@@ -84,40 +136,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
-
                 SizedBox(height: 22.h),
-                GestureDetector(
-                  onTap: () {
-                    Get.to(ChangePassword());
-                  },
-                  child: Container(
-                    height: 61.h,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(13.31.r),
-                      color: AppColors.fillcolor,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 18.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-
-                          Text(
-                            'Profile: ${isProfilePrivate ? "Private" : "Public"}',
-                            style: jost600(16.sp, AppColors.blueColor),
-                          ),
-                          Switch(
-                            value: isProfilePrivate,
-                            activeColor: AppColors.blueColor,
-                            onChanged: (value) {
-                              setState(() {
-                                isProfilePrivate = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
+                Container(
+                  height: 61.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(13.31.r),
+                    color: AppColors.fillcolor,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Profile: ${isProfilePrivate ? "Private" : "Public"}',
+                          style: jost600(16.sp, AppColors.blueColor),
+                        ),
+                        Switch(
+                          value: isProfilePrivate,
+                          activeColor: AppColors.blueColor,
+                          onChanged: (value) {
+                            setState(() {
+                              isProfilePrivate = value;
+                            });
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -145,8 +190,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           Icon(
                             Icons.arrow_forward_ios,
-                            color: AppColors.blueColor, // Customize the icon color if needed
-                            size: 16.sp, // Customize the icon size
+                            color: AppColors.blueColor,
+                            size: 16.sp,
                           ),
                         ],
                       ),
@@ -177,8 +222,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           Icon(
                             Icons.arrow_forward_ios,
-                            color: AppColors.blueColor, // Customize the icon color if needed
-                            size: 16.sp, // Customize the icon size
+                            color: AppColors.blueColor,
+                            size: 16.sp,
                           ),
                         ],
                       ),
@@ -186,7 +231,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 SizedBox(height: 14.h),
-                /// online Settings
+                /// Online Support
                 GestureDetector(
                   onTap: () {
                     Get.to(TechnicalSupportChatScreen());
@@ -209,8 +254,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           Icon(
                             Icons.arrow_forward_ios,
-                            color: AppColors.blueColor, // Customize the icon color if needed
-                            size: 16.sp, // Customize the icon size
+                            color: AppColors.blueColor,
+                            size: 16.sp,
                           ),
                         ],
                       ),
@@ -218,8 +263,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 SizedBox(height: 14.h),
-
-                /// privacy Settings
+                /// Privacy Settings
                 GestureDetector(
                   onTap: () {
                     Get.to(TermsAndConditions());
@@ -242,8 +286,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           Icon(
                             Icons.arrow_forward_ios,
-                            color: AppColors.blueColor, // Customize the icon color if needed
-                            size: 16.sp, // Customize the icon size
+                            color: AppColors.blueColor,
+                            size: 16.sp,
                           ),
                         ],
                       ),
@@ -251,7 +295,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 SizedBox(height: 14.h),
-                /// Notifications Settings
+                /// Privacy Policy
                 GestureDetector(
                   onTap: () {
                     Get.to(PrivacyPolicy());
@@ -274,8 +318,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           Icon(
                             Icons.arrow_forward_ios,
-                            color: AppColors.blueColor, // Customize the icon color if needed
-                            size: 16.sp, // Customize the icon size
+                            color: AppColors.blueColor,
+                            size: 16.sp,
                           ),
                         ],
                       ),
@@ -283,6 +327,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 SizedBox(height: 14.h),
+                /// Subscription Screen
                 GestureDetector(
                   onTap: () {
                     Get.to(SubscriptionScreen());
@@ -300,13 +345,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Buy Premium Membership",
+                            "Subscription",
                             style: jost600(16.sp, AppColors.blueColor),
                           ),
                           Icon(
                             Icons.arrow_forward_ios,
-                            color: AppColors.blueColor, // Customize the icon color if needed
-                            size: 16.sp, // Customize the icon size
+                            color: AppColors.blueColor,
+                            size: 16.sp,
                           ),
                         ],
                       ),
@@ -314,30 +359,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 SizedBox(height: 14.h),
-                SizedBox(height: 30.h),
-
                 /// Sign Out Button
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
                     Get.offAll(LoginView());
                   },
                   child: Container(
-                    height: 51.h,
+                    height: 61.h,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(13.31.r),
-                      color: AppColors.blueColor,
+                      color: AppColors.fillcolor,
                     ),
-                    child: Center(
-                      child: Text(
-                        "Sign Out",
-                        style: jost500(16.sp, AppColors.backgroundColor),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Sign Out",
+                            style: jost600(16.sp, AppColors.blueColor),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: AppColors.blueColor,
+                            size: 16.sp,
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 140.h),
-
               ],
             ),
           ),

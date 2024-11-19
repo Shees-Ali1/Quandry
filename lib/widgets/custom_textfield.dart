@@ -14,6 +14,7 @@ class CustomTextField1 extends StatefulWidget {
   final double borderRadius;
   final Color? borderColor;
   final double borderWidth;
+  final TextEditingController? controller; // New controller parameter
 
   CustomTextField1({
     required this.hintText,
@@ -26,6 +27,7 @@ class CustomTextField1 extends StatefulWidget {
     this.borderRadius = 13.31,
     this.borderColor,
     this.borderWidth = 1.0,
+    this.controller, // New controller parameter
   });
 
   @override
@@ -57,6 +59,7 @@ class _CustomTextFieldState extends State<CustomTextField1> {
         ),
       ),
       child: TextField(
+        controller: widget.controller, // Using the controller
         obscureText: _obscureText,
         obscuringCharacter: _obscuringCharacter ?? '*',
         style: TextStyle(color: Color.fromRGBO(19, 64, 100, 1), fontSize: 12.sp),

@@ -2,17 +2,18 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:quandry/auth/further_details.dart';
-import 'package:quandry/auth/login.dart';
-import 'package:quandry/const/colors.dart';
-import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart'; // Import Firebase Storage
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-import '../const/images.dart';
+import '../const/colors.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/custom_textfield.dart';
+import 'login.dart'; // Make sure to import the LoginView
 
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
@@ -25,11 +26,67 @@ class _SignupViewState extends State<SignupView> {
   bool isChecked = false;
   File? _image; // Variable to store the selected image
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance; // Firebase Storage instance
+
+  // Controllers for user input
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  // Method to register the user
+  Future<void> _registerUser() async {
+    if (_image == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select a profile picture.')),
+      );
+      return;
+    }
+
+    try {
+      // Create user with email and password
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // Get the created user
+      User? user = userCredential.user;
+
+      if (user != null) {
+        // Upload the image to Firebase Storage
+        String fileName = 'profile_pictures/${user.uid}.jpg';
+        UploadTask uploadTask = _storage.ref(fileName).putFile(_image!);
+        TaskSnapshot snapshot = await uploadTask;
+        String downloadUrl = await snapshot.ref.getDownloadURL();
+
+        // Store user details in Firestore under the user's UID
+        await _firestore.collection('users').doc(user.uid).set({
+          'name': _nameController.text.trim(),
+          'email': user.email,
+          'profilePicture': downloadUrl, // Save the download URL of the profile picture
+          'createdAt': Timestamp.now(),
+        });
+
+        // Update the password for the current user
+        await user.updatePassword(_passwordController.text.trim());
+
+        // Navigate to the LoginView screen after successful registration
+        Get.offAll(() => LoginView()); // Use Get.offAll to replace the current screen with LoginView
+      }
+    } catch (e) {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
+  // Method to pick an image from the gallery
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-    );
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
@@ -38,11 +95,10 @@ class _SignupViewState extends State<SignupView> {
     }
   }
 
+  // Method to take a photo using the camera
   Future<void> _takePhoto() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(
-      source: ImageSource.camera,
-    );
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
       setState(() {
@@ -51,6 +107,7 @@ class _SignupViewState extends State<SignupView> {
     }
   }
 
+  // Method to show a dialog for choosing image source
   void _showImageSourceDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -91,8 +148,7 @@ class _SignupViewState extends State<SignupView> {
               ),
             ],
           ),
-          backgroundColor:
-              AppColors.backgroundColor, // Change this to your desired color
+          backgroundColor: AppColors.backgroundColor,
         );
       },
     );
@@ -112,51 +168,40 @@ class _SignupViewState extends State<SignupView> {
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/images/signup_eclipse.png"),
-                        fit: BoxFit.fill)),
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/signup_eclipse.png"),
+                    fit: BoxFit.fill,
+                  ),
+                ),
                 child: Column(
                   children: [
-                    SizedBox(
-                      height: 40.h,
-                    ),
+                    SizedBox(height: 40.h),
                     SizedBox(
                       height: 83.h,
                       width: 83.w,
-                      child: Image.asset(
-                        "assets/images/qwandery.png",
-                      ),
+                      child: Image.asset("assets/images/qwandery.png"),
                     ),
-                    SizedBox(
-                      height: 23.h,
-                    ),
+                    SizedBox(height: 23.h),
                     SizedBox(
                       height: 23.h,
                       width: 186.w,
-                      child: Image.asset(
-                        "assets/images/qwandery_logo.png",
-                      ),
+                      child: Image.asset("assets/images/qwandery_logo.png"),
                     ),
-                    SizedBox(
-                      height: 30.h,
-                    ),
+                    SizedBox(height: 30.h),
                     Align(
                       alignment: Alignment.center,
                       child: CustomText(
-                        text: 'Sign up ',
+                        text: 'Sign up',
                         textColor: AppColors.backgroundColor,
                         fontWeight: FontWeight.w700,
                         fontSize: 35.sp,
                       ),
                     ),
-                    SizedBox(
-                      height: 30.h,
-                    ),
+                    SizedBox(height: 30.h),
 
-                    /// Image Upload
+                    // Image Upload
                     GestureDetector(
-                      onTap: () => _showImageSourceDialog(
-                          context), // Open image picker on tap
+                      onTap: () => _showImageSourceDialog(context),
                       child: Container(
                         height: 106.h,
                         width: 106.w,
@@ -164,113 +209,96 @@ class _SignupViewState extends State<SignupView> {
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: _image == null
-                            ? Image.asset('assets/images/upload.png',
-                                fit: BoxFit.contain)
+                            ? Image.asset('assets/images/upload.png', fit: BoxFit.contain)
                             : ClipRRect(
-                                borderRadius: BorderRadius.circular(8.r),
-                                child: Image.file(
-                                  _image!,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                          borderRadius: BorderRadius.circular(8.r),
+                          child: Image.file(
+                            _image!,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     ),
-
                     SizedBox(height: 15.h),
                   ],
                 ),
               ),
               SizedBox(height: 18.h),
-              // Remaining code...
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.0.w),
                 child: Column(
                   children: [
-                    Container(
-                      width: 311.w,
-                      child: CustomTextField1(
-                        hintText: 'Your name',
-                        prefixIcon: Icons.person,
-                        hintTextSize: 14.65.sp,
-                        obscuringCharacter: null,
-                        borderColor: AppColors.textfieldBorder,
-                        borderWidth: 1.w,
-                      ),
+                    CustomTextField1(
+                      controller: _nameController,
+                      hintText: 'Your name',
+                      prefixIcon: Icons.person,
+                      hintTextSize: 14.65.sp,
+                      borderColor: AppColors.textfieldBorder,
+                      borderWidth: 1.w,
                     ),
                     SizedBox(height: 16.25.h),
-                    Container(
-                      width: 311.w,
-                      child: CustomTextField1(
-                        hintText: 'Your email',
-                        hintTextSize: 14.65.sp,
-                        prefixIcon: Icons.email,
-                        borderColor: AppColors.textfieldBorder,
-                        borderWidth: 1.w,
-                      ),
+                    CustomTextField1(
+                      controller: _emailController,
+                      hintText: 'Your email',
+                      hintTextSize: 14.65.sp,
+                      prefixIcon: Icons.email,
+                      borderColor: AppColors.textfieldBorder,
+                      borderWidth: 1.w,
                     ),
                     SizedBox(height: 14.25.h),
-                    Container(
-                      width: 311.w,
-                      child: CustomTextField1(
-                        borderColor: AppColors.textfieldBorder,
-                        borderWidth: 1.w,
-                        hintText: 'Your password',
-                        prefixIcon: FontAwesomeIcons.lock,
-                        obscureText: true,
-                        obscuringCharacter: '*',
-                        suffixIcon: Icons.visibility,
-                        hintTextSize: 14.65.sp,
-                      ),
+                    CustomTextField1(
+                      controller: _passwordController,
+                      borderColor: AppColors.textfieldBorder,
+                      borderWidth: 1.w,
+                      hintText: 'Your password',
+                      prefixIcon: FontAwesomeIcons.lock,
+                      obscureText: true,
+                      obscuringCharacter: '*',
+                      suffixIcon: Icons.visibility,
+                      hintTextSize: 14.65.sp,
                     ),
                     SizedBox(height: 24.25.h),
 
-                    /// Continue Button
+                    // Continue Button
                     CustomButton(
                       color: AppColors.greenbutton,
                       text: "Continue",
-                      onPressed: () {
-                        Get.to(() => FurtherDetails());
-                      },
+                      onPressed: _registerUser, // Call _registerUser on press
                     ),
                     SizedBox(height: 14.25.h),
 
-                    /// Text Span
+                    // Terms and Conditions
                     Center(
                       child: SizedBox(
-                        width: 307.w, // Adjust this width as needed
+                        width: 307.w,
                         child: RichText(
-                          textAlign:
-                              TextAlign.center, // Align text in the center
+                          textAlign: TextAlign.center,
                           text: TextSpan(
-                            text: 'By signing up you agree to our ',
+                            text: 'By signing up, you agree to our ',
                             style: TextStyle(
-                              color: Color.fromRGBO(17, 24, 39, 1),
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              height: 1.5.h,
-                              fontFamily: 'jost',
+                              fontSize: 12.8.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.whiteColor,
                             ),
                             children: [
                               TextSpan(
-                                text: 'Terms of Services',
+                                text: 'Terms & Conditions',
                                 style: TextStyle(
                                   color: AppColors.blueColor,
                                   fontWeight: FontWeight.w500,
                                   height: 1.5.h,
                                   fontFamily: 'jost',
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    // Navigate to Terms of Service
-                                  },
+                                recognizer: TapGestureRecognizer()..onTap = () {
+                                  // Navigate to Terms & Conditions
+                                },
                               ),
                               TextSpan(
                                 text: ' and ',
                                 style: TextStyle(
-                                  color: Color.fromRGBO(17, 24, 39, 1),
+                                  color: AppColors.whiteColor,
+                                  fontWeight: FontWeight.w500,
                                   height: 1.5.h,
-                                  fontFamily: 'jost',
-                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
                               TextSpan(
@@ -281,50 +309,16 @@ class _SignupViewState extends State<SignupView> {
                                   height: 1.5.h,
                                   fontFamily: 'jost',
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    //   Get.to(() => PrivacyPolicy());
-                                  },
+                                recognizer: TapGestureRecognizer()..onTap = () {
+                                  // Navigate to Privacy Policy
+                                },
                               ),
                             ],
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 35.h),
-
-                    /// Already have an Account
-                    GestureDetector(
-                      onTap: () {
-                        //    CustomRoute.navigateTo(context, LoginView());
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomText(
-                            textAlign: TextAlign.center,
-                            text: 'Already have an account? ',
-                            fontSize: 15.sp,
-                            textColor: Color(0xff111827),
-                            fontWeight: FontWeight.w300,
-                          ),
-                          GestureDetector(
-                            onTap: (){
-                              Get.to(()=>LoginView());
-
-                            },
-                            child: CustomText(
-                              textAlign: TextAlign.center,
-                              text: 'Sign in',
-                              textColor: AppColors.redColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 15.sp,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 22.h),
+                    SizedBox(height: 40.h),
                   ],
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import 'package:quandry/auth/forgot_password.dart';
 import 'package:quandry/auth/signup.dart';
 import 'package:quandry/bottom_nav/bottom_nav.dart';
@@ -10,7 +11,6 @@ import '../const/images.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/custom_textfield.dart';
-
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -22,12 +22,60 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
+
   bool _rememberMe = false;
 
   void _toggleRememberMe() {
     setState(() {
       _rememberMe = !_rememberMe;
     });
+  }
+
+  // Method to handle user login
+  Future<void> _loginUser() async {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      Get.snackbar("Error", "Please fill in all fields",
+          // backgroundColor: Colors.red,
+          colorText: Colors.red);
+      return;
+    }
+
+    try {
+      // Attempt to sign in the user with Firebase Auth
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // If successful, navigate to the AppNavBar
+      Get.to(() => AppNavBar());
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        // Show Snackbar if user is not registered
+        Get.snackbar("Error", "User is not registered",
+            // backgroundColor: Colors.red,
+            colorText: Colors.red);
+      } else if (e.code == 'wrong-password') {
+        // Show Snackbar if the password is incorrect
+        Get.snackbar("Error", "Incorrect password",
+            // backgroundColor: Colors.red,
+            colorText: Colors.red);
+      } else {
+        // Handle other errors
+        Get.snackbar("Error", e.message ?? "An error occurred",
+            // backgroundColor: Colors.red,
+            colorText: Colors.red);
+      }
+    } catch (e) {
+      // Handle any other exceptions
+      Get.snackbar("Error", "An unexpected error occurred",
+          // backgroundColor: Colors.red,
+          colorText: Colors.red);
+    }
   }
 
   @override
@@ -49,12 +97,12 @@ class _LoginViewState extends State<LoginView> {
                   child: SizedBox(
                     height: 250.h,
                     width: 250.w,
-                    child: Image.asset("assets/images/qwandery-logo-square-600px-Photoroom.png",fit: BoxFit.fill,),
+                    child: Image.asset(
+                      "assets/images/qwandery-logo-square-600px-Photoroom.png",
+                      fit: BoxFit.fill,
+                    ),
                   ),
                 ),
-
-
-
                 CustomText(
                   text: 'Login',
                   fontSize: 35.sp,
@@ -62,33 +110,26 @@ class _LoginViewState extends State<LoginView> {
                   fontWeight: FontWeight.w700,
                 ),
                 SizedBox(height: 6.36.h),
-
-                /// Your Email Textfield
-                Container(
-                  width: double.infinity,
-                  child: CustomTextField1(
-                    hintText: 'Your email',
-                    hintTextSize: 14.65.sp,
-                    prefixIcon: Icons.email,
-                  ),
+                // Email TextField
+                CustomTextField1(
+                  hintText: 'Your email',
+                  hintTextSize: 14.65.sp,
+                  prefixIcon: Icons.email,
+                  controller: emailController, // Added controller
                 ),
                 SizedBox(height: 26.25.h),
-
-                /// Your Password Textfield
-                Container(
-                  width: double.infinity,
-                  child: CustomTextField1(
-                    hintText: 'Your password',
-                    prefixIcon: Icons.lock,
-                    obscureText: true,
-                    obscuringCharacter: '*',
-                    suffixIcon: Icons.visibility,
-                    hintTextSize: 14.65.sp,
-                  ),
+                // Password TextField
+                CustomTextField1(
+                  hintText: 'Your password',
+                  prefixIcon: Icons.lock,
+                  obscureText: true,
+                  obscuringCharacter: '*',
+                  suffixIcon: Icons.visibility,
+                  hintTextSize: 14.65.sp,
+                  controller: passwordController, // Added controller
                 ),
                 SizedBox(height: 16.25.h),
-
-                /// CheckBox and Remember information Text
+                // Remember Me Checkbox
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,16 +150,14 @@ class _LoginViewState extends State<LoginView> {
                             ),
                             child: _rememberMe
                                 ? Icon(
-                                    Icons.check,
-                                    size: 12.h,
-                                    color: Colors.white,
-                                  )
+                              Icons.check,
+                              size: 12.h,
+                              color: Colors.white,
+                            )
                                 : null,
                           ),
                         ),
-                        SizedBox(
-                            width: 8
-                                .w), // Add some space between checkbox and text
+                        SizedBox(width: 8.w),
                         CustomText(
                           text: "Remember information",
                           textColor: Color.fromRGBO(192, 208, 221, 1),
@@ -127,44 +166,30 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ],
                     ),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: GestureDetector(
-                        onTap: () {
-                              Get.to(() => ForgetPasswordScreen());
-                        },
-                        child: CustomText(
-                          text: "Forgot password?",
-                          textColor: AppColors.redColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13.sp,
-                        ),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(() => ForgetPasswordScreen());
+                      },
+                      child: CustomText(
+                        text: "Forgot password?",
+                        textColor: AppColors.redColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13.sp,
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: 26.h),
-
-                /// Login Button
+                // Login Button
                 CustomButton(
-                  text: 'Login', color: AppColors.greenbutton, onPressed: () {
-                    Get.to(()=> AppNavBar());
-                },
-
-                  // textSize: 19.sp,
-                  // height: 51.h,
-                  // width: double.infinity,
-                  // color: buttonColor,
-                  // onTap: () {
-                  //   CustomRoute.navigateTo(context, SubscriptionScreen());
-                  // },
-                  // title: 'Login',
+                  text: 'Login',
+                  color: AppColors.greenbutton,
+                  onPressed: _loginUser, // Call the login method
                 ),
                 SizedBox(height: 100.h),
-
                 GestureDetector(
                   onTap: () {
-                    //       CustomRoute.navigateTo(context, SignupView());
+                    Get.to(() => SignupView());
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -175,17 +200,11 @@ class _LoginViewState extends State<LoginView> {
                         textColor: Color.fromRGBO(192, 208, 221, 1),
                         fontWeight: FontWeight.w400,
                       ),
-                      GestureDetector(
-                       onTap: (){
-                         Get.to(()=>SignupView());
-
-                       },
-                        child: CustomText(
-                          text: ' Sign Up',
-                          fontSize: 15.sp,
-                          textColor: AppColors.redColor,
-                          fontWeight: FontWeight.w400,
-                        ),
+                      CustomText(
+                        text: ' Sign Up',
+                        fontSize: 15.sp,
+                        textColor: AppColors.redColor,
+                        fontWeight: FontWeight.w400,
                       ),
                     ],
                   ),
