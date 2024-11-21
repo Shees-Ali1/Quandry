@@ -9,6 +9,7 @@ class CustomButton extends StatelessWidget {
   final double? width; // Optional width parameter
   final Color? textColor; // Optional text color parameter
   final double? fontSize; // Optional font size parameter
+  final bool? loading; // Optional font size parameter
 
   const CustomButton({
     Key? key,
@@ -17,12 +18,24 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.width, // Initialize optional width
     this.textColor, // Initialize optional text color
-    this.fontSize, // Initialize optional font size
+    this.fontSize,
+    this.loading = false, // Initialize optional font size
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return loading == true
+        ? Container(
+             height: 51.h,
+             width: width ?? double.infinity,
+             decoration: BoxDecoration(
+               color: color,
+               borderRadius: BorderRadius.circular(13.13.r),
+             ),
+             alignment: Alignment.center,
+             child: CircularProgressIndicator(color: Colors.white),
+         )
+        : SizedBox(
       height: 51.h,
       width: width ?? double.infinity, // Use provided width or default to double.infinity
       child: ElevatedButton(

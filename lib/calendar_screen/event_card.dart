@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventCard extends StatelessWidget {
   final String imageAsset; // Change this to imageAsset
@@ -14,6 +15,7 @@ class EventCard extends StatelessWidget {
   final String location;
   final String credits;
   final String priceRange;
+  final QueryDocumentSnapshot<Object?>? event;
 
   const EventCard({
     Key? key,
@@ -22,7 +24,7 @@ class EventCard extends StatelessWidget {
     required this.date,
     required this.location,
     required this.credits,
-    required this.priceRange,
+    required this.priceRange, required this.event,
   }) : super(key: key);
 
   @override
@@ -52,8 +54,8 @@ class EventCard extends StatelessWidget {
                   child: Container(
                     height: double.infinity, // Use responsive height
                     width: 150.w, // Adjusted width for image
-                    child: Image.asset(
-                      AppImages.event_card_image,
+                    child: Image.network(
+                      imageAsset,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -130,7 +132,7 @@ class EventCard extends StatelessWidget {
                         height: 28.h,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.to(() => EventDetail());
+                            Get.to(() => EventDetail(event: event!,));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.fillcolor,

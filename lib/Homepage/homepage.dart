@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:get/get.dart';
+import 'package:quandry/controllers/home_controller.dart';
+import 'package:quandry/controllers/profile_controller.dart';
 import 'package:quandry/widgets/tabs_appbar.dart';
 
 import '../Drawer/drawer.dart';
@@ -20,45 +22,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Sample data for the events
-  final List<Map<String, String>> events = [
-    {
-      "title": "California Art Festival 2024",
-      "location": "Dana Point, CA",
-      "date": "Oct 23-25 10PM",
-      "credits": "10 CE",
-      "price": "Free - \$500/seat",
-    },
-    {
-      "title": "Utah Fall Conference on Substance Use",
-      "location": "St. George, UT",
-      "date": "Oct 23-25, 2024",
-      "credits": "10 CE Credits",
-      "price": "Free - \$500/seat",
-    },
-    {
-      "title": "California Art Festival 2024",
-      "location": "Dana Point, CA",
-      "date": "Oct 23-25 10PM",
-      "credits": "10 CE",
-      "price": "Free - \$500/seat",
-    },
-    {
-      "title": "Utah Fall Conference on Substance Use",
-      "location": "St. George, UT",
-      "date": "Oct 23-25, 2024",
-      "credits": "10 CE Credits",
-      "price": "Free - \$500/seat",
-    },
-
-    {
-      "title": "Utah Fall Conference on Substance Use",
-      "location": "St. George, UT",
-      "date": "Oct 23-25, 2024",
-      "credits": "10 CE Credits",
-      "price": "Free - \$500/seat",
-    },
-  ];
+  final ProfileController profileVM = Get.put(ProfileController());
+  final Homecontroller homeVM = Get.find<Homecontroller>();
 
 
   final TextEditingController _searchController = TextEditingController();
@@ -67,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
+    profileVM.getUserData();
+    profileVM.getCurrentLocation();
   }
 
   @override
@@ -105,16 +72,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 10,),
                     // ListView.builder for Event Cards
-                    Container(
-                      height: 120.h,// Adjusted width for better match
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: events.length,
-                        itemBuilder: (context, index) {
-                          return _buildEventCard(events[index]);
-                        },
-                      ),
-                    ),
+                    // Container(
+                    //   height: 120.h,// Adjusted width for better match
+                    //   child: ListView.builder(
+                    //     scrollDirection: Axis.horizontal,
+                    //     itemCount: events.length,
+                    //     itemBuilder: (context, index) {
+                    //       return _buildEventCard(events[index]);
+                    //     },
+                    //   ),
+                    // ),
                     // Section Title - Events
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -132,24 +99,49 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     // Single Event Card (Detailed)
-                    ListView.builder(
-                      physics: NeverScrollableScrollPhysics(), // Disable inner scrolling
-                      shrinkWrap: true,
-                      itemCount: 2, // Number of events you want to display
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 10.0), // Adjust the space between items
-                          child: EventCard(
-                            imageAsset: AppImages.event_card_image, // Use imageAsset instead of imageUrl
-                            title: 'Utah Fall Conference \non Substance Use',
-                            date: 'Oct 23-25, 2024',
-                            location: 'St. George, UT',
-                            credits: '10 CE Credits',
-                            priceRange: 'Free - \$500/seat',
-                          ),
-                        );
-                      },
-                    ),          ],
+                    StreamBuilder(
+                      stream: homeVM.eventStream(),
+                      builder: (context, snapshot) {
+
+                        if(snapshot.connectionState == ConnectionState.waiting){
+                          return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
+                        } else if (snapshot.hasError){
+                          debugPrint("Error in events stream home page: ${snapshot.error}");
+                          return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
+                        } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
+                          return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor),));
+                        } else if(snapshot.connectionState == ConnectionState.none){
+                          return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
+                        } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
+
+                          var events = snapshot.data!.docs;
+
+                          return ListView.builder(
+                            physics: NeverScrollableScrollPhysics(), // Disable inner scrolling
+                            shrinkWrap: true,
+                            itemCount: events.length, // Number of events you want to display
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: 10.0), // Adjust the space between items
+                                child: EventCard(
+                                  event: events[index],
+                                  imageAsset: events[index]['event_image'], // Use imageAsset instead of imageUrl
+                                  title: events[index]['event_name'],
+                                  date: events[index]['event_date'],
+                                  location: events[index]['event_location'],
+                                  credits: '10 CE Credits',
+                                  priceRange: "\$" + events[index]['event_price'].toString() + "/seat",
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return SizedBox();
+                        }
+
+                      }
+                    ),
+                  ],
                 ),
               ),
             ],

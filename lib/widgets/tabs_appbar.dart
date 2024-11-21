@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
+import 'package:quandry/controllers/profile_controller.dart';
 import 'package:quandry/profile_screen/user_profile.dart';
 import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
 import 'package:quandry/setting_screen/notification_setting/notification_setting.dart';
@@ -11,6 +12,10 @@ import '../Homepage/filter_home.dart';
 import '../bottom_nav/bottom_nav.dart';
 
 class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final ProfileController profileVM = Get.put(ProfileController());
+
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -125,12 +130,15 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                     GestureDetector(
                       onTap: (){
                         final navBarState = context.findAncestorStateOfType<AppNavBarState>();
-                        navBarState?.navigateToPage(3);
+                        navBarState?.navigateToPage(2);
                       },
-                      child: Image.asset(
-                        AppImages.profile_image_small,
-                        height: 29.h,
-                        width: 29.w,
+                      child: Obx(
+                        ()=> CircleAvatar(
+                          radius: 16.r,
+                          backgroundColor: AppColors.greenbutton,
+                          backgroundImage: profileVM.profilePicture.value != "" ? NetworkImage(profileVM.profilePicture.value) : null,
+                          child: profileVM.profilePicture.value != "" ? SizedBox() : Icon(Icons.person, size: 25.w, color: AppColors.primaryColor,),
+                        ),
                       ),
                     ),
                   ],

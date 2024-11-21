@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 class AuthController extends GetxController {
 
 
-
+  RxBool loading = false.obs;
   RxString signupName = "".obs;
   RxString signupEmail = "".obs;
   RxString signupPass = "".obs;

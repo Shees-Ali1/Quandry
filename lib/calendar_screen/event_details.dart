@@ -12,16 +12,30 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quandry/suggestions.dart';
 
 import '../otherUser/OtherUserProfile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class EventDetail extends StatelessWidget {
+class EventDetail extends StatefulWidget {
+
+  final QueryDocumentSnapshot<Object?> event;
+
+
+  EventDetail({super.key, required this.event});
+
+
+  @override
+  State<EventDetail> createState() => _EventDetailState();
+}
+
+class _EventDetailState extends State<EventDetail> {
+
   // Random name generator list
-  static const List<String> randomNames = [
+    List<String> randomNames = [
     "Alex", "Jordan", "Taylor", "Morgan", "Casey", "Drew", "Skyler", "Logan",
     "Harper", "Reese", "Quinn", "Dakota", "Blake", "Avery", "Jamie", "Peyton",
     "Riley", "Hunter"
   ];
 
-  static const List<String> fullNames = [
+    List<String> fullNames = [
     "Alex Johnson", "Jordan Smith", "Taylor Brown", "Morgan Davis",
     "Casey Wilson", "Drew Anderson", "Skyler Wilson", "Logan Martinez",
     "Harper Garcia", "Reese Alais", "Quinn Lopez", "Dakota Hill",
@@ -29,19 +43,20 @@ class EventDetail extends StatelessWidget {
     "Riley Wright", "Hunter Green"
   ];
 
-  // Generate user profiles with random names, full names, and verified statuses
-  final List<Map<String, String>> userProfiles = List.generate(
-    17, // Number of followers
-        (index) {
-      final isVerified = Random().nextBool();
-      return {
-        "username": "@${randomNames[Random().nextInt(randomNames.length)]}$index",
-        "fullName": fullNames[Random().nextInt(fullNames.length)],
-        "verified": isVerified.toString(), // Convert bool to String
-        "profilePic": "https://i.pravatar.cc/150?img=${index + 1}",
-      };
-    },
-  );
+  // // Generate user profiles with random names, full names, and verified statuses
+  // final List<Map<String, String>> userProfiles = List.generate(
+  //   17, // Number of followers
+  //       (index) {
+  //     final isVerified = Random().nextBool();
+  //     return {
+  //       "username": "@${EventDetail.randomNames[Random().nextInt(EventDetail.randomNames.length)]}$index",
+  //       "fullName": EventDetail.fullNames[Random().nextInt(EventDetail.fullNames.length)],
+  //       "verified": isVerified.toString(), // Convert bool to String
+  //       "profilePic": "https://i.pravatar.cc/150?img=${index + 1}",
+  //     };
+  //   },
+  // );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,8 +65,8 @@ class EventDetail extends StatelessWidget {
         child: Column(
           children: [
             Stack(children: [
-              Image.asset(
-                "assets/images/partyy.png",
+              Image.network(
+                widget.event['event_image'],
                 width: double.infinity,
               ),
               Positioned(
@@ -69,7 +84,7 @@ class EventDetail extends StatelessWidget {
                   bottom: 35.h,
                   left: 18.w,
                   child: Text(
-                    'Utah Fall Conference on\nSubstance Us',
+                      widget.event['event_name'],
                     style: jost700(26.sp, Color.fromRGBO(255, 255, 255, 1)),
                     maxLines: 2,
                   )),
@@ -93,7 +108,7 @@ class EventDetail extends StatelessWidget {
                           children: [
                             Icon(FontAwesomeIcons.calendarDay, size: 14.0.sp, color: AppColors.blueColor),
                             SizedBox(width: 13.w),
-                            Text('Oct 23-25,2024',
+                            Text( widget.event['event_date'],
                               style: montserrat600(14.sp, AppColors.blueColor),
                             ),
                             SizedBox(width: 105.w,),
@@ -125,7 +140,7 @@ class EventDetail extends StatelessWidget {
                           children: [
                             Icon(FontAwesomeIcons.tag, size: 14.0.sp, color: AppColors.blueColor),
                             SizedBox(width: 13.w),
-                            Text('Free - \$500/seat', style: jost600(14.sp, AppColors.blueColor),),
+                            Text("\$" + widget.event['event_price'].toString() + "/seat", style: jost600(14.sp, AppColors.blueColor),),
                           ],
                         ),
                         SizedBox(height: 10.h),
@@ -133,7 +148,7 @@ class EventDetail extends StatelessWidget {
                           children: [
                             Icon(FontAwesomeIcons.ticket, size: 14.0.sp, color: AppColors.blueColor),
                             SizedBox(width: 13.w),
-                            Text('Dixie Convention Center', style: jost600(14.sp, AppColors.blueColor),),
+                            Text(widget.event['event_location'], style: jost600(14.sp, AppColors.blueColor),),
                           ],
                         ),
                       ],
@@ -169,7 +184,7 @@ class EventDetail extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            _showFollowingDialog(context, userProfiles);
+                           // _showFollowingDialog(context, userProfiles);
                           },
                           child: Padding(
                             padding: EdgeInsets.only(top: 22.0.h),
@@ -184,7 +199,7 @@ class EventDetail extends StatelessWidget {
                                   height: 8.h,
                                 ),
                                 Text(
-                                  "17",
+                                  widget.event['following'].length.toString(),
                                   style:
                                   jost700(24.sp, AppColors.backgroundColor),
                                 ),
@@ -222,7 +237,7 @@ class EventDetail extends StatelessWidget {
                                 height: 8.h,
                               ),
                               Text(
-                                "9",
+                                widget.event['planned'].length.toString(),
                                 style:
                                 jost700(24.sp, AppColors.backgroundColor),
                               ),
@@ -259,7 +274,7 @@ class EventDetail extends StatelessWidget {
                                 height: 8.h,
                               ),
                               Text(
-                                "3",
+                                widget.event['favourited'].length.toString(),
                                 style:
                                 jost700(24.sp, AppColors.backgroundColor),
                               ),
@@ -582,6 +597,7 @@ class EventDetail extends StatelessWidget {
       ),
     );
   }
+
   void _showFollowingDialog(BuildContext context, List<Map<String, String>> profiles) {
     showDialog(
       context: context,
@@ -616,7 +632,7 @@ class EventDetail extends StatelessWidget {
                       final profile = profiles[index];
                       return ListTile(
                         onTap: (){
-                          Get.to(OtherUserProfilePage(profilePic: profile['profilePic']!, userName: profile['username']!, verified:profile['verified']!, fullName:   profile['fullName']!,));
+                          Get.to(OtherUserProfilePage(uid: 'dE7gnWSqx6RJiJAhZvyaZSAAyga2'));
                         },
                         leading: CircleAvatar(
                           backgroundImage: NetworkImage(profile['profilePic']!),
@@ -684,5 +700,4 @@ foregroundColor: Colors.white,
       },
     );
   }
-
 }

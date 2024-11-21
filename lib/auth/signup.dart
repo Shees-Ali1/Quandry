@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart'; // Import Firebase Storage
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:quandry/controller/auth_controller.dart';
 import 'dart:io';
 
 import '../const/colors.dart';
@@ -23,6 +24,7 @@ class SignupView extends StatefulWidget {
 }
 
 class _SignupViewState extends State<SignupView> {
+  final AuthController authVM = Get.find<AuthController>();
   bool isChecked = false;
   File? _image; // Variable to store the selected image
 
@@ -37,6 +39,9 @@ class _SignupViewState extends State<SignupView> {
 
   // Method to register the user
   Future<void> _registerUser() async {
+
+    authVM.loading.value = true;
+
     if (_image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please select a profile picture.')),
@@ -65,17 +70,28 @@ class _SignupViewState extends State<SignupView> {
         await _firestore.collection('users').doc(user.uid).set({
           'name': _nameController.text.trim(),
           'email': user.email,
-          'profilePicture': downloadUrl, // Save the download URL of the profile picture
-          'createdAt': Timestamp.now(),
+          'bio': '',
+          'phone_number': '',
+          'profile_pic': downloadUrl, // Save the download URL of the profile picture
+          'joined': Timestamp.now(),
+          'followers': [],
+          'following': [],
+          'favourites': [],
+          'events': [],
+          'location': '',
+          'profile_type': 'Public',
+          'uid': user.uid,
         });
 
         // Update the password for the current user
         await user.updatePassword(_passwordController.text.trim());
+        authVM.loading.value = false;
 
         // Navigate to the LoginView screen after successful registration
         Get.offAll(() => LoginView()); // Use Get.offAll to replace the current screen with LoginView
       }
     } catch (e) {
+      authVM.loading.value = false;
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
@@ -260,10 +276,13 @@ class _SignupViewState extends State<SignupView> {
                     SizedBox(height: 24.25.h),
 
                     // Continue Button
-                    CustomButton(
-                      color: AppColors.greenbutton,
-                      text: "Continue",
-                      onPressed: _registerUser, // Call _registerUser on press
+                    Obx(
+                      ()=> CustomButton(
+                        loading: authVM.loading.value,
+                        color: AppColors.greenbutton,
+                        text: "Continue",
+                        onPressed: _registerUser, // Call _registerUser on press
+                      ),
                     ),
                     SizedBox(height: 14.25.h),
 

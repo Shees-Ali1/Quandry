@@ -65,6 +65,7 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
                     return Padding(
                       padding: EdgeInsets.only(bottom: 10.0), // Adjust the space between items
                       child: EventCard(
+                        event: null,
                         imageAsset: AppImages.event_card_image, // Use imageAsset instead of imageUrl
                         title: 'Utah Fall Conference on Substance Use',
                         date: 'Oct 23-25, 2024',

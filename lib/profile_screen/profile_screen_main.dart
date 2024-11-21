@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
+import 'package:quandry/controllers/profile_controller.dart';
 import 'dart:io';
 import 'package:quandry/widgets/appbar_small.dart';
 import 'package:quandry/widgets/custom_button.dart';
@@ -22,8 +23,9 @@ class ProfileScreenMain extends StatefulWidget {
 }
 
 class _ProfileScreenMainState extends State<ProfileScreenMain> {
+  final ProfileController profileVM = Get.put(ProfileController());
+
   String? _imagePath; // Store the image path
-  String? _profilePictureUrl;
 
   // Controllers for the text fields
   final TextEditingController firstname = TextEditingController();
@@ -32,6 +34,7 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
   final TextEditingController phone = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController bioController = TextEditingController(); // Added bio field
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -42,10 +45,7 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
   @override
   void initState() {
     super.initState();
-    _user = _auth.currentUser;
-    if (_user != null) {
-      _loadUserProfile();
-    }
+    email.text = profileVM.email.value;
   }
 
   @override
@@ -56,25 +56,8 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
     phone.dispose();
     passwordController.dispose();
     newPasswordController.dispose();
+    bioController.dispose(); // Dispose of the bio controller
     super.dispose();
-  }
-
-  void _loadUserProfile() async {
-    try {
-      DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(_user!.uid).get();
-      if (userDoc.exists && userDoc.data() != null) {
-        Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-
-        setState(() {
-          _profilePictureUrl = userData['profilePicture'];
-          phone.text = userData['mobileNumber'] ?? '';
-          email.text = _user!.email ?? '';
-        });
-      }
-    } catch (e) {
-      print('Failed to load user profile: $e');
-    }
   }
 
   /// Image Source dialog Box
@@ -96,7 +79,7 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                   _pickImage(ImageSource.gallery);
                 },
                 child:
-                    Text('Gallery', style: jost400(14.sp, AppColors.blueColor)),
+                Text('Gallery', style: jost400(14.sp, AppColors.blueColor)),
               ),
               TextButton(
                 onPressed: () {
@@ -104,7 +87,7 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                   _pickImage(ImageSource.camera);
                 },
                 child:
-                    Text('Camera', style: jost400(14.sp, AppColors.blueColor)),
+                Text('Camera', style: jost400(14.sp, AppColors.blueColor)),
               ),
             ],
           ),
@@ -129,16 +112,14 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
         String fileName =
             _user!.uid + DateTime.now().millisecondsSinceEpoch.toString();
         TaskSnapshot uploadTask =
-            await _storage.ref('profile_pictures/$fileName').putFile(imageFile);
+        await _storage.ref('profile_pictures/$fileName').putFile(imageFile);
         String downloadUrl = await uploadTask.ref.getDownloadURL();
 
         await _firestore.collection('users').doc(_user!.uid).update({
           'profilePicture': downloadUrl,
         });
 
-        setState(() {
-          _profilePictureUrl = downloadUrl;
-        });
+        profileVM.temporary_pic.value = downloadUrl;
       } catch (e) {
         print('Failed to upload image: $e');
       }
@@ -167,7 +148,7 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                   );
                   await _user!.reauthenticateWithCredential(credentials);
 
-                  // Update email
+                  // Update email if changed
                   if (email.text.isNotEmpty && email.text != _user!.email) {
                     await _user!.updateEmail(email.text);
                     await _firestore
@@ -175,23 +156,22 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                         .doc(_user!.uid)
                         .update({
                       'email': email.text,
+                    }).then((val){
+                      email.clear();
                     });
                   }
 
-                  // Update password
+                  // Update password if changed
                   if (newPasswordController.text.isNotEmpty) {
-                    await _user!.updatePassword(newPasswordController.text);
+                    await _user!.updatePassword(newPasswordController.text).then((val){
+                      newPasswordController.clear();
+                    });
                   }
 
-                  // Update mobile number
-                  String numericPhone =
-                      phone.text.replaceAll(RegExp(r'\D'), '');
-                  if (numericPhone.isNotEmpty) {
-                    await _firestore
-                        .collection('users')
-                        .doc(_user!.uid)
-                        .update({'mobileNumber': numericPhone});
-                  }
+
+
+                  // Update bio if changed
+
 
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -201,7 +181,7 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                   print('Failed to update profile: $e');
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content:
-                          Text('Failed to update profile. Please try again.')));
+                      Text('Failed to update profile. Please try again.')));
                 }
               },
               child: Text("Save"),
@@ -211,6 +191,53 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
       },
     );
   }
+
+  void _saveProfileChanges() async {
+    bool isUpdated = false; // Flag to check if any field was updated
+
+    // Update bio if not empty
+    if (bioController.text.isNotEmpty) {
+      await _firestore
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({'bio': bioController.text}).then((val){
+            profileVM.bio.value = bioController.text;
+            bioController.clear();
+      });
+      isUpdated = true; // Mark as updated
+    }
+
+    // Update phone number if not empty
+    if (phone.text.isNotEmpty) {
+      String numericPhone = phone.text.replaceAll(RegExp(r'\D'), '');
+      if (numericPhone.isNotEmpty) {
+        await _firestore
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({'mobileNumber': numericPhone}).then((val){
+              phone.clear();
+        });
+        isUpdated = true; // Mark as updated
+      }
+    }
+
+    // Show old password dialog if email or password is changed
+    if (newPasswordController.text.isNotEmpty || (email.text.isNotEmpty && email.text != profileVM.email.value)) {
+      _showOldPasswordDialog();
+      isUpdated = true; // Mark as updated
+    }
+
+    // Show snackbar only if any update has occurred
+    if (isUpdated) {
+      Get.snackbar(
+        "Profile Updated",
+        "Your changes have been made",
+        colorText: Colors.white,
+        backgroundColor: AppColors.blueColor
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -242,10 +269,10 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                           height: 120.h,
                           width: 120.w,
                           child: CircleAvatar(
-                            backgroundImage: _profilePictureUrl != null
-                                ? NetworkImage(_profilePictureUrl!)
-                                : AssetImage(AppImages.profile_pic)
-                                    as ImageProvider,
+                            backgroundImage: profileVM.temporary_pic.value != ""
+                                ? NetworkImage(profileVM.temporary_pic.value)
+                                : NetworkImage(profileVM.profilePicture.value)
+                            as ImageProvider,
                             radius: 60,
                           ),
                         ),
@@ -259,7 +286,7 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                               height: 46.h,
                               child: CircleAvatar(
                                 backgroundColor:
-                                    Color.fromRGBO(18, 26, 26, 0.30),
+                                Color.fromRGBO(18, 26, 26, 0.30),
                                 child: SizedBox(
                                   width: 23.w,
                                   height: 20.7.h,
@@ -274,8 +301,18 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                   ),
                 ),
                 SizedBox(height: 43.h),
-                Text("Change Phone Number",
-                    style: jost700(12.sp, AppColors.blueColor)),
+                Text("Change Bio", style: jost700(12.sp, AppColors.blueColor)),
+                SizedBox(height: 10.h),
+                CustomTextField1(
+                  controller: bioController, // Added controller
+                  hintText: 'Enter Bio here...',
+                  prefixIcon: null,
+                  borderColor: AppColors.textfieldBorder,
+                  borderWidth: 1.w,
+                  suffixIcon: null,
+                ),
+                SizedBox(height: 12.h),
+                Text("Change Phone Number", style: jost700(12.sp, AppColors.blueColor)),
                 SizedBox(height: 10.26.h),
                 IntlPhoneField(
                   flagsButtonPadding: EdgeInsets.only(left: 13.w),
@@ -312,48 +349,36 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                   },
                 ),
                 SizedBox(height: 12.h),
-                Text("Change Email",
-                    style: jost700(12.sp, AppColors.blueColor)),
+                Text("Change Email", style: jost700(12.sp, AppColors.blueColor)),
                 SizedBox(height: 10.h),
-                /// Change Email TextField
                 CustomTextField1(
                   controller: email, // Added controller
                   hintText: 'yousafayub65@gmail.com',
                   prefixIcon: null,
                   borderColor: AppColors.textfieldBorder,
                   borderWidth: 1.w,
+                  suffixIcon: null,
                 ),
-                SizedBox(height: 15.h),
+                SizedBox(height: 12.h),
                 Text("Change Password", style: jost700(12.sp, AppColors.blueColor)),
                 SizedBox(height: 10.h),
-                /// Change Password TextField
                 CustomTextField1(
                   controller: newPasswordController, // Added controller
+                  hintText: 'Enter New Password',
+                  prefixIcon: null,
                   borderColor: AppColors.textfieldBorder,
                   borderWidth: 1.w,
-                  hintText: 'Enter your new password',
-                  obscureText: true,
-                  obscuringCharacter: '*',
-                  suffixIcon: Icons.visibility,
-                  hintTextSize: 12.sp,
-                  prefixIcon: null,
+                  suffixIcon: null,
                 ),
-                SizedBox(height: 31.h),
-            CustomButton(
-              text: "Save", // Changed 'title' to 'text' to match your button's constructor
-              color: AppColors.blueColor, // Use your defined button color
-              onPressed: () async {
-                try {
-                  // Show the dialog to enter the old password
-                  _showOldPasswordDialog();
-                } catch (e) {
-                  print('Error showing password dialog: $e');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to update profile. Please try again.')),
-                  );
-                }
-              },
-            ),
+                SizedBox(height: 40.h),
+                // Save changes button
+                CustomButton(
+                  onPressed: () async{
+                    _saveProfileChanges();
+                  },
+                  text: 'Save',
+                  color: AppColors.blueColor
+                ),
               ],
             ),
           ),

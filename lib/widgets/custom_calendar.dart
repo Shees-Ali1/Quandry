@@ -25,7 +25,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
         children: [
           /// calendar Container
           Container(
-            height: 240.h,
+            height: 242.h,
             decoration: BoxDecoration(
               color: AppColors.fillcolor,
               borderRadius: BorderRadius.circular(11.r),
