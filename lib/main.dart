@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:quandry/controller/auth_controller.dart';
 import 'package:quandry/controller/selectedtype_controller.dart';
+import 'package:quandry/controllers/event_contorller.dart';
 import 'package:quandry/controllers/home_controller.dart';
 import 'package:quandry/controllers/nav_bar_controller.dart';
 import 'package:quandry/controllers/profile_controller.dart';
@@ -22,6 +23,7 @@ void main() async {
   Get.put(Homecontroller());
   Get.put(SelectedTypeController());
   Get.put(UserController());
+  Get.put(EventController());
   // Get.put(ProfileController());
 
 

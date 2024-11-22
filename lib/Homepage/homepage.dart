@@ -11,8 +11,8 @@ import '../Drawer/drawer.dart';
 import '../calendar_screen/event_card.dart';
 import '../const/images.dart';
 import '../profile_screen/user_profile.dart';
-import '../widgets/appbar.dart';
-import '../widgets/home_app_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -72,16 +72,41 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 10,),
                     // ListView.builder for Event Cards
-                    // Container(
-                    //   height: 120.h,// Adjusted width for better match
-                    //   child: ListView.builder(
-                    //     scrollDirection: Axis.horizontal,
-                    //     itemCount: events.length,
-                    //     itemBuilder: (context, index) {
-                    //       return _buildEventCard(events[index]);
-                    //     },
-                    //   ),
-                    // ),
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection('events').where("attending", arrayContains: FirebaseAuth.instance.currentUser!.uid).snapshots(),
+                      builder: (context, snapshot) {
+
+                        if(snapshot.connectionState == ConnectionState.waiting){
+                          return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
+                        } else if (snapshot.hasError){
+                          debugPrint("Error in events stream home page: ${snapshot.error}");
+                          return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
+                        } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
+                          return Center(child: Text("You are attending no events.", style: jost500(16.sp, AppColors.blueColor),));
+                        } else if(snapshot.connectionState == ConnectionState.none){
+                          return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
+                        } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
+
+                          var events = snapshot.data!.docs;
+
+                          return Container(
+                            height: 120.h,// Adjusted width for better match
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: events.length,
+                              itemBuilder: (context, index) {
+                                return _buildEventCard(events[index]);
+                              },
+                            ),
+                          );
+                        } else {
+                          return SizedBox();
+                        }
+                        
+                        
+
+                      }
+                    ),
                     // Section Title - Events
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -152,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Widget to build a horizontal event card
-  Widget _buildEventCard(Map<String, String> event) {
+  Widget _buildEventCard(QueryDocumentSnapshot<Object?>? event) {
     return
       // Main Card Content (Background with Title and Event Info)
       Padding(
@@ -176,20 +201,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Event Image (Placeholder)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12.r),
-                      child: Image.asset(
-                        AppImages.event_card_image,
+                      child: Image.network(
+                        event!['event_image'],
                         width: 42.39.w,
                         height: 41.27.h,
                         fit: BoxFit.cover,
                       ),
                     ),
                     SizedBox(width: 10.w,),
-
-
                     // Event Title
                     Expanded(
                       child: Text(
-                        event["title"]!,
+                        event!["event_name"]!,
                         style: jost700(10.54.sp, AppColors.backgroundColor),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -229,15 +252,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      event["date"]!,
+                      event["event_date"]!,
                       style: jost500(8.78.sp, AppColors.backgroundColor),
                     ),
                     Text(
-                      event["location"]!,
+                      event["event_location"]!,
                       style: jost500(8.78.sp, AppColors.backgroundColor),
                     ),
                     Text(
-                      event["credits"]!,
+                      "10c",
                       style: jost500(8.78.sp, AppColors.backgroundColor),
                     ),
                   ],
@@ -257,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   child: Text(
-                    event["price"]!,
+                    event["event_price"]!.toString(),
                     style: jost600(10.sp, AppColors.blueColor),
                     textAlign: TextAlign.center,
                   ),
@@ -273,78 +296,78 @@ class _HomeScreenState extends State<HomeScreen> {
 
   }
 
-  Widget _buildDetailedEventCard(Map<String, String> event) {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        child: Row(
-          children: [
-            // Event Image Placeholder
-            Container(
-              width: 100.w,
-              height: 100.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                color: Colors.grey[300],
-              ),
-            ),
-            SizedBox(width: 12.w),
-            // Event Details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    event["title"]!,
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    event["location"]!,
-                    style: TextStyle(fontSize: 14.sp, color: Colors.grey),
-                  ),
-                  SizedBox(height: 8.h),
-                  Text(
-                    event["date"]!,
-                    style: TextStyle(fontSize: 14.sp),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    event["credits"]!,
-                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    event["price"]!,
-                    style: TextStyle(fontSize: 14.sp, color: Colors.blue),
-                  ),
-                ],
-              ),
-            ),
-            // View Button
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-              ),
-              child: Text(
-                "View",
-                style: TextStyle(fontSize: 14.sp),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildDetailedEventCard(Map<String, String> event) {
+  //   return Card(
+  //     elevation: 5,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(12.r),
+  //     ),
+  //     child: Container(
+  //       padding: EdgeInsets.all(16),
+  //       child: Row(
+  //         children: [
+  //           // Event Image Placeholder
+  //           Container(
+  //             width: 100.w,
+  //             height: 100.h,
+  //             decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.circular(12.r),
+  //               color: Colors.grey[300],
+  //             ),
+  //           ),
+  //           SizedBox(width: 12.w),
+  //           // Event Details
+  //           Expanded(
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Text(
+  //                   event["title"]!,
+  //                   style: TextStyle(
+  //                     fontSize: 18.sp,
+  //                     fontWeight: FontWeight.bold,
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: 4.h),
+  //                 Text(
+  //                   event["location"]!,
+  //                   style: TextStyle(fontSize: 14.sp, color: Colors.grey),
+  //                 ),
+  //                 SizedBox(height: 8.h),
+  //                 Text(
+  //                   event["date"]!,
+  //                   style: TextStyle(fontSize: 14.sp),
+  //                 ),
+  //                 SizedBox(height: 4.h),
+  //                 Text(
+  //                   event["credits"]!,
+  //                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+  //                 ),
+  //                 SizedBox(height: 4.h),
+  //                 Text(
+  //                   event["price"]!,
+  //                   style: TextStyle(fontSize: 14.sp, color: Colors.blue),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           // View Button
+  //           ElevatedButton(
+  //             onPressed: () {},
+  //             style: ElevatedButton.styleFrom(
+  //               shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(8.r),
+  //               ),
+  //             ),
+  //             child: Text(
+  //               "View",
+  //               style: TextStyle(fontSize: 14.sp),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
 }

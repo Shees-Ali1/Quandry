@@ -9,10 +9,12 @@ import 'package:get/get.dart';
 
 import 'package:quandry/const/textstyle.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:quandry/controllers/event_contorller.dart';
 import 'package:quandry/suggestions.dart';
 
 import '../otherUser/OtherUserProfile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EventDetail extends StatefulWidget {
 
@@ -28,34 +30,19 @@ class EventDetail extends StatefulWidget {
 
 class _EventDetailState extends State<EventDetail> {
 
-  // Random name generator list
-    List<String> randomNames = [
-    "Alex", "Jordan", "Taylor", "Morgan", "Casey", "Drew", "Skyler", "Logan",
-    "Harper", "Reese", "Quinn", "Dakota", "Blake", "Avery", "Jamie", "Peyton",
-    "Riley", "Hunter"
-  ];
+  final EventController eventVM = Get.find<EventController>();
 
-    List<String> fullNames = [
-    "Alex Johnson", "Jordan Smith", "Taylor Brown", "Morgan Davis",
-    "Casey Wilson", "Drew Anderson", "Skyler Wilson", "Logan Martinez",
-    "Harper Garcia", "Reese Alais", "Quinn Lopez", "Dakota Hill",
-    "Blake Allen", "Avery Young", "Jamie Hall", "Peyton King",
-    "Riley Wright", "Hunter Green"
-  ];
+  @override
+  void initState (){
+    super.initState();
+    eventVM.followers.value = widget.event['following'];
+    eventVM.planned.value = widget.event['attending'];
+    eventVM.favourite.value = widget.event['favourited'];
+    eventVM.attended.value = widget.event['attended'];
+    eventVM.reviews.value = widget.event['reviews'];
+  }
 
-  // // Generate user profiles with random names, full names, and verified statuses
-  // final List<Map<String, String>> userProfiles = List.generate(
-  //   17, // Number of followers
-  //       (index) {
-  //     final isVerified = Random().nextBool();
-  //     return {
-  //       "username": "@${EventDetail.randomNames[Random().nextInt(EventDetail.randomNames.length)]}$index",
-  //       "fullName": EventDetail.fullNames[Random().nextInt(EventDetail.fullNames.length)],
-  //       "verified": isVerified.toString(), // Convert bool to String
-  //       "profilePic": "https://i.pravatar.cc/150?img=${index + 1}",
-  //     };
-  //   },
-  // );
+
 
   @override
   Widget build(BuildContext context) {
@@ -124,15 +111,15 @@ class _EventDetailState extends State<EventDetail> {
                           children: [
                             Icon(Icons.location_on, size: 14.0.sp, color: AppColors.blueColor),
                             SizedBox(width: 13.w),
-                            Text('St.George, UT', style: jost600(14.sp, AppColors.blueColor),),
-                            SizedBox(width: 70.w),
+                            Expanded(child: Text(widget.event['event_location'], style: jost600(14.sp, AppColors.blueColor),)),
+                            SizedBox(),
                             FaIcon(
                               FontAwesomeIcons.bookOpen, // Use the Font Awesome book icon
                               size: 14.sp,
                               color: AppColors.blueColor,
                             ),
                             SizedBox(width: 5.w),
-                            Text('10 CE Credits', style: jost600(14.sp, AppColors.blueColor),),
+                            Text(widget.event['event_credits'] + " Cred.   ", style: jost600(14.sp, AppColors.blueColor),),
                           ],
                         ),
                         SizedBox(height: 10.h),
@@ -148,23 +135,24 @@ class _EventDetailState extends State<EventDetail> {
                           children: [
                             Icon(FontAwesomeIcons.ticket, size: 14.0.sp, color: AppColors.blueColor),
                             SizedBox(width: 13.w),
-                            Text(widget.event['event_location'], style: jost600(14.sp, AppColors.blueColor),),
+                            Text(widget.event['event_building'], style: jost600(14.sp, AppColors.blueColor),),
                           ],
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: 36.w),
                     height: 37.h,
                     decoration: BoxDecoration(color: AppColors.blueColor,borderRadius: BorderRadius.only(
                         bottomRight: Radius.circular(20.r),
                         bottomLeft: Radius.circular(20.r)),),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset('assets/images/person_check.png',height: 16.h,width: 14.w,),
                         SizedBox(width: 7.w,),
-                        Text('Utah Mental Health Counselors Association',style: montserrat600(10.sp, AppColors.whiteColor),)
+                        Text(widget.event['event_organizer'] ,style: montserrat600(10.sp, AppColors.whiteColor),)
                       ],
                     ),
                   ),
@@ -182,9 +170,9 @@ class _EventDetailState extends State<EventDetail> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        GestureDetector(
+                        InkWell(
                           onTap: () {
-                           // _showFollowingDialog(context, userProfiles);
+                            _showFollowingDialog(context);
                           },
                           child: Padding(
                             padding: EdgeInsets.only(top: 22.0.h),
@@ -198,10 +186,12 @@ class _EventDetailState extends State<EventDetail> {
                                 SizedBox(
                                   height: 8.h,
                                 ),
-                                Text(
-                                  widget.event['following'].length.toString(),
-                                  style:
-                                  jost700(24.sp, AppColors.backgroundColor),
+                                Obx(
+                                    ()=> Text(
+                                    eventVM.followers.length.toString(),
+                                    style:
+                                    jost700(24.sp, AppColors.backgroundColor),
+                                  ),
                                 ),
                               ],
                             ),
@@ -224,24 +214,31 @@ class _EventDetailState extends State<EventDetail> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 22.0.h),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Planned",
-                                style:
-                                jost600(14.sp, AppColors.backgroundColor),
-                              ),
-                              SizedBox(
-                                height: 8.h,
-                              ),
-                              Text(
-                                widget.event['planned'].length.toString(),
-                                style:
-                                jost700(24.sp, AppColors.backgroundColor),
-                              ),
-                            ],
+                        InkWell(
+                          onTap: (){
+                            _showPlannedDialog(context);
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 22.0.h),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Planned",
+                                  style:
+                                  jost600(14.sp, AppColors.backgroundColor),
+                                ),
+                                SizedBox(
+                                  height: 8.h,
+                                ),
+                                Obx(
+                                    ()=> Text(
+                                    eventVM.planned.length.toString(),
+                                    style:
+                                    jost700(24.sp, AppColors.backgroundColor),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Container(
@@ -261,24 +258,31 @@ class _EventDetailState extends State<EventDetail> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 22.0.h),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Favorited",
-                                style:
-                                jost600(14.sp, AppColors.backgroundColor),
-                              ),
-                              SizedBox(
-                                height: 8.h,
-                              ),
-                              Text(
-                                widget.event['favourited'].length.toString(),
-                                style:
-                                jost700(24.sp, AppColors.backgroundColor),
-                              ),
-                            ],
+                        InkWell(
+                          onTap: (){
+                            _showFavouritedDialog(context);
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 22.0.h),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Favourited",
+                                  style:
+                                  jost600(14.sp, AppColors.backgroundColor),
+                                ),
+                                SizedBox(
+                                  height: 8.h,
+                                ),
+                                Obx(
+                                    ()=> Text(
+                                    eventVM.favourite.length.toString(),
+                                    style:
+                                    jost700(24.sp, AppColors.backgroundColor),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         )
                       ],
@@ -297,7 +301,7 @@ class _EventDetailState extends State<EventDetail> {
                     height: 3.h,
                   ),
                   Text(
-                    '43 Years Strong: Elevate Your Substance Use Expertise! Escape to the vibrant red rock country for a program unlike any others. This 43-year tradition brings together passionate professionals– from prevention pioneers to treatment champions, recovery advocates, and wellness warriors.',
+                    widget.event["event_description"],
                     style: jost400(14.sp, Color.fromRGBO(52, 51, 51, 1)),
                   ),
                   SizedBox(
@@ -442,10 +446,18 @@ class _EventDetailState extends State<EventDetail> {
                           padding: EdgeInsets.only(left: 18.w),
                           child: Row(
                             children: [
-                              Image.asset(
-                                'assets/images/heart.png',
-                                height: 21.h,
-                                width: 25.w,
+                              Obx(
+                              ()=> InkWell(
+                                autofocus: false,
+                                onTap: (){
+                                  eventVM.favouriteToggle(widget.event['event_id'], widget.event["event_name"]);
+                                },
+                                child: Image.asset(
+                                   eventVM.favourite.contains(FirebaseAuth.instance.currentUser!.uid) ? 'assets/images/heart.png' : 'assets/images/heart_white.png',
+                                    height: 21.h,
+                                    width: 25.w,
+                                  ),
+                              ),
                               ),
                               SizedBox(
                                 width: 24.w,
@@ -469,10 +481,18 @@ class _EventDetailState extends State<EventDetail> {
                           padding: EdgeInsets.only(left: 18.w),
                           child: Row(
                             children: [
-                              Image.asset(
-                                'assets/images/eye.png',
-                                height: 32.h,
-                                width: 32.w,
+                              Obx(
+                              ()=> InkWell(
+                                autofocus: false,
+                                onTap: (){
+                                  eventVM.followToggle(widget.event['event_id']);
+                                },
+                                child: Image.asset(
+                                    eventVM.followers.contains(FirebaseAuth.instance.currentUser!.uid) ? 'assets/images/eye.png' : 'assets/images/eye_white.png',
+                                    height: 32.h,
+                                    width: 32.w,
+                                  ),
+                              ),
                               ),
                               SizedBox(
                                 width: 23.w,
@@ -503,10 +523,20 @@ class _EventDetailState extends State<EventDetail> {
                           padding: EdgeInsets.only(left: 9.w),
                           child: Row(
                             children: [
-                              Image.asset(
-                                'assets/images/circle.png',
-                                height: 30.h,
-                                width: 30.w,
+                              Obx(
+                                  ()=> InkWell(
+                                  autofocus: false,
+                                  onTap: (){
+                                    eventVM.goingToggle(widget.event["event_id"], widget.event["event_name"], widget.event["event_date"],);
+                                  },
+                                  child: Container(height: 30.h,width: 30.w,decoration: BoxDecoration(
+                                      color: eventVM.planned.contains(FirebaseAuth.instance.currentUser!.uid) ? AppColors.blueColor : Colors.white,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(width: 3.w,color: Colors.white)
+                                  ),
+                                    child: eventVM.planned.contains(FirebaseAuth.instance.currentUser!.uid) ? Icon(Icons.check,color: Colors.white,size: 15.sp,) : SizedBox(),
+                                  ),
+                                ),
                               ),
                               SizedBox(
                                 width: 14.w,
@@ -530,10 +560,20 @@ class _EventDetailState extends State<EventDetail> {
                           padding:  EdgeInsets.only(left: 9.w),
                           child: Row(
                             children: [
-                              Container(height: 30.h,width: 30.w,decoration: BoxDecoration(
-                                  color: AppColors.blueColor,shape: BoxShape.circle,border: Border.all(width: 3.w,color: Colors.white)
+                              Obx(
+                              ()=> InkWell(
+                                autofocus: false,
+                                onTap: (){
+                                  eventVM.iWent(widget.event["event_id"]);
+                                },
+                                child: Container(height: 30.h,width: 30.w,decoration: BoxDecoration(
+                                    color: eventVM.attended.contains(FirebaseAuth.instance.currentUser!.uid) ? AppColors.blueColor : Colors.white,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(width: 3.w,color: Colors.white)
+                                  ),
+                                    child: eventVM.attended.contains(FirebaseAuth.instance.currentUser!.uid) ? Icon(Icons.check,color: Colors.white,size: 15.sp,) : SizedBox(),
+                                  ),
                               ),
-                                child: Icon(Icons.check,color: Colors.white,size: 15.sp,),
                               ),
                               SizedBox(width: 14.w,),
                               Text("I went to this",style:jost700(14.sp, Colors.white) ,)
@@ -543,49 +583,110 @@ class _EventDetailState extends State<EventDetail> {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 7.h,
-                  ),
-                  Container(
-                    alignment: Alignment.topCenter,
-                    //  height: 140.h,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Color.fromRGBO(216, 229, 236, 1),
-                        borderRadius: BorderRadius.circular(20.r)),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 9.h,),
-                        Text('Attended this Event Previously?',style: montserrat600(12.sp, AppColors.blueColor),),
-                        SizedBox(height: 8.h,),
-                        Container(
-                          padding: EdgeInsets.only(left: 17.w,),
-                          height: 55.h,
-                          width: 229.w,
+                  Obx(() {
+                    if(eventVM.attended.contains(FirebaseAuth.instance.currentUser!.uid) && eventVM.reviews.any((review) => review['user_id'] != FirebaseAuth.instance.currentUser!.uid)){
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: 8.h,
+                          ),
+                          Container(
+                            alignment: Alignment.topCenter,
+                            //  height: 140.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Color.fromRGBO(216, 229, 236, 1),
+                                borderRadius: BorderRadius.circular(20.r)),
+                            child: Column(
+                              children: [
+                                SizedBox(height: 9.h),
+                                Text(
+                                  'Attended this Event Previously?',
+                                  style: montserrat600(12.sp, AppColors.blueColor),
+                                ),
+                                SizedBox(height: 8.h),
+                                Container(
+                                  padding: EdgeInsets.only(left: 17.w),
+                                  height: 55.h,
+                                  width: 229.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.blueColor,
+                                    borderRadius: BorderRadius.circular(22.r),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Row(
+                                        children: List.generate(5, (index) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                                eventVM.selectedStars.value = index + 1; // Update the stars count
+                                            },
+                                            child: Image.asset(
+                                              index < eventVM.selectedStars.value
+                                                  ? 'assets/images/star.png' // Filled star
+                                                  : 'assets/images/star_white.png', // Unfilled star
+                                              height: 26.h,
+                                              width: 26.w,
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                      SizedBox(width: 8.w),
+                                      Text(
+                                        '${eventVM.selectedStars} out of 5',
+                                        style: jost500(10.sp, Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                InkWell(
+                                  onTap: () {
+                                    eventVM.giveReview(widget.event['event_id'], eventVM.selectedStars.value.toString()); // Pass the rating to the parent
+                                  },
+                                  child: Container(
+                                    height: 34.h,
+                                    width: 105.w,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.blueColor,
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'Rate',
+                                        style: montserrat600(12.sp, AppColors.whiteColor),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 11.h),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    } else if (eventVM.attended.contains(FirebaseAuth.instance.currentUser!.uid) && eventVM.reviews.any((review) => review['user_id'] == FirebaseAuth.instance.currentUser!.uid)) {
+                      debugPrint(eventVM.reviews.toString());
+                      return Padding(
+                        padding:  EdgeInsets.only(top: 8.0.h),
+                        child: Container(
+                          width: double.infinity,
                           decoration: BoxDecoration(
-                            color: AppColors.blueColor,
-                            borderRadius: BorderRadius.circular(22.r),
-                          ),
-                          child: Row(
-
-                            children: [
-                              Image.asset('assets/images/stars.png',height: 26.h,width: 146.w,),
-                              Text('4 out of 5',style: jost500(9.sp,  Colors.white) ,)
-                            ],
+                              color: Color.fromRGBO(216, 229, 236, 1),
+                              borderRadius: BorderRadius.circular(14.r)),
+                          padding: EdgeInsets.all(10.w),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Thank You for your Review.',
+                            style: montserrat600(14.sp, AppColors.blueColor),
                           ),
                         ),
-                        SizedBox(height: 8.h,),
-                        Container(
-                          height: 34.h,
-                          width: 105.w,
-                          decoration: BoxDecoration(color: AppColors.blueColor,borderRadius: BorderRadius.circular(10.r)),
-                          child: Center(child: Text('Rate',style: montserrat600(12.sp, AppColors.whiteColor),)),
-                        ),
-
-                        SizedBox(height: 11.h,),
-                      ],
-                    ),
-                  ),
+                      );
+                    }
+                    else {
+                      return SizedBox();
+                    }
+                  }),
                   SizedBox(
                     height: 50,
                   )
@@ -598,7 +699,7 @@ class _EventDetailState extends State<EventDetail> {
     );
   }
 
-  void _showFollowingDialog(BuildContext context, List<Map<String, String>> profiles) {
+  void _showFollowingDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
@@ -624,59 +725,84 @@ class _EventDetailState extends State<EventDetail> {
                 Divider(
                   color: AppColors.blueColor,
                 ),
-                SizedBox(
-                  height: 300, // Adjust height for list
-                  child: ListView.builder(
-                    itemCount: profiles.length,
-                    itemBuilder: (context, index) {
-                      final profile = profiles[index];
-                      return ListTile(
-                        onTap: (){
-                          Get.to(OtherUserProfilePage(uid: 'dE7gnWSqx6RJiJAhZvyaZSAAyga2'));
-                        },
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(profile['profilePic']!),
-                        ),
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      profile['fullName']!,
-                                      style: TextStyle(color:AppColors.blueColor, fontWeight: FontWeight.bold),
-                                    ),
-                                    profile['verified'] == 'true'
-                                        ? Padding(
-                                      padding: const EdgeInsets.only(left: 4.0),
-                                      child: Image.asset(
-                                        'assets/images/qwandery-verified-professional.png',
-                                        height: 12.h,
-                                        width: 12.w
-                                        ,
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection("users").snapshots(),
+                  builder: (context, snapshot) {
+
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
+                    } else if (snapshot.hasError){
+                      debugPrint("Error in events stream home page: ${snapshot.error}");
+                      return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
+                    } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
+                      return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor),));
+                    } else if(snapshot.connectionState == ConnectionState.none){
+                      return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
+                    } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
+
+                      var users = snapshot.data!.docs;
+
+                      users.retainWhere((user) => eventVM.followers.contains(user['uid']));
+
+                      return SizedBox(
+                        height: 300, // Adjust height for list
+                        child: ListView.builder(
+                          itemCount: users.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              onTap: (){
+                                Get.to(OtherUserProfilePage(uid: users[index]['uid']));
+                              },
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(users[index]['profile_pic']),
+                              ),
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            users[index]['name'],
+                                            style: TextStyle(color:AppColors.blueColor, fontWeight: FontWeight.bold),
+                                          ),
+                                          users[index]['is_verified'] == true
+                                              ? Padding(
+                                            padding: const EdgeInsets.only(left: 4.0),
+                                            child: Image.asset(
+                                              'assets/images/qwandery-verified-professional.png',
+                                              height: 12.h,
+                                              width: 12.w
+                                              ,
+                                            ),
+                                          )
+                                              : SizedBox(),
+                                        ],
                                       ),
-                                    )
-                                        : SizedBox(),
-                                  ],
-                                ),
-                                Text(
-                                  profile['username']!,
-                                  style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
-                                ),
-                              ],
-                            ),
+                                      Text(
+                                        users[index]['name'],
+                                        style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
 
 
-                          ],
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       );
-                    },
-                  ),
+                    } else {
+                      return SizedBox();
+                    }
+
+
+                  }
                 ),
                 SizedBox(height: 8),
                 ElevatedButton(
@@ -687,7 +813,7 @@ class _EventDetailState extends State<EventDetail> {
 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.blueColor,
-foregroundColor: Colors.white,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -700,4 +826,261 @@ foregroundColor: Colors.white,
       },
     );
   }
+
+  void _showPlannedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor:       Color.fromRGBO(216, 229, 236, 1),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Planned",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.blueColor
+                  ),
+                ),
+                SizedBox(height: 8),
+                Divider(
+                  color: AppColors.blueColor,
+                ),
+                StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection("users").snapshots(),
+                    builder: (context, snapshot) {
+
+                      if(snapshot.connectionState == ConnectionState.waiting){
+                        return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
+                      } else if (snapshot.hasError){
+                        debugPrint("Error in events stream home page: ${snapshot.error}");
+                        return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
+                        return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.connectionState == ConnectionState.none){
+                        return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
+
+                        var users = snapshot.data!.docs;
+
+                        users.retainWhere((user) => eventVM.planned.contains(user['uid']));
+
+                        return SizedBox(
+                          height: 300, // Adjust height for list
+                          child: ListView.builder(
+                            itemCount: users.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                onTap: (){
+                                  Get.to(OtherUserProfilePage(uid: users[index]['uid']));
+                                },
+                                leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(users[index]['profile_pic']),
+                                ),
+                                title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              users[index]['name'],
+                                              style: TextStyle(color:AppColors.blueColor, fontWeight: FontWeight.bold),
+                                            ),
+                                            users[index]['is_verified'] == true
+                                                ? Padding(
+                                              padding: const EdgeInsets.only(left: 4.0),
+                                              child: Image.asset(
+                                                'assets/images/qwandery-verified-professional.png',
+                                                height: 12.h,
+                                                width: 12.w
+                                                ,
+                                              ),
+                                            )
+                                                : SizedBox(),
+                                          ],
+                                        ),
+                                        Text(
+                                          users[index]['name'],
+                                          style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+
+
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+
+
+                    }
+                ),
+                SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Close"),
+
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.blueColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showFavouritedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor:       Color.fromRGBO(216, 229, 236, 1),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Favourited",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.blueColor
+                  ),
+                ),
+                SizedBox(height: 8),
+                Divider(
+                  color: AppColors.blueColor,
+                ),
+                StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection("users").snapshots(),
+                    builder: (context, snapshot) {
+
+                      if(snapshot.connectionState == ConnectionState.waiting){
+                        return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
+                      } else if (snapshot.hasError){
+                        debugPrint("Error in events stream home page: ${snapshot.error}");
+                        return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
+                        return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.connectionState == ConnectionState.none){
+                        return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
+
+                        var users = snapshot.data!.docs;
+
+                        users.retainWhere((user) => eventVM.favourite.contains(user['uid']));
+
+                        return SizedBox(
+                          height: 300, // Adjust height for list
+                          child: ListView.builder(
+                            itemCount: users.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                onTap: (){
+                                  Get.to(OtherUserProfilePage(uid: users[index]['uid']));
+                                },
+                                leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(users[index]['profile_pic']),
+                                ),
+                                title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              users[index]['name'],
+                                              style: TextStyle(color:AppColors.blueColor, fontWeight: FontWeight.bold),
+                                            ),
+                                            users[index]['is_verified'] == true
+                                                ? Padding(
+                                              padding: const EdgeInsets.only(left: 4.0),
+                                              child: Image.asset(
+                                                'assets/images/qwandery-verified-professional.png',
+                                                height: 12.h,
+                                                width: 12.w
+                                                ,
+                                              ),
+                                            )
+                                                : SizedBox(),
+                                          ],
+                                        ),
+                                        Text(
+                                          users[index]['name'],
+                                          style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+
+
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+
+
+                    }
+                ),
+                SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Close"),
+
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.blueColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }

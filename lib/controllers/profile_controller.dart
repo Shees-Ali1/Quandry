@@ -21,8 +21,8 @@ class ProfileController extends GetxController {
   RxString joined = ''.obs;
   RxString profileType = 'Public'.obs;
   RxBool verified = false.obs;
-  RxList<String> favourites = <String>[].obs;
-  RxList<Map<String, dynamic>> events = <Map<String, dynamic>>[].obs;
+  var favourites = [].obs;
+  var events = [].obs;
   RxBool loading = false.obs;
   RxBool userDataFetched = false.obs;
   RxString errorOccurred = "".obs;
@@ -58,8 +58,8 @@ class ProfileController extends GetxController {
         location.value = user['location'] ?? 'Unknown';
         joined.value = formatTimestampToDate(user['joined']!);
         profileType.value = user['profile_type'] ?? 'Public';
-        favourites.value = List<String>.from(user['favourites'] ?? []);
-        events.value = List<Map<String, dynamic>>.from(user['events'] ?? []);
+        favourites.value = (user['favourites'] ?? []);
+        events.value = (user['events'] ?? []);
 
         userDataFetched.value = true;
       } else {

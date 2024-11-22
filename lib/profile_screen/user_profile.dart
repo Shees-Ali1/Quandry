@@ -252,7 +252,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   ? Wrap(
                 spacing: 8.0, // Space between chips horizontally
                 runSpacing: 4.0, // Space between chips vertically
-                children: profileVM.favourites.map((favourite) => _buildChip(favourite)).toList(),
+                children: profileVM.favourites.map((favourite) => _buildChip(favourite['favourite_name'])).toList(),
               )
                   : Align(alignment: Alignment.center,child: Text("  No favourite topics yet.", style: jost500(15.sp, AppColors.greenbutton),)),
               SizedBox(height: 20.0),
@@ -270,12 +270,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   ? ListView.builder(
                   itemCount: profileVM.events.length,
                   padding: EdgeInsets.zero,
+                  shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index){
-                return _buildEventCard(profileVM.events[index]['event_title'], profileVM.events[index]['event_date']);
+                return _buildEventCard(profileVM.events[index]['event_name'], profileVM.events[index]['event_date']);
               })
                   : Align(alignment: Alignment.center,child: Text("No events attending yet.", style: jost500(15.sp, AppColors.greenbutton),)),
-              SizedBox(height: 20.0.h),
+              SizedBox(height: 80.0.h),
 
 
             ],

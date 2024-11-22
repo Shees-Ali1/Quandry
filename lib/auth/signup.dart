@@ -71,6 +71,7 @@ class _SignupViewState extends State<SignupView> {
           'name': _nameController.text.trim(),
           'email': user.email,
           'bio': '',
+          'is_verified': false,
           'phone_number': '',
           'profile_pic': downloadUrl, // Save the download URL of the profile picture
           'joined': Timestamp.now(),
