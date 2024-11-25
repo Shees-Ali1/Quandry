@@ -123,134 +123,132 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Single Event Card (Detailed)
                     Obx((){
                       if(homeVM.filter.value == true){
-                        return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                          stream: FirebaseFirestore.instance.collection('events').snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Center(
-                                child: CircularProgressIndicator(color: AppColors.blueColor),
-                              );
-                            } else if (snapshot.hasError) {
-                              debugPrint("Error in events future home page: ${snapshot.error}");
-                              return Center(
-                                child: Text(
-                                  "An Error occurred",
-                                  style: jost500(16.sp, AppColors.blueColor),
-                                ),
-                              );
-                            } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                              return Center(
-                                child: Text(
-                                  "There are no events at the moment",
-                                  style: jost500(16.sp, AppColors.blueColor),
-                                ),
-                              );
-                            } else if (snapshot.connectionState == ConnectionState.none) {
-                              return Center(
-                                child: Text(
-                                  "No Internet!",
-                                  style: jost500(16.sp, AppColors.blueColor),
-                                ),
-                              );
-                            } else {
-                              var events = snapshot.data!.docs;
-
-                              if (homeVM.filter.value == true) {
-                                // Apply topic filter
-                                if (homeVM.filter_topics.isNotEmpty) {
-                                  events = events.where((event) {
-                                    List<String> eventTopics = List<String>.from(event['event_topics']);
-                                    return eventTopics.any((topic) => homeVM.filter_topics.contains(topic));
-                                  }).toList();
-                                }
-
-                                // Apply date filter
-                                if (homeVM.tapped_date.isEmpty) {
-                                  // Format homeVM.date_time.value to dd/MM/yyyy
-                                  String formattedDate = DateFormat('dd/MM/yyyy').format(homeVM.date_time.value);
-                                  events = events.where((event) {
-                                    String eventDate = event['event_date']; // Assuming event_date is in 'yyyy-MM-dd' format
-                                    return eventDate == formattedDate;
-                                  }).toList();
-                                } else {
-                                  // Apply filters based on "today", "tomorrow", or "this week"
-                                  DateTime today = DateTime.now();
-                                  DateTime tomorrow = today.add(Duration(days: 1));
-
-                                  DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
-                                  DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
-
-                                  if (today.weekday == DateTime.sunday) {
-                                    endOfWeek = today;
-                                  }
-
-                                  events = events.where((event) {
-                                    // Correctly parse event_date in yyyy-MM-dd format
-                                    DateFormat dateFormat = DateFormat('yyyy-MM-dd');
-                                    DateTime eventDate = dateFormat.parse(event['event_date']); // Parse the event date
-
-                                    if (homeVM.tapped_date == 'Today') {
-                                      return isSameDay(eventDate, today);
-                                    } else if (homeVM.tapped_date == 'Tomorrow') {
-                                      DateTime tomorrow = today.add(Duration(days: 1));
-                                      return isSameDay(eventDate, tomorrow);
-                                    } else if (homeVM.tapped_date == 'This week') {
-                                      return eventDate.isAfter(startOfWeek.subtract(Duration(days: 1))) && eventDate.isBefore(endOfWeek.add(Duration(days: 1)));
-                                    }
-                                    return false;
-                                  }).toList();
-                                }
-
-                                // Apply price range filter
-                                events = events.where((event) {
-                                  double eventPrice = double.tryParse(event['event_price'].toString()) ?? 0.0;
-                                  return eventPrice >= homeVM.selected_from_price.value && eventPrice <= homeVM.selected_to_price.value;
-                                }).toList();
-
-                                // events = events.where((event) {
-                                //   String eventLocation = event['event_location']; // Assuming event_location is a string in format "City, Country"
-                                //
-                                //   // Check if event_location matches the city and country values from homeVM
-                                //   String expectedLocation = '${homeVM.city.value}, ${homeVM.country.value}';
-                                //
-                                //   return eventLocation == expectedLocation; // Only include events where the location matches
-                                // }).toList();
-
-                              }
-
-                              if(events.isEmpty){
-                                return Padding(
-                                  padding: EdgeInsets.only(top: Get.height * .24),
-                                  child: Center(
+                        return StatefulBuilder(
+                          builder: (context, setState) {
+                            // Wrap the StreamBuilder inside StatefulBuilder
+                            return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                              stream: FirebaseFirestore.instance.collection('events').snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return Center(
+                                    child: CircularProgressIndicator(color: AppColors.blueColor),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  debugPrint("Error in events stream: ${snapshot.error}");
+                                  return Center(
                                     child: Text(
-                                      "There are no events within your\nrequirements.",
-                                      textAlign: TextAlign.center,
+                                      "An Error occurred",
                                       style: jost500(16.sp, AppColors.blueColor),
                                     ),
-                                  ),
-                                );
-                              }
-
-                              return ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: events.length,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(bottom: 10.0),
-                                    child: EventCard(
-                                      event: events[index],
-                                      imageAsset: events[index]['event_image'],
-                                      title: events[index]['event_name'],
-                                      date: events[index]['event_date'],
-                                      location: events[index]['event_location'],
-                                      credits: '10 CE Credits',
-                                      priceRange: "\$" + events[index]['event_price'].toString() + "/seat",
+                                  );
+                                } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                  return Center(
+                                    child: Text(
+                                      "There are no events at the moment",
+                                      style: jost500(16.sp, AppColors.blueColor),
                                     ),
                                   );
-                                },
-                              );
-                            }
+                                } else if (snapshot.connectionState == ConnectionState.none) {
+                                  return Center(
+                                    child: Text(
+                                      "No Internet!",
+                                      style: jost500(16.sp, AppColors.blueColor),
+                                    ),
+                                  );
+                                } else {
+                                  var events = snapshot.data!.docs;
+
+                                  // Using GetX reactive variables to trigger rebuilds
+                                  return Obx(() {
+                                    // Apply topic filter
+                                    if (homeVM.filter_topics.isNotEmpty) {
+                                      events = events.where((event) {
+                                        List<String> eventTopics = List<String>.from(event['event_topics']);
+                                        return eventTopics.any((topic) => homeVM.filter_topics.contains(topic));
+                                      }).toList();
+                                    }
+
+                                    // Apply date filter
+                                    if (homeVM.tapped_date.isEmpty) {
+                                      // Format homeVM.date_time.value to dd/MM/yyyy
+                                      String formattedDate = DateFormat('yyyy-MM-dd').format(homeVM.date_time.value);
+                                      events = events.where((event) {
+                                        String eventDate = event['event_date']; // Assuming event_date is in 'yyyy-MM-dd' format
+                                        return eventDate == formattedDate;
+                                      }).toList();
+                                    } else {
+                                      // Apply filters based on "today", "tomorrow", or "this week"
+                                      DateTime today = DateTime.now();
+                                      DateTime tomorrow = today.add(Duration(days: 1));
+
+                                      DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
+                                      DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+
+                                      if (today.weekday == DateTime.sunday) {
+                                        endOfWeek = today;
+                                      }
+
+                                      events = events.where((event) {
+                                        // Correctly parse event_date in yyyy-MM-dd format
+                                        DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+                                        DateTime eventDate = dateFormat.parse(event['event_date']); // Parse the event date
+
+                                        if (homeVM.tapped_date == 'Today') {
+                                          return isSameDay(eventDate, today);
+                                        } else if (homeVM.tapped_date == 'Tomorrow') {
+                                          DateTime tomorrow = today.add(Duration(days: 1));
+                                          return isSameDay(eventDate, tomorrow);
+                                        } else if (homeVM.tapped_date == 'This week') {
+                                          return eventDate.isAfter(startOfWeek.subtract(Duration(days: 1))) && eventDate.isBefore(endOfWeek.add(Duration(days: 1)));
+                                        }
+                                        return false;
+                                      }).toList();
+                                    }
+
+                                    // Apply price range filter
+                                    events = events.where((event) {
+                                      double eventPrice = double.tryParse(event['event_price'].toString()) ?? 0.0;
+                                      return eventPrice >= homeVM.selected_from_price.value && eventPrice <= homeVM.selected_to_price.value;
+                                    }).toList();
+
+                                    // Handle when no events match the filters
+                                    if (events.isEmpty) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(top: Get.height * .24),
+                                        child: Center(
+                                          child: Text(
+                                            "There are no events within your\nrequirements.",
+                                            textAlign: TextAlign.center,
+                                            style: jost500(16.sp, AppColors.blueColor),
+                                          ),
+                                        ),
+                                      );
+                                    }
+
+                                    // Return the filtered events list in a ListView
+                                    return ListView.builder(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: events.length,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: EdgeInsets.only(bottom: 10.0),
+                                          child: EventCard(
+                                            event: events[index],
+                                            imageAsset: events[index]['event_image'],
+                                            title: events[index]['event_name'],
+                                            date: events[index]['event_date'],
+                                            location: events[index]['event_location'],
+                                            credits: '10 CE Credits',
+                                            priceRange: "\$" + events[index]['event_price'].toString() + "/seat",
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  });
+                                }
+                              },
+                            );
                           },
                         );
                       } else {

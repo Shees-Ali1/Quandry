@@ -191,6 +191,8 @@ class _FilterContentState extends State<FilterContent> {
                 color: AppColors.blueColor,
                 onPressed: () {
                   homeVM.filter.value = true;
+                  homeVM.filter.value = false;
+                  homeVM.filter.value = true;
 
 
                   Navigator.pop(context);
