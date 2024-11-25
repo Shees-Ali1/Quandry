@@ -120,13 +120,7 @@ class _FilterContentState extends State<FilterContent> {
     }
   }
 
-  @override
-  void dispose(){
-    super.dispose();
-    setState(() {
 
-    });
-  }
 
 
   @override
