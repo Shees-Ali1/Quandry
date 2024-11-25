@@ -3,13 +3,19 @@ import 'package:quandry/const/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:quandry/controllers/profile_controller.dart';
+import 'package:quandry/otherUser/OtherUserProfile.dart';
 import 'package:quandry/setting_screen/settings_screen.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../const/images.dart';
 import '../const/textstyle.dart';
 import '../widgets/appbar_small.dart';
 
 class UserProfilePage extends StatefulWidget {
+
+  final bool navbar;
+
+  UserProfilePage({required this.navbar});
+
   @override
   _UserProfilePageState createState() => _UserProfilePageState();
 }
@@ -53,11 +59,24 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: widget.navbar == false ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
               children: [
+                if(widget.navbar == false)
+                Padding(
+                  padding: EdgeInsets.only(top: 40.h, left: 16.w),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Image.asset(
+                      'assets/images/event_back.png',
+                      height: 36.h,
+                    ),
+                  ),
+                ),
                 Center(
                   child: Padding(
-                    padding: EdgeInsets.only(top: 40.h),
+                    padding: EdgeInsets.only(top: 40.h,),
                     child: Text(
                       '@${profileVM.name.value}',
                       textAlign: TextAlign.center,
@@ -65,7 +84,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     ),
                   ),
                 ),
-
+                if(widget.navbar == false)
+                  Padding(
+                  padding: EdgeInsets.only(right: 16.0.w),
+                  child: SizedBox(width: 36.w,),
+                )
               ],
             ),
           ),
@@ -344,4 +367,133 @@ class _UserProfilePageState extends State<UserProfilePage> {
       ),
     );
   }
+
+  void _showUserDialog(BuildContext context, String type) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor:       Color.fromRGBO(216, 229, 236, 1),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  type,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.blueColor
+                  ),
+                ),
+                SizedBox(height: 8),
+                Divider(
+                  color: AppColors.blueColor,
+                ),
+                StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection("users").snapshots(),
+                    builder: (context, snapshot) {
+
+                      if(snapshot.connectionState == ConnectionState.waiting){
+                        return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
+                      } else if (snapshot.hasError){
+                        debugPrint("Error in events stream home page: ${snapshot.error}");
+                        return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
+                        return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.connectionState == ConnectionState.none){
+                        return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
+
+                        var users = snapshot.data!.docs;
+
+
+                        return SizedBox(
+                          height: 300, // Adjust height for list
+                          child: ListView.builder(
+                            itemCount: users.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                onTap: (){
+                                  Get.to(OtherUserProfilePage(uid: users[index]['uid']));
+                                },
+                                leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(users[index]['profile_pic']),
+                                ),
+                                title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              users[index]['name'],
+                                              style: TextStyle(color:AppColors.blueColor, fontWeight: FontWeight.bold),
+                                            ),
+                                            users[index]['is_verified'] == true
+                                                ? Padding(
+                                              padding: const EdgeInsets.only(left: 4.0),
+                                              child: Image.asset(
+                                                'assets/images/qwandery-verified-professional.png',
+                                                height: 12.h,
+                                                width: 12.w
+                                                ,
+                                              ),
+                                            )
+                                                : SizedBox(),
+                                          ],
+                                        ),
+                                        Text(
+                                          users[index]['name'],
+                                          style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+
+
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+
+
+                    }
+                ),
+                SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Close"),
+
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.blueColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
 }

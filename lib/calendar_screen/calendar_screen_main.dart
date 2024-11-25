@@ -5,6 +5,7 @@ import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:quandry/controllers/home_controller.dart';
+import 'package:quandry/controllers/profile_controller.dart';
 import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
 import 'package:quandry/widgets/appbar.dart';
 import 'package:quandry/widgets/custom_calendar.dart';
@@ -13,6 +14,7 @@ import 'package:get/get.dart';
 import 'package:quandry/widgets/tabs_appbar.dart'; // Ensure GetX is imported
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 
 
@@ -24,6 +26,8 @@ class CalendarScreenMain extends StatefulWidget {
 }
 
 class _CalendarScreenMainState extends State<CalendarScreenMain> {
+  final ProfileController profileVM = Get.put(ProfileController());
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final Homecontroller homeVM = Get.put(Homecontroller());
 
@@ -47,12 +51,48 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
               children: [
                 SizedBox(height: 14.h),
                 /// Calendar
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Container(
-                    height: 280.h, // Set a specific height for the calendar
-                    child: CustomCalendar(),
-                  ),
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
+                  builder: (context, snapshot) {
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator()); // or any loading widget
+                    }
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    if (!snapshot.hasData || !snapshot.data!.exists) {
+                      return Text("No events available");
+                    }
+
+                    int? selectedDate; // Variable to hold the selected date
+                    DateTime currentMonth = DateTime.now(); // Keeps track of the displayed month
+                    DateTime today = DateTime.now(); // Current date
+
+                    var data = snapshot.data!;
+
+                    var eventDates = data["events"].where((event) {
+                      try {
+                        final eventDate = DateFormat('yyyy-MM-dd').parse(event["event_date"]!);
+                        return eventDate.month == currentMonth.month && eventDate.year == currentMonth.year;
+                      } catch (e) {
+                        return false; // Skip invalid dates
+                      }
+                    }).map((event) {
+                      final eventDate = DateFormat('yyyy-MM-dd').parse(event["event_date"]!);
+                      return eventDate.day;
+                    }).toList();
+
+                    print(eventDates);
+
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Container(
+                        height: 280.h, // Set a specific height for the calendar
+                        child: CustomCalendar(eventDates: eventDates,),
+                      ),
+                    );
+                  }
                 ),
                 // SizedBox(height: 18.63.h),
                 Text(
@@ -62,49 +102,51 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
                 SizedBox(height: 12.h),
 
                 /// List of EventCards
-                StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection("events").where("attending", arrayContains: FirebaseAuth.instance.currentUser!.uid).snapshots(),
+                Obx(() {
+                  // Fetch events from Firestore and filter by selectedCalenderDate
+                  return FutureBuilder<QuerySnapshot>(
+                    future: FirebaseFirestore.instance
+                        .collection("events")
+                        .where("attending", arrayContains: FirebaseAuth.instance.currentUser!.uid)
+                        .where("event_date", isEqualTo: profileVM.selectedCalenderDate.value)
+                        .get(),  // Fetch events based on selected date
                     builder: (context, snapshot) {
-
-                      if(snapshot.connectionState == ConnectionState.waiting){
-                        return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
-                      } else if (snapshot.hasError){
-                        debugPrint("Error in events stream home page: ${snapshot.error}");
-                        return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
-                      } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
-                        return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor),));
-                      } else if(snapshot.connectionState == ConnectionState.none){
-                        return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
-                      } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
-
-                        var events = snapshot.data!.docs;
-
-                        return ListView.builder(
-                          physics: NeverScrollableScrollPhysics(), // Disable inner scrolling
-                          shrinkWrap: true,
-                          itemCount: events.length, // Number of events you want to display
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: 10.0), // Adjust the space between items
-                              child: EventCard(
-                                event: events[index],
-                                imageAsset: events[index]['event_image'], // Use imageAsset instead of imageUrl
-                                title: events[index]['event_name'],
-                                date: events[index]['event_date'],
-                                location: events[index]['event_location'],
-                                credits: '10 CE Credits',
-                                priceRange: "\$" + events[index]['event_price'].toString() + "/seat",
-                              ),
-                            );
-                          },
-                        );
-                      } else {
-                        return SizedBox();
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator(color: AppColors.blueColor));
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor)));
+                      } else if (snapshot.data!.docs.isEmpty) {
+                        return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor)));
                       }
 
-                    }
-                ),
-              ],
+                      var events = snapshot.data!.docs;
+
+                      if (events.isEmpty) {
+                        return Center(child: Text("No events on this Date", style: jost500(16.sp, AppColors.blueColor)));
+                      }
+
+                      return ListView.builder(
+                        physics: NeverScrollableScrollPhysics(), // Disable inner scrolling
+                        shrinkWrap: true,
+                        itemCount: events.length, // Number of events you want to display
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 10.0), // Adjust the space between items
+                            child: EventCard(
+                              event: events[index],
+                              imageAsset: events[index]['event_image'], // Use imageAsset instead of imageUrl
+                              title: events[index]['event_name'],
+                              date: events[index]['event_date'],
+                              location: events[index]['event_location'],
+                              credits: '10 CE Credits',
+                              priceRange: "\$" + events[index]['event_price'].toString() + "/seat",
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                }),              ],
             ),
           ),
         ),

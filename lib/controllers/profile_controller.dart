@@ -7,8 +7,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:quandry/controllers/home_controller.dart';
 
 class ProfileController extends GetxController {
+  final Homecontroller homeVM = Get.put(Homecontroller());
+
   RxString profilePicture = ''.obs;
   RxString temporary_pic = ''.obs;
   RxString name = ''.obs;
@@ -23,12 +26,24 @@ class ProfileController extends GetxController {
   RxBool verified = false.obs;
   var favourites = [].obs;
   var events = [].obs;
+  var requested = [].obs;
+  var incoming_requests = [].obs;
   RxBool loading = false.obs;
   RxBool userDataFetched = false.obs;
   RxString errorOccurred = "".obs;
+  RxString selectedCalenderDate = "".obs;
 
   var firestore = FirebaseFirestore.instance;
   var auth = FirebaseAuth.instance.currentUser!;
+
+  void getDate(int? selectedDate){
+    DateTime currentMonth = DateTime.now(); // Keeps track of the displayed month
+
+    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime(currentMonth.year, currentMonth.month, selectedDate!));
+    selectedCalenderDate.value = formattedDate;
+    print(selectedCalenderDate.value);
+
+  }
 
 
   Future<void> getUserData() async {
@@ -60,6 +75,8 @@ class ProfileController extends GetxController {
         profileType.value = user['profile_type'] ?? 'Public';
         favourites.value = (user['favourites'] ?? []);
         events.value = (user['events'] ?? []);
+        requested.value = (user['requested'] ?? []);
+        incoming_requests.value = (user['incoming_requests'] ?? []);
 
         userDataFetched.value = true;
       } else {
@@ -114,6 +131,10 @@ class ProfileController extends GetxController {
 
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
+        homeVM.city.value = place.locality.toString();
+        homeVM.country.value = place.country.toString();
+        homeVM.currentCity.value = place.locality.toString();
+        homeVM.currentCountry.value = place.country.toString();
         location.value = "${place.locality}, ${place.country}";
 
         await firestore.collection("users").doc(auth.uid).update({

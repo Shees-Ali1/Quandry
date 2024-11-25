@@ -7,6 +7,8 @@ import 'package:quandry/Homepage/homepage.dart';
 import 'package:quandry/attending_screen/attending_screen_main.dart';
 import 'package:quandry/calendar_screen/calendar_screen_main.dart';
 import 'package:quandry/const/colors.dart';
+import 'package:quandry/controllers/home_controller.dart';
+import 'package:quandry/controllers/profile_controller.dart';
 import 'package:quandry/controllers/user_controller.dart';
 import 'package:quandry/profile_screen/profile_screen_main.dart';
 import 'package:quandry/profile_screen/user_profile.dart';
@@ -23,9 +25,19 @@ class AppNavBar extends StatefulWidget {
 }
 
 class AppNavBarState extends State<AppNavBar> {
+  final ProfileController profileVM = Get.put(ProfileController());
+  final Homecontroller homeVM = Get.find<Homecontroller>();
   final UserController userVM = Get.put(UserController());
   final _pageController = PageController(initialPage: 0);
   final _controller = NotchBottomBarController(index: 0);
+
+  @override
+  void initState () {
+    super.initState();
+    profileVM.getUserData();
+    profileVM.getCurrentLocation();
+  }
+
 
   @override
   void dispose() {
@@ -50,7 +62,7 @@ class AppNavBarState extends State<AppNavBar> {
       HomeScreen(),
       // const AttendingScreenMain(),
       const CalendarScreenMain(),
-       UserProfilePage(),
+       UserProfilePage(navbar: true,),
     ];
 
     return Scaffold(

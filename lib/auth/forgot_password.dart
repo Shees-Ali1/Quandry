@@ -51,7 +51,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   height: 8.h,
                 ),
                 CustomText(
-                  text: "Please choose a method to request a \npassword reset.",
+                  text: "Please enter your Email Here.",
                   textAlign: TextAlign.start,
                   textColor: const Color(0xff6B7280),
                   fontWeight: FontWeight.w500,
@@ -119,86 +119,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                   ),
                                   CustomText(
                                     text: "Enter your email",
-                                    fontSize: 11.38.sp,
-                                    textColor: const Color(0xff6B7280),
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ],
-                              ),
-                              const Spacer(),
-                              const Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                size: 17,
-                                color: Color(0xff6B7280),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 11.38.h,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.to(()=>ForgetPasswordEmailPhoneView());
-                    setState(() {
-                      tappedContainerIndex = 2;
-                      selectedTypeController.changeSelectedType('phone');
-                    });
-                  },
-                  child: Container(
-                    height: 73.h,
-                    padding: EdgeInsets.symmetric(horizontal: 4.w),
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: tappedContainerIndex == 2
-                                ? AppColors.greyColor
-                                : Color.fromRGBO(205, 211, 214, 1)
-
-                        ),
-                        color: tappedContainerIndex == 2
-                            ?   Color.fromRGBO(180, 196, 209, 1)
-
-                            : AppColors.fillcolor,
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15.7.w),
-                          child: Row(
-                            children: [
-                              Container(
-                                  height: 38.h,
-                                  width: 38.w,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(9)),
-                                  child: Image.asset(
-                                    // fit: BoxFit.fill,
-                                    AppImages.phone,
-                                    color: tappedContainerIndex == 2
-                                        ? AppColors.greenbutton
-                                        : const Color(0xff9CA3AF),
-                                    scale: 2.6,
-                                  )),
-                              SizedBox(
-                                width: 15.17.w,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomText(
-                                    text: "Phone number",
-                                    fontSize: 13.27.sp,
-                                    textColor: const Color(0xff111827),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  CustomText(
-                                    text: "Enter your phone number",
                                     fontSize: 11.38.sp,
                                     textColor: const Color(0xff6B7280),
                                     fontWeight: FontWeight.w400,

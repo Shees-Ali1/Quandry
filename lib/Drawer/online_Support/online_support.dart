@@ -5,10 +5,24 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
+import 'package:quandry/controllers/chat_controller.dart';
+import 'package:quandry/controllers/profile_controller.dart';
 import 'package:quandry/widgets/appbar_small.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class TechnicalSupportChatScreen extends StatelessWidget {
+class TechnicalSupportChatScreen extends StatefulWidget {
   const TechnicalSupportChatScreen ({super.key});
+
+  @override
+  State<TechnicalSupportChatScreen> createState() => _TechnicalSupportChatScreenState();
+}
+
+class _TechnicalSupportChatScreenState extends State<TechnicalSupportChatScreen> {
+  final ChatController chatVM = Get.put(ChatController());
+  final ProfileController profileVM = Get.put(ProfileController());
+
+  final TextEditingController message = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -23,31 +37,44 @@ class TechnicalSupportChatScreen extends StatelessWidget {
       GestureDetector(
         onTap: (){
           FocusScope.of(context).unfocus(); // Close the keyboard when tapping outside
-
         },
         child: Column(
           children: [
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.all(16),
-                children: [
-                  // Support Message
-                  _buildSupportMessage(
-                    'Alright.\n\nYou can track your progress by accessing the "My Courses" or "My Progress" section in the app.\n\nIt will show you the courses you’re enrolled in, your completion status, and any assessments or quizzes you’ve completed.',
-                  ),
-                  // User Message
-                  _buildUserMessage("That's good to know."),
-                  // User Message
-                  _buildUserMessage(
-                      "Thank you so much for your help! I appreciate it."),
-                  // Support Message
-                  _buildSupportMessage(
-                    "You’re very welcome!\n\nIf you have any more questions in the future or need assistance with anything else, feel free to reach out.",
-                  ),
-                  _buildSupportMessage('Happy studying!'),
-                  _buildSupportMessage("You’re very welcome!\n\nIf you have any more questions in the future or need assistance with anything else, feel free to reach out.",
-                  ),
-                ],
+              child: StreamBuilder(
+                stream: chatVM.getMessages(),
+                builder: (context, snapshot) {
+
+                  if(snapshot.connectionState == ConnectionState.waiting){
+                    return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
+                  } else if (snapshot.hasError){
+                    debugPrint("Error in fetching support messages: ${snapshot.error}");
+                    return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
+                  } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
+                    return Center(child: Text("There are no messages.", style: jost500(16.sp, AppColors.blueColor),));
+                  } else if(snapshot.connectionState == ConnectionState.none){
+                    return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
+                  } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
+
+                    var messages = snapshot.data!.docs;
+
+                    return Container(
+                      height: 120.h,// Adjusted width for better match
+                      child: ListView.builder(
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          return messages[index]["user_uid"] != FirebaseAuth.instance.currentUser!.uid
+                              ? _buildSupportMessage(messages[index]["message"])
+                              : _buildUserMessage(messages[index]["message"]);
+                        },
+                      ),
+                    );
+                  } else {
+                    return SizedBox();
+                  }
+
+                }
               ),
             ),
             _buildMessageInput(),
@@ -56,20 +83,26 @@ class TechnicalSupportChatScreen extends StatelessWidget {
       ),
     );
   }
+
   /// Support Team Text Field Design
   Widget _buildSupportMessage(String message) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// Profile Image
-        Container(
-          height: 37.92.h,
-          width: 37.92,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-          ),
-
-            child: Image.asset(AppImages.profile_image_small,fit: BoxFit.contain,),
+        // Container(
+        //   height: 37.92.h,
+        //   width: 37.92,
+        //   decoration: BoxDecoration(
+        //     shape: BoxShape.circle,
+        //   ),
+        //
+        //     child: Image.asset(AppImages.profile_image_small,fit: BoxFit.contain,),
+        // ),
+        CircleAvatar(
+          radius: 18.46.r,
+          backgroundColor: AppColors.blueColor,
+          child: Icon(Icons.person, size: 20.w, color: AppColors.greenbutton,),
         ),
         SizedBox(width: 10.w),
         Flexible(
@@ -89,6 +122,7 @@ class TechnicalSupportChatScreen extends StatelessWidget {
       ],
     );
   }
+
   /// User Text Message Field Design
   Widget _buildUserMessage(String message) {
     return Row(
@@ -114,6 +148,7 @@ class TechnicalSupportChatScreen extends StatelessWidget {
       ],
     );
   }
+
   /// Type Message TextField
   Widget _buildMessageInput() {
     return Container(
@@ -130,6 +165,7 @@ class TechnicalSupportChatScreen extends StatelessWidget {
                   height: 56.63.h, // Height for the container
                   width: double.infinity, // Set to your desired width
                   child: TextField(
+                    controller: message,
                     decoration: InputDecoration(
                       hintText: 'Type message...',
                       hintStyle: TextStyle(color: AppColors.calendartext),
@@ -147,16 +183,19 @@ class TechnicalSupportChatScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 11.52.w),
-              Container(
-                height: 38.4.h,
-                width: 38.4.w,
-                decoration: BoxDecoration(
-                    color: AppColors.fillcolor, // Send button color
-                    borderRadius: BorderRadius.circular(11.52.r)
-                ),
-                child: Center(
-                  child: GestureDetector(
-                    onTap: (){},
+              InkWell(
+                autofocus: false,
+                onTap: (){
+                  chatVM.sendMessage(message.text.trim(), DateTime.now(), message);
+                },
+                child: Container(
+                  height: 38.4.h,
+                  width: 38.4.w,
+                  decoration: BoxDecoration(
+                      color: AppColors.fillcolor, // Send button color
+                      borderRadius: BorderRadius.circular(11.52.r)
+                  ),
+                  child: Center(
                     child: SizedBox(
                       height: 23.04.h,
                       width: 23.04.w,

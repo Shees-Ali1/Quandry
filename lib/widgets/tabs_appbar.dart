@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
+import 'package:quandry/const/textstyle.dart';
 import 'package:quandry/controllers/profile_controller.dart';
 import 'package:quandry/profile_screen/user_profile.dart';
 import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
+import 'package:quandry/setting_screen/notification_screens/notifications_detail.dart';
 import 'package:quandry/setting_screen/notification_setting/notification_setting.dart';
 import 'package:get/get.dart';
 
 import '../Homepage/filter_home.dart';
 import '../bottom_nav/bottom_nav.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
   final ProfileController profileVM = Get.put(ProfileController());
@@ -68,6 +72,7 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                         onTap: () => showModalBottomSheet(
                           context: context,
                           backgroundColor: Colors.white,
+                          isDismissible: true,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
                           ),
@@ -108,22 +113,130 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
 
                 Row(
                   children: [
-                    /// notification Button
-                    GestureDetector(
-                      onTap:(){ Get.to(NotificationScreenMain());},
-                      child: Container(
-                        padding: EdgeInsets.all(2.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.whiteColor,
-                        ),
-                        child: Image.asset(
-                          AppImages.notification_icon_small,
-                          height: 25.h,
-                          width: 25.w,
-                          color: AppColors.blueColor,
-                        ),
-                      ),
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection("notifications").doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
+                      builder: (context, snapshot) {
+
+                        if(snapshot.connectionState == ConnectionState.waiting){
+                          return Container(
+                            padding: EdgeInsets.all(2.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.whiteColor,
+                            ),
+                            child: Image.asset(
+                              AppImages.notification_icon_small,
+                              height: 25.h,
+                              width: 25.w,
+                              color: AppColors.blueColor,
+                            ),
+                          );
+                        } else if (snapshot.hasError){
+                          debugPrint("Error in events stream home page: ${snapshot.error}");
+                          return Container(
+                            padding: EdgeInsets.all(2.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.whiteColor,
+                            ),
+                            child: Image.asset(
+                              AppImages.notification_icon_small,
+                              height: 25.h,
+                              width: 25.w,
+                              color: AppColors.blueColor,
+                            ),
+                          );
+                        } else if(!snapshot.data!.exists) {
+                          return Container(
+                            padding: EdgeInsets.all(2.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.whiteColor,
+                            ),
+                            child: Image.asset(
+                              AppImages.notification_icon_small,
+                              height: 25.h,
+                              width: 25.w,
+                              color: AppColors.blueColor,
+                            ),
+                          );
+                        } else if(snapshot.connectionState == ConnectionState.none){
+                          return  Container(
+                            padding: EdgeInsets.all(2.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.whiteColor,
+                            ),
+                            child: Image.asset(
+                              AppImages.notification_icon_small,
+                              height: 25.h,
+                              width: 25.w,
+                              color: AppColors.blueColor,
+                            ),
+                          );
+                        } else if(snapshot.hasData && snapshot.data!.exists){
+
+                          var notification = snapshot.data!;
+
+                          if(notification["read_all"] == true){
+                            return GestureDetector(
+                              onTap:() {
+                                Get.to(NotificationsDetail());
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(2.0),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.whiteColor,
+                                ),
+                                child: Image.asset(
+                                  AppImages.notification_icon_small,
+                                  height: 25.h,
+                                  width: 25.w,
+                                  color: AppColors.blueColor,
+                                ),
+                              ),
+                            );
+                          } else {
+                            return GestureDetector(
+                              onTap:() {
+                                Get.to(NotificationsDetail());
+                              },
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(2.0),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.whiteColor,
+                                    ),
+                                    child: Image.asset(
+                                      AppImages.notification_icon_small,
+                                      height: 25.h,
+                                      width: 25.w,
+                                      color: AppColors.blueColor,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 2,
+                                    right: 2,
+                                    child: CircleAvatar(
+                                    radius: 6.r,
+                                    backgroundColor: Colors.red,
+                                  ))
+                                ],
+                              )
+                            );
+                          }
+
+
+
+                        } else {
+                          return SizedBox();
+                        }
+
+
+                      }
                     ),
                     SizedBox(width: 7.w), // Top padding
 

@@ -68,11 +68,14 @@ class EventCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       // Title and Bookmark Icon
-                      Text(
-                        title,
-                        style: jost700(12.sp, AppColors.backgroundColor), // Slightly larger font
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      SizedBox(
+                        width: 140.w,
+                        child: Text(
+                          title,
+                          style: jost700(12.sp, AppColors.backgroundColor), // Slightly larger font
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       SizedBox(height: 8.h), // Added spacing between title and other elements
 

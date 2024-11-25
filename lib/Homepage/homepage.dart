@@ -13,6 +13,7 @@ import '../const/images.dart';
 import '../profile_screen/user_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -28,24 +29,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final TextEditingController _searchController = TextEditingController();
 
+  late Future<QuerySnapshot> attending_events;
+
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_onSearchChanged);
-    profileVM.getUserData();
-    profileVM.getCurrentLocation();
+    attending_events = fetchAttendingEvents();
+  }
+
+  Future<QuerySnapshot> fetchAttendingEvents() async {
+    return FirebaseFirestore.instance.collection('events').where("attending", arrayContains: FirebaseAuth.instance.currentUser!.uid).get();
+  }
+
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
   }
 
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
     super.dispose();
   }
 
-  void _onSearchChanged() {
-    setState(() {}); // Update UI when search text changes
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,8 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 10,),
                     // ListView.builder for Event Cards
-                    StreamBuilder(
-                      stream: FirebaseFirestore.instance.collection('events').where("attending", arrayContains: FirebaseAuth.instance.currentUser!.uid).snapshots(),
+                    FutureBuilder(
+                      future: attending_events,
                       builder: (context, snapshot) {
 
                         if(snapshot.connectionState == ConnectionState.waiting){
@@ -102,55 +107,138 @@ class _HomeScreenState extends State<HomeScreen> {
                         } else {
                           return SizedBox();
                         }
-                        
-                        
+
+
 
                       }
                     ),
                     // Section Title - Events
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.h),
-                      child: GestureDetector(
-                        onTap: (){
-                          Get.to(UserProfilePage());
-                        },
-                        child: Text(
-                          "Events",
-                          style: TextStyle(
-                            fontSize: 16.37.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                      child: Text(
+                        "Events",
+                        style: jost700(16.37.sp, AppColors.blueColor),
                       ),
                     ),
                     // Single Event Card (Detailed)
-                    StreamBuilder(
-                      stream: homeVM.eventStream(),
+                    FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                      future: FirebaseFirestore.instance.collection('events').get(),
                       builder: (context, snapshot) {
-
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
-                        } else if (snapshot.hasError){
-                          debugPrint("Error in events stream home page: ${snapshot.error}");
-                          return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
-                        } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
-                          return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor),));
-                        } else if(snapshot.connectionState == ConnectionState.none){
-                          return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
-                        } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
-
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(color: AppColors.blueColor),
+                          );
+                        } else if (snapshot.hasError) {
+                          debugPrint("Error in events future home page: ${snapshot.error}");
+                          return Center(
+                            child: Text(
+                              "An Error occurred",
+                              style: jost500(16.sp, AppColors.blueColor),
+                            ),
+                          );
+                        } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          return Center(
+                            child: Text(
+                              "There are no events at the moment",
+                              style: jost500(16.sp, AppColors.blueColor),
+                            ),
+                          );
+                        } else if (snapshot.connectionState == ConnectionState.none) {
+                          return Center(
+                            child: Text(
+                              "No Internet!",
+                              style: jost500(16.sp, AppColors.blueColor),
+                            ),
+                          );
+                        } else {
                           var events = snapshot.data!.docs;
 
+                          if (homeVM.filter.value == true) {
+                            // Apply topic filter
+                            if (homeVM.filter_topics.isNotEmpty) {
+                              events = events.where((event) {
+                                List<String> eventTopics = List<String>.from(event['event_topics']);
+                                return eventTopics.any((topic) => homeVM.filter_topics.contains(topic));
+                              }).toList();
+                            }
+
+                            // Apply date filter
+                            if (homeVM.tapped_date.isEmpty) {
+                              // Format homeVM.date_time.value to dd/MM/yyyy
+                              String formattedDate = DateFormat('dd/MM/yyyy').format(homeVM.date_time.value);
+                              events = events.where((event) {
+                                String eventDate = event['event_date']; // Assuming event_date is in 'yyyy-MM-dd' format
+                                return eventDate == formattedDate;
+                              }).toList();
+                            } else {
+                              // Apply filters based on "today", "tomorrow", or "this week"
+                              DateTime today = DateTime.now();
+                              DateTime tomorrow = today.add(Duration(days: 1));
+
+                              DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
+                              DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+
+                              if (today.weekday == DateTime.sunday) {
+                                endOfWeek = today;
+                              }
+
+                              events = events.where((event) {
+                                // Correctly parse event_date in yyyy-MM-dd format
+                                DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+                                DateTime eventDate = dateFormat.parse(event['event_date']); // Parse the event date
+
+                                if (homeVM.tapped_date == 'Today') {
+                                  return isSameDay(eventDate, today);
+                                } else if (homeVM.tapped_date == 'Tomorrow') {
+                                  DateTime tomorrow = today.add(Duration(days: 1));
+                                  return isSameDay(eventDate, tomorrow);
+                                } else if (homeVM.tapped_date == 'This week') {
+                                  return eventDate.isAfter(startOfWeek.subtract(Duration(days: 1))) && eventDate.isBefore(endOfWeek.add(Duration(days: 1)));
+                                }
+                                return false;
+                              }).toList();
+                            }
+
+                            // Apply price range filter
+                            events = events.where((event) {
+                              double eventPrice = double.tryParse(event['event_price'].toString()) ?? 0.0;
+                              return eventPrice >= homeVM.selected_from_price.value && eventPrice <= homeVM.selected_to_price.value;
+                            }).toList();
+
+                            // events = events.where((event) {
+                            //   String eventLocation = event['event_location']; // Assuming event_location is a string in format "City, Country"
+                            //
+                            //   // Check if event_location matches the city and country values from homeVM
+                            //   String expectedLocation = '${homeVM.city.value}, ${homeVM.country.value}';
+                            //
+                            //   return eventLocation == expectedLocation; // Only include events where the location matches
+                            // }).toList();
+
+                          }
+
+                          if(events.isEmpty){
+                            return Padding(
+                              padding: EdgeInsets.only(top: Get.height * .24),
+                              child: Center(
+                                child: Text(
+                                  "There are no events within your\nrequirements.",
+                                  textAlign: TextAlign.center,
+                                  style: jost500(16.sp, AppColors.blueColor),
+                                ),
+                              ),
+                            );
+                          }
+
                           return ListView.builder(
-                            physics: NeverScrollableScrollPhysics(), // Disable inner scrolling
+                            physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: events.length, // Number of events you want to display
+                            itemCount: events.length,
                             itemBuilder: (context, index) {
                               return Padding(
-                                padding: EdgeInsets.only(bottom: 10.0), // Adjust the space between items
+                                padding: EdgeInsets.only(bottom: 10.0),
                                 child: EventCard(
                                   event: events[index],
-                                  imageAsset: events[index]['event_image'], // Use imageAsset instead of imageUrl
+                                  imageAsset: events[index]['event_image'],
                                   title: events[index]['event_name'],
                                   date: events[index]['event_date'],
                                   location: events[index]['event_location'],
@@ -160,11 +248,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             },
                           );
-                        } else {
-                          return SizedBox();
                         }
-
-                      }
+                      },
                     ),
                   ],
                 ),
@@ -280,7 +365,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   child: Text(
-                    event["event_price"]!.toString(),
+                    "\$" + event["event_price"]!.toString() + "/seat",
                     style: jost600(10.sp, AppColors.blueColor),
                     textAlign: TextAlign.center,
                   ),

@@ -75,7 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   /// Profile Name
                   Text(profileVM.name.value, style: jost700(16.sp, AppColors.blueColor)),
                   SizedBox(height: 1.h),
-                  Text(profileVM.name.value, style: jost400(16.sp, AppColors.blueColor)),
+                  Text(profileVM.email.value, style: jost400(16.sp, AppColors.blueColor)),
                   SizedBox(height: 7.h),
                   /// Edit Button
                   GestureDetector(

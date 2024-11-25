@@ -61,11 +61,12 @@ class _PhoneNumberAuthenticationViewState
                       ),
                       CustomText(
                         text: selectedTypeController.selectedType.value == 'email'
-                            ? "Enter 5-digit code for reset password we just\ntexted to your phone number, test@gmail.com"
+                            ? "Enter 5-digit code for reset password we just\nsent to your email, test@gmail.com"
                             : "Enter 5-digit code for reset password we just\ntexted to your phone number, +1 8976889043",
                         fontSize: 12.sp,
                         textColor: Color(0xff6B7280),
                         fontWeight: FontWeight.w500,
+                        textAlign: TextAlign.start,
                       ),
                       SizedBox(
                         height: 24.h,

@@ -151,7 +151,7 @@ class _CustomAppBarHState extends State<CustomAppBarH> {
     return GestureDetector(
       onTap: () {
 
-        Get.to(UserProfilePage());
+        Get.to(UserProfilePage(navbar: false,));
       },
       child: Container(
         height: 60.h,

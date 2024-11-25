@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:quandry/controllers/other_user_profile_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:quandry/controllers/profile_controller.dart';
 import 'package:quandry/setting_screen/settings_screen.dart';
 
 import '../const/images.dart';
@@ -20,19 +21,12 @@ class OtherUserProfilePage extends StatefulWidget {
 }
 
 class _OtherUserProfilePageState extends State<OtherUserProfilePage> {
-  final OtherUserProfileController profileVM = Get.put(OtherUserProfileController());
 
-  bool isFollowing = false;
+  final OtherUserProfileController profileVM = Get.put(OtherUserProfileController());
 
   void initState(){
     super.initState();
     profileVM.getUserData(widget.uid);
-  }
-
-  void toggleFollow() {
-    setState(() {
-      isFollowing = !isFollowing;
-    });
   }
 
   @override
@@ -58,7 +52,7 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage> {
                 // Back arrow button on the left
                 Positioned(
                   left: 16.w,
-                  top: 55.h,
+                  top: 45.h,
                   child: GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
@@ -245,10 +239,23 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage> {
                           SizedBox(
                             width: 170.w,
                             child: ElevatedButton(
-
-                              onPressed: toggleFollow,
+                              onPressed: (){
+                                if(profileVM.profileType.value == "Public"){
+                                  profileVM.followToggle(widget.uid);
+                                } else {
+                                  profileVM.followRequestToggle(widget.uid);
+                                }
+                              },
                               child: Text(
-                                profileVM.followers.contains(FirebaseAuth.instance.currentUser!.uid) ? "Unfollow" : "Follow",
+                                profileVM.profileType.value == "Public" ?
+                                profileVM.followers.contains(FirebaseAuth.instance.currentUser!.uid)
+                                    ? "Unfollow"
+                                    : "Follow"
+                                    : profileVM.incoming_requests.contains(FirebaseAuth.instance.currentUser!.uid)
+                                    ? "Requested"
+                                    : profileVM.followers.contains(FirebaseAuth.instance.currentUser!.uid)
+                                    ? "Unfollow"
+                                    : "Follow",
                                 style: TextStyle(color: AppColors.backgroundColor),
                               ),
                               style: ElevatedButton.styleFrom(
@@ -274,73 +281,153 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage> {
 
               SizedBox(height: 10.h),
               // Additional Information Section
-              Text(
-                "  Additional Information",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.blueColor,
-                ),
-              ),
-              SizedBox(height: 8.h),
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                color: AppColors.blueColor,
-                elevation: 2,
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildInfoRow("Location:", profileVM.location.value),
-                      _buildInfoRow("Joined:", profileVM.joined.value),
-                      _buildInfoRow("Profile:", profileVM.profileType.value),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                "  Favorites",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.blueColor,
-                ),
-              ),
-              SizedBox(height: 12.0),
-              profileVM.favourites.length != 0
-                  ? Wrap(
-                spacing: 8.0, // Space between chips horizontally
-                runSpacing: 4.0, // Space between chips vertically
-                children: profileVM.favourites.map((favourite) => _buildChip(favourite)).toList(),
-              )
-                  : Align(alignment: Alignment.center,child: Text("  No favourite topics yet.", style: jost500(15.sp, AppColors.greenbutton),)),
-              SizedBox(height: 20.0),
+              if(profileVM.profileType.value == "Public")
+                Column(
+                  children: [
+                    Text(
+                      "  Additional Information",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.blueColor,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      color: AppColors.blueColor,
+                      elevation: 2,
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildInfoRow("Location:", profileVM.location.value),
+                            _buildInfoRow("Joined:", profileVM.joined.value),
+                            _buildInfoRow("Profile:", profileVM.profileType.value),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Text(
+                      "  Favorites",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.blueColor,
+                      ),
+                    ),
+                    SizedBox(height: 12.0),
+                    profileVM.favourites.length != 0
+                        ? Wrap(
+                      spacing: 8.0, // Space between chips horizontally
+                      runSpacing: 4.0, // Space between chips vertically
+                      children: profileVM.favourites.map((favourite) => _buildChip(favourite["favourite_name"])).toList(),
+                    )
+                        : Align(alignment: Alignment.center,child: Text("  No favourite topics yet.", style: jost500(15.sp, AppColors.greenbutton),)),
+                    SizedBox(height: 20.0),
 
-              // Events Attending Section
-              Text(
-                "Events Attending",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.blueColor,
+                    // Events Attending Section
+                    Text(
+                      "Events Attending",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.blueColor,
+                      ),
+                    ),
+                    SizedBox(height: 12.0),
+                    profileVM.events.length != 0
+                        ? ListView.builder(
+                        itemCount: profileVM.events.length,
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index){
+                          return _buildEventCard(profileVM.events[index]['event_name'], profileVM.events[index]['event_date']);
+                        })
+                        : Align(alignment: Alignment.center,child: Text("No events attending yet.", style: jost500(15.sp, AppColors.greenbutton),)),
+                  ],
                 ),
-              ),
-              SizedBox(height: 12.0),
-              profileVM.events.length != 0
-                  ? ListView.builder(
-                  itemCount: profileVM.events.length,
-                  padding: EdgeInsets.zero,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index){
-                    return _buildEventCard(profileVM.events[index]['event_title'], profileVM.events[index]['event_date']);
-                  })
-                  : Align(alignment: Alignment.center,child: Text("No events attending yet.", style: jost500(15.sp, AppColors.greenbutton),)),
-              SizedBox(height: 20.0),
+              if(profileVM.profileType.value == "Private" && profileVM.followers.contains(FirebaseAuth.instance.currentUser!.uid))
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "  Additional Information",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.blueColor,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      color: AppColors.blueColor,
+                      elevation: 2,
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildInfoRow("Location:", profileVM.location.value),
+                            _buildInfoRow("Joined:", profileVM.joined.value),
+                            _buildInfoRow("Profile:", profileVM.profileType.value),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Text(
+                      "  Favorites",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.blueColor,
+                      ),
+                    ),
+                    SizedBox(height: 12.0),
+                    profileVM.favourites.length != 0
+                        ? Wrap(
+                      spacing: 8.0, // Space between chips horizontally
+                      runSpacing: 4.0, // Space between chips vertically
+                      children: profileVM.favourites.map((favourite) => _buildChip(favourite["favourite_name"])).toList(),
+                    )
+                        : Align(alignment: Alignment.center,child: Text("  No favourite topics yet.", style: jost500(15.sp, AppColors.greenbutton),)),
+                    SizedBox(height: 20.0),
 
+                    // Events Attending Section
+                    Text(
+                      "Events Attending",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.blueColor,
+                      ),
+                    ),
+                    SizedBox(height: 12.0),
+                    profileVM.events.length != 0
+                        ? ListView.builder(
+                        itemCount: profileVM.events.length,
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index){
+                          return _buildEventCard(profileVM.events[index]['event_name'], profileVM.events[index]['event_date']);
+                        })
+                        : Align(alignment: Alignment.center,child: Text("No events attending yet.", style: jost500(15.sp, AppColors.greenbutton),)),
+                  ],
+                ),
+              if(profileVM.profileType.value == "Private" && !profileVM.followers.contains(FirebaseAuth.instance.currentUser!.uid))
+                Center(child:Text("This account is Private.", style: TextStyle(fontSize: 16.sp, color: AppColors.blueColor), textAlign: TextAlign.center,),),
+
+              SizedBox(height: 20.0),
 
             ],
           ),

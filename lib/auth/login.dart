@@ -6,12 +6,14 @@ import 'package:quandry/auth/forgot_password.dart';
 import 'package:quandry/auth/signup.dart';
 import 'package:quandry/bottom_nav/bottom_nav.dart';
 import 'package:quandry/const/colors.dart';
+import 'package:quandry/controller/auth_controller.dart';
 
 import '../const/images.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/custom_textfield.dart';
-
+import 'forgot_phone_number.dart';
+import 'package:localstorage/localstorage.dart';
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
@@ -20,11 +22,34 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  final AuthController authVM = Get.find<AuthController>();
+  final LocalStorage storage = localStorage;
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
 
   bool _rememberMe = false;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCredentials();
+  }
+
+  Future<void> _loadCredentials() async {
+    String? email = storage.getItem('email');
+    String? password = storage.getItem('password');
+
+    if (email != null && password != null) {
+      setState(() {
+        emailController.text = email;
+        passwordController.text = password;
+        _rememberMe = true;
+      });
+    }
+  }
 
   void _toggleRememberMe() {
     setState(() {
@@ -45,15 +70,28 @@ class _LoginViewState extends State<LoginView> {
     }
 
     try {
+      authVM.loading.value = true;
+
       // Attempt to sign in the user with Firebase Auth
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      authVM.loading.value = false;
+
+      if (_rememberMe) {
+        storage.setItem('email', email);
+        storage.setItem('password', password);
+      } else {
+        storage.removeItem('email');
+        storage.removeItem('password');
+      }
 
       // If successful, navigate to the AppNavBar
       Get.to(() => AppNavBar());
     } on FirebaseAuthException catch (e) {
+      authVM.loading.value = false;
+
       if (e.code == 'user-not-found') {
         // Show Snackbar if user is not registered
         Get.snackbar("Error", "User is not registered",
@@ -71,6 +109,8 @@ class _LoginViewState extends State<LoginView> {
             colorText: Colors.red);
       }
     } catch (e) {
+      authVM.loading.value = false;
+      debugPrint("real error"+ e.toString());
       // Handle any other exceptions
       Get.snackbar("Error", "An unexpected error occurred",
           // backgroundColor: Colors.red,
@@ -168,7 +208,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => ForgetPasswordScreen());
+                        Get.to(() => ForgetPasswordEmailPhoneView());
                       },
                       child: CustomText(
                         text: "Forgot password?",
@@ -181,10 +221,13 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 SizedBox(height: 26.h),
                 // Login Button
-                CustomButton(
-                  text: 'Login',
-                  color: AppColors.greenbutton,
-                  onPressed: _loginUser, // Call the login method
+                Obx(
+                  ()=> CustomButton(
+                    loading: authVM.loading.value,
+                    text: 'Login',
+                    color: AppColors.greenbutton,
+                    onPressed: _loginUser, // Call the login method
+                  ),
                 ),
                 SizedBox(height: 100.h),
                 GestureDetector(

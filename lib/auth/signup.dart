@@ -79,6 +79,7 @@ class _SignupViewState extends State<SignupView> {
           'following': [],
           'favourites': [],
           'events': [],
+          'requested': [],
           'location': '',
           'profile_type': 'Public',
           'uid': user.uid,

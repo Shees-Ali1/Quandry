@@ -156,22 +156,10 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                         .doc(_user!.uid)
                         .update({
                       'email': email.text,
-                    }).then((val){
+                    }).then((val) {
                       email.clear();
                     });
                   }
-
-                  // Update password if changed
-                  if (newPasswordController.text.isNotEmpty) {
-                    await _user!.updatePassword(newPasswordController.text).then((val){
-                      newPasswordController.clear();
-                    });
-                  }
-
-
-
-                  // Update bio if changed
-
 
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -312,42 +300,6 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                   suffixIcon: null,
                 ),
                 SizedBox(height: 12.h),
-                Text("Change Phone Number", style: jost700(12.sp, AppColors.blueColor)),
-                SizedBox(height: 10.26.h),
-                IntlPhoneField(
-                  flagsButtonPadding: EdgeInsets.only(left: 13.w),
-                  cursorColor: Colors.black,
-                  style: TextStyle(color: Colors.black),
-                  showDropdownIcon: false,
-                  decoration: InputDecoration(
-                    hintText: '0000000000',
-                    filled: true,
-                    fillColor: AppColors.fillcolor,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    counterText: '',
-                    hintStyle: TextStyle(
-                      color: AppColors.calendartext,
-                      fontFamily: 'jost',
-                      fontSize: 14.65.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13.31.r),
-                      borderSide: BorderSide(color: AppColors.textfieldBorder),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13.31.r),
-                      borderSide: BorderSide(color: AppColors.textfieldBorder),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13.31.r),
-                      borderSide: BorderSide(color: AppColors.textfieldBorder),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    phone.text = value.completeNumber;
-                  },
-                ),
                 SizedBox(height: 12.h),
                 Text("Change Email", style: jost700(12.sp, AppColors.blueColor)),
                 SizedBox(height: 10.h),
@@ -360,17 +312,17 @@ class _ProfileScreenMainState extends State<ProfileScreenMain> {
                   suffixIcon: null,
                 ),
                 SizedBox(height: 12.h),
-                Text("Change Password", style: jost700(12.sp, AppColors.blueColor)),
-                SizedBox(height: 10.h),
-                CustomTextField1(
-                  controller: newPasswordController, // Added controller
-                  hintText: 'Enter New Password',
-                  prefixIcon: null,
-                  borderColor: AppColors.textfieldBorder,
-                  borderWidth: 1.w,
-                  suffixIcon: null,
-                ),
-                SizedBox(height: 40.h),
+                // Text("Change Password", style: jost700(12.sp, AppColors.blueColor)),
+                // SizedBox(height: 10.h),
+                // CustomTextField1(
+                //   controller: newPasswordController, // Added controller
+                //   hintText: 'Enter New Password',
+                //   prefixIcon: null,
+                //   borderColor: AppColors.textfieldBorder,
+                //   borderWidth: 1.w,
+                //   suffixIcon: null,
+                // ),
+                // SizedBox(height: 40.h),
                 // Save changes button
                 CustomButton(
                   onPressed: () async{

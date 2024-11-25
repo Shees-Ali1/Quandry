@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quandry/bottom_nav/bottom_nav.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/images.dart';
@@ -10,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quandry/controllers/event_contorller.dart';
+import 'package:quandry/controllers/profile_controller.dart';
+import 'package:quandry/profile_screen/user_profile.dart';
 import 'package:quandry/suggestions.dart';
 
 import '../otherUser/OtherUserProfile.dart';
@@ -30,7 +33,7 @@ class EventDetail extends StatefulWidget {
 
 class _EventDetailState extends State<EventDetail> {
 
-  final EventController eventVM = Get.find<EventController>();
+  final EventController eventVM = Get.put(EventController());
 
   @override
   void initState (){
@@ -40,9 +43,24 @@ class _EventDetailState extends State<EventDetail> {
     eventVM.favourite.value = widget.event['favourited'];
     eventVM.attended.value = widget.event['attended'];
     eventVM.reviews.value = widget.event['reviews'];
+
+    if(eventVM.reviews.any((review)=> review["user_id"] == FirebaseAuth.instance.currentUser!.uid)){
+      eventVM.has_given_review.value = true;
+    } else {
+      eventVM.has_given_review.value = false;
+    }
+
+    print(eventVM.has_given_review.value);
+
+
+    print(eventVM.reviews);
   }
 
-
+  @override
+  void dispose(){
+    super.dispose();
+    eventVM.has_given_review.value = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +118,8 @@ class _EventDetailState extends State<EventDetail> {
                             ),
                             SizedBox(width: 105.w,),
                             Image.asset('assets/images/singlestar.png',height: 18.h,width: 18.w,),
-                            Text(' 4',style: jost600(14.sp, AppColors.blueColor),),
-                            Text(' (15)',style: jost400(14.sp, AppColors.blueColor),)
+                            Text(' ${widget.event["average_rating"]}',style: jost600(14.sp, AppColors.blueColor),),
+                            Text(' (${widget.event["reviews"].length})',style: jost400(14.sp, AppColors.blueColor),)
 
 
                           ],
@@ -172,7 +190,7 @@ class _EventDetailState extends State<EventDetail> {
                       children: [
                         InkWell(
                           onTap: () {
-                            _showFollowingDialog(context);
+                            _showUserDialog(context, "followers");
                           },
                           child: Padding(
                             padding: EdgeInsets.only(top: 22.0.h),
@@ -216,7 +234,7 @@ class _EventDetailState extends State<EventDetail> {
                         ),
                         InkWell(
                           onTap: (){
-                            _showPlannedDialog(context);
+                            _showUserDialog(context, "planned");
                           },
                           child: Padding(
                             padding: EdgeInsets.only(top: 22.0.h),
@@ -260,7 +278,7 @@ class _EventDetailState extends State<EventDetail> {
                         ),
                         InkWell(
                           onTap: (){
-                            _showFavouritedDialog(context);
+                            _showUserDialog(context, "favourite");
                           },
                           child: Padding(
                             padding: EdgeInsets.only(top: 22.0.h),
@@ -584,7 +602,7 @@ class _EventDetailState extends State<EventDetail> {
                     ],
                   ),
                   Obx(() {
-                    if(eventVM.attended.contains(FirebaseAuth.instance.currentUser!.uid) && eventVM.reviews.any((review) => review['user_id'] != FirebaseAuth.instance.currentUser!.uid)){
+                    if(eventVM.attended.contains(FirebaseAuth.instance.currentUser!.uid) && (eventVM.has_given_review.value == false)){
                       return Column(
                         children: [
                           SizedBox(
@@ -665,8 +683,7 @@ class _EventDetailState extends State<EventDetail> {
                           ),
                         ],
                       );
-                    } else if (eventVM.attended.contains(FirebaseAuth.instance.currentUser!.uid) && eventVM.reviews.any((review) => review['user_id'] == FirebaseAuth.instance.currentUser!.uid)) {
-                      debugPrint(eventVM.reviews.toString());
+                    } else if (eventVM.attended.contains(FirebaseAuth.instance.currentUser!.uid) && (eventVM.has_given_review.value == true)) {
                       return Padding(
                         padding:  EdgeInsets.only(top: 8.0.h),
                         child: Container(
@@ -682,8 +699,7 @@ class _EventDetailState extends State<EventDetail> {
                           ),
                         ),
                       );
-                    }
-                    else {
+                    } else {
                       return SizedBox();
                     }
                   }),
@@ -699,7 +715,7 @@ class _EventDetailState extends State<EventDetail> {
     );
   }
 
-  void _showFollowingDialog(BuildContext context) {
+  void _showUserDialog(BuildContext context, String type) {
     showDialog(
       context: context,
       builder: (context) {
@@ -742,7 +758,14 @@ class _EventDetailState extends State<EventDetail> {
 
                       var users = snapshot.data!.docs;
 
-                      users.retainWhere((user) => eventVM.followers.contains(user['uid']));
+                      if(type == "followers"){
+                        users.retainWhere((user) => eventVM.followers.contains(user['uid']));
+                      } else if(type == "planned"){
+                        users.retainWhere((user) => eventVM.planned.contains(user['uid']));
+                      } else if (type == "favourite"){
+                        users.retainWhere((user) => eventVM.favourite.contains(user['uid']));
+                      }
+
 
                       return SizedBox(
                         height: 300, // Adjust height for list
@@ -751,7 +774,11 @@ class _EventDetailState extends State<EventDetail> {
                           itemBuilder: (context, index) {
                             return ListTile(
                               onTap: (){
-                                Get.to(OtherUserProfilePage(uid: users[index]['uid']));
+                                if(users[index]["uid"] != FirebaseAuth.instance.currentUser!.uid){
+                                  Get.to(OtherUserProfilePage(uid: users[index]['uid']));
+                                } else {
+                                  Get.to(UserProfilePage(navbar: false,));
+                                }
                               },
                               leading: CircleAvatar(
                                 backgroundImage: NetworkImage(users[index]['profile_pic']),
@@ -827,260 +854,6 @@ class _EventDetailState extends State<EventDetail> {
     );
   }
 
-  void _showPlannedDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          backgroundColor:       Color.fromRGBO(216, 229, 236, 1),
-          child: Container(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Planned",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.blueColor
-                  ),
-                ),
-                SizedBox(height: 8),
-                Divider(
-                  color: AppColors.blueColor,
-                ),
-                StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection("users").snapshots(),
-                    builder: (context, snapshot) {
 
-                      if(snapshot.connectionState == ConnectionState.waiting){
-                        return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
-                      } else if (snapshot.hasError){
-                        debugPrint("Error in events stream home page: ${snapshot.error}");
-                        return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
-                      } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
-                        return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor),));
-                      } else if(snapshot.connectionState == ConnectionState.none){
-                        return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
-                      } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
-
-                        var users = snapshot.data!.docs;
-
-                        users.retainWhere((user) => eventVM.planned.contains(user['uid']));
-
-                        return SizedBox(
-                          height: 300, // Adjust height for list
-                          child: ListView.builder(
-                            itemCount: users.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                onTap: (){
-                                  Get.to(OtherUserProfilePage(uid: users[index]['uid']));
-                                },
-                                leading: CircleAvatar(
-                                  backgroundImage: NetworkImage(users[index]['profile_pic']),
-                                ),
-                                title: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              users[index]['name'],
-                                              style: TextStyle(color:AppColors.blueColor, fontWeight: FontWeight.bold),
-                                            ),
-                                            users[index]['is_verified'] == true
-                                                ? Padding(
-                                              padding: const EdgeInsets.only(left: 4.0),
-                                              child: Image.asset(
-                                                'assets/images/qwandery-verified-professional.png',
-                                                height: 12.h,
-                                                width: 12.w
-                                                ,
-                                              ),
-                                            )
-                                                : SizedBox(),
-                                          ],
-                                        ),
-                                        Text(
-                                          users[index]['name'],
-                                          style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
-                                        ),
-                                      ],
-                                    ),
-
-
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      } else {
-                        return SizedBox();
-                      }
-
-
-                    }
-                ),
-                SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Close"),
-
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.blueColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showFavouritedDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          backgroundColor:       Color.fromRGBO(216, 229, 236, 1),
-          child: Container(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Favourited",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.blueColor
-                  ),
-                ),
-                SizedBox(height: 8),
-                Divider(
-                  color: AppColors.blueColor,
-                ),
-                StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection("users").snapshots(),
-                    builder: (context, snapshot) {
-
-                      if(snapshot.connectionState == ConnectionState.waiting){
-                        return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
-                      } else if (snapshot.hasError){
-                        debugPrint("Error in events stream home page: ${snapshot.error}");
-                        return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
-                      } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
-                        return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor),));
-                      } else if(snapshot.connectionState == ConnectionState.none){
-                        return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
-                      } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
-
-                        var users = snapshot.data!.docs;
-
-                        users.retainWhere((user) => eventVM.favourite.contains(user['uid']));
-
-                        return SizedBox(
-                          height: 300, // Adjust height for list
-                          child: ListView.builder(
-                            itemCount: users.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                onTap: (){
-                                  Get.to(OtherUserProfilePage(uid: users[index]['uid']));
-                                },
-                                leading: CircleAvatar(
-                                  backgroundImage: NetworkImage(users[index]['profile_pic']),
-                                ),
-                                title: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              users[index]['name'],
-                                              style: TextStyle(color:AppColors.blueColor, fontWeight: FontWeight.bold),
-                                            ),
-                                            users[index]['is_verified'] == true
-                                                ? Padding(
-                                              padding: const EdgeInsets.only(left: 4.0),
-                                              child: Image.asset(
-                                                'assets/images/qwandery-verified-professional.png',
-                                                height: 12.h,
-                                                width: 12.w
-                                                ,
-                                              ),
-                                            )
-                                                : SizedBox(),
-                                          ],
-                                        ),
-                                        Text(
-                                          users[index]['name'],
-                                          style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
-                                        ),
-                                      ],
-                                    ),
-
-
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      } else {
-                        return SizedBox();
-                      }
-
-
-                    }
-                ),
-                SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Close"),
-
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.blueColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
 }

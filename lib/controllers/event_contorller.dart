@@ -15,6 +15,9 @@ class EventController extends GetxController {
   RxList attended = [].obs;
   RxList reviews = [].obs;
   RxInt selectedStars = 0.obs;
+  RxBool has_given_review = false.obs;
+
+
 
 
   Future<void> followToggle (String event_id) async {
@@ -163,10 +166,23 @@ class EventController extends GetxController {
           "stars": stars,
         };
 
+        reviews.add(review);
+        reviews.refresh();
+
+
+        if(reviews.any((review)=> review["user_id"] == FirebaseAuth.instance.currentUser!.uid)){
+          has_given_review.value = true;
+        } else {
+          has_given_review.value = false;
+        }
+
+        var average_rating = await calculateAverageStars(reviews);
+
         await FirebaseFirestore.instance.collection('events').doc(event_id).set({
          "reviews" : FieldValue.arrayUnion([review]),
+         "average_rating": average_rating.toString(),
         }, SetOptions(merge: true)).then((val) {
-          Get.snackbar("Review Sent", "Thank you for time.", colorText: CupertinoColors.white, backgroundColor: AppColors.blueColor);
+          Get.snackbar("Review Sent", "Thank you for your time.", colorText: CupertinoColors.white, backgroundColor: AppColors.blueColor);
         });
 
       } else {
@@ -253,7 +269,6 @@ class EventController extends GetxController {
    }
   }
 
-
   Future<void> iWent (String event_id) async {
     try{
       var eventDoc = await FirebaseFirestore.instance.collection("events").doc(event_id).get();
@@ -277,5 +292,17 @@ class EventController extends GetxController {
       debugPrint("Error while choosing im going for event: $e");
     }
   }
+
+  double calculateAverageStars(List<dynamic> reviews) {
+    if (reviews.isEmpty) return 0.0;
+
+    // Extract the 'stars' field and calculate the average
+    double totalStars = reviews.fold(0.0, (sum, review) => sum + (double.tryParse(review['stars']) ?? 0));
+    double averageStars = totalStars / reviews.length;
+
+    // Round to one decimal place
+    return double.parse(averageStars.toStringAsFixed(1));
+  }
+
 
 }

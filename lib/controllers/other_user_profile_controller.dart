@@ -7,8 +7,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:quandry/controllers/profile_controller.dart';
 
 class OtherUserProfileController extends GetxController {
+  final ProfileController profile = Get.put(ProfileController());
+
+
   RxString profilePicture = ''.obs;
   RxString temporary_pic = ''.obs;
   RxString name = ''.obs;
@@ -19,10 +23,12 @@ class OtherUserProfileController extends GetxController {
   RxString email = "".obs;
   RxString location = "".obs;
   RxString joined = ''.obs;
-  RxString profileType = 'Public'.obs;
+  RxString profileType = ''.obs;
   RxBool verified = false.obs;
-  RxList<String> favourites = <String>[].obs;
-  RxList<Map<String, dynamic>> events = <Map<String, dynamic>>[].obs;
+  var favourites = [].obs;
+  var events = [].obs;
+  var incoming_requests = [].obs;
+  var requested = [].obs;
   RxBool loading = false.obs;
   RxBool userDataFetched = false.obs;
   RxString errorOccurred = "".obs;
@@ -56,9 +62,12 @@ class OtherUserProfileController extends GetxController {
         verified.value = user['verified'] ?? false;
         location.value = user['location'] ?? 'Unknown';
         joined.value = formatTimestampToDate(user['joined']!);
-        profileType.value = user['profile_type'] ?? 'Public';
-        favourites.value = List<String>.from(user['favourites'] ?? []);
-        events.value = List<Map<String, dynamic>>.from(user['events'] ?? []);
+        profileType.value = user?['profile_type'] ?? "";
+        print("profile type: " + profileType.value);
+        favourites.value = (user['favourites'] ?? []);
+        events.value =  (user['events'] ?? []);
+        requested.value = (user['requested'] ?? []);
+        incoming_requests.value = (user['incoming_requests'] ?? []);
 
         userDataFetched.value = true;
       } else {
@@ -85,21 +94,152 @@ class OtherUserProfileController extends GetxController {
     }
   }
 
-  Future<void> followOtherUser (String uid) async {
+  Future<void> followToggle (String user_id) async {
     try{
-      await firestore.collection("users").doc(uid).update({
-        "followers": FieldValue.arrayUnion([auth.uid]),
-      });
 
-    var  data =  await firestore.collection("users").doc(uid).get();
+      var userDoc = await FirebaseFirestore.instance.collection("users").doc(user_id).get();
 
-    followers.value = data['followers'];
+      if(userDoc.exists){
 
-      await firestore.collection("users").doc(auth.uid).update({
-        'following': FieldValue.arrayUnion([uid]),
-      });
-    } catch(e){
-      debugPrint("Error while following user: $e");
+        var user = userDoc.data();
+
+        var followersList = List<String>.from(user!['followers'] ?? []);
+
+        if(followersList.contains(FirebaseAuth.instance.currentUser!.uid)){
+
+          followers.remove(FirebaseAuth.instance.currentUser!.uid);
+          profile.following.remove(user_id);
+
+          await FirebaseFirestore.instance.collection("users").doc(user_id).update({
+            'followers': FieldValue.arrayRemove([FirebaseAuth.instance.currentUser!.uid]),
+          });
+
+          await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update({
+            'following': FieldValue.arrayRemove([user_id]),
+          }).then((val) {
+            debugPrint("un_followed");
+          });
+
+        } else {
+
+          followers.add(FirebaseAuth.instance.currentUser!.uid);
+          profile.following.add(user_id);
+
+          await FirebaseFirestore.instance.collection("users").doc(user_id).update({
+            'followers': FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
+          });
+
+          await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update({
+            'following': FieldValue.arrayUnion([user_id]),
+          }).then((val) {
+            debugPrint("Followed");
+          });
+
+          final notificationsRef = FirebaseFirestore.instance
+              .collection("notifications")
+              .doc(user_id)
+              .collection("notifications");
+
+          final docRef = notificationsRef.doc();
+
+          final notificationData = {
+            "requester_id": FirebaseAuth.instance.currentUser!.uid,
+            "notification_type": "Followed",
+            "sent_at": DateTime.now(),
+            "action_taken": "",
+            "notification_id": docRef.id, // Include the generated document ID
+          };
+
+          await docRef.set(notificationData);
+
+
+        }
+      } else {
+        debugPrint("THe user doc doesn't exist: ${user_id}");
+      }
+
+    }catch(e){
+      debugPrint("Error in followToggle for user: ${e}");
+    }
+  }
+
+  Future<void> followRequestToggle (String user_id) async {
+    try{
+
+      var userDoc = await FirebaseFirestore.instance.collection("users").doc(user_id).get();
+
+      if(userDoc.exists){
+
+        var user = userDoc.data();
+
+        var requestedList = List<String>.from(user!['incoming_requests'] ?? []);
+
+        if(requestedList.contains(FirebaseAuth.instance.currentUser!.uid)){
+
+          profile.requested.remove(user_id);
+          incoming_requests.remove(FirebaseAuth.instance.currentUser!.uid);
+
+          await FirebaseFirestore.instance.collection("notifications").doc(user_id).set({
+            "read_all": false,
+          }, SetOptions(merge: true));
+
+          await FirebaseFirestore.instance.collection("notifications").doc(user_id).collection("notifications").doc(FirebaseAuth.instance.currentUser!.uid).delete();
+
+          await firestore.collection("users").doc(user_id).update({
+            "incoming_requests": FieldValue.arrayRemove([FirebaseAuth.instance.currentUser!.uid]),
+          });
+
+          await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update({
+            'requested': FieldValue.arrayRemove([user_id]),
+          }).then((val) {
+            debugPrint("un_requested");
+          });
+
+        } else {
+          if(!profile.requested.contains(user_id)){
+            profile.requested.add(user_id);
+            incoming_requests.add(FirebaseAuth.instance.currentUser!.uid);
+          }
+
+          await firestore.collection("users").doc(user_id).update({
+            "incoming_requests": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
+          });
+
+          // Reference to the subcollection
+          final notificationsRef = FirebaseFirestore.instance
+              .collection("notifications")
+              .doc(user_id)
+              .collection("notifications");
+
+// Create a new document with a random ID
+          final docRef = notificationsRef.doc();
+
+// Data to store in the document
+          final notificationData = {
+            "requester_id": FirebaseAuth.instance.currentUser!.uid,
+            "notification_type": "Follow request",
+            "sent_at": DateTime.now(),
+            "action_taken": "",
+            "notification_id": docRef.id, // Include the generated document ID
+          };
+
+// Save the document
+          await docRef.set(notificationData);
+
+
+          await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update({
+            'requested': FieldValue.arrayUnion([user_id]),
+          }).then((val) {
+            debugPrint("requested");
+          });
+
+        }
+      } else {
+        debugPrint("THe user doc doesn't exist: ${user_id}");
+      }
+
+    }catch(e){
+      debugPrint("Error in followToggle for user: ${e}");
     }
   }
 
