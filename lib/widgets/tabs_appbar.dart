@@ -147,31 +147,41 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                             ),
                           );
                         } else if(!snapshot.data!.exists) {
-                          return Container(
-                            padding: EdgeInsets.all(2.0),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.whiteColor,
-                            ),
-                            child: Image.asset(
-                              AppImages.notification_icon_small,
-                              height: 25.h,
-                              width: 25.w,
-                              color: AppColors.blueColor,
+                          return InkWell(
+                            onTap:() {
+                              Get.to(NotificationsDetail());
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(2.0),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.whiteColor,
+                              ),
+                              child: Image.asset(
+                                AppImages.notification_icon_small,
+                                height: 25.h,
+                                width: 25.w,
+                                color: AppColors.blueColor,
+                              ),
                             ),
                           );
                         } else if(snapshot.connectionState == ConnectionState.none){
-                          return  Container(
-                            padding: EdgeInsets.all(2.0),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.whiteColor,
-                            ),
-                            child: Image.asset(
-                              AppImages.notification_icon_small,
-                              height: 25.h,
-                              width: 25.w,
-                              color: AppColors.blueColor,
+                          return  InkWell(
+                            onTap: (){
+                              Get.to(NotificationsDetail());
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(2.0),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.whiteColor,
+                              ),
+                              child: Image.asset(
+                                AppImages.notification_icon_small,
+                                height: 25.h,
+                                width: 25.w,
+                                color: AppColors.blueColor,
+                              ),
                             ),
                           );
                         } else if(snapshot.hasData && snapshot.data!.exists){
@@ -179,7 +189,7 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                           var notification = snapshot.data!;
 
                           if(notification["read_all"] == true){
-                            return GestureDetector(
+                            return InkWell(
                               onTap:() {
                                 Get.to(NotificationsDetail());
                               },
@@ -198,7 +208,7 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                               ),
                             );
                           } else {
-                            return GestureDetector(
+                            return InkWell(
                               onTap:() {
                                 Get.to(NotificationsDetail());
                               },
@@ -228,9 +238,6 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                               )
                             );
                           }
-
-
-
                         } else {
                           return SizedBox();
                         }

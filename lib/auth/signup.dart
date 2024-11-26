@@ -101,6 +101,70 @@ class _SignupViewState extends State<SignupView> {
     }
   }
 
+  Future<void> createAdmin() async {
+
+    authVM.loading.value = true;
+
+    if (_image == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select a profile picture.')),
+      );
+      return;
+    }
+
+    try {
+      // Create user with email and password
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // Get the created user
+      User? user = userCredential.user;
+
+      if (user != null) {
+        // Upload the image to Firebase Storage
+        String fileName = 'profile_pictures/${user.uid}.jpg';
+        UploadTask uploadTask = _storage.ref(fileName).putFile(_image!);
+        TaskSnapshot snapshot = await uploadTask;
+        String downloadUrl = await snapshot.ref.getDownloadURL();
+
+        // Store user details in Firestore under the user's UID
+        await _firestore.collection('admin').doc(user.uid).set({
+          'name': _nameController.text.trim(),
+          'email': user.email,
+          'bio': '',
+          'is_verified': false,
+          'phone_number': '',
+          'profile_pic': downloadUrl, // Save the download URL of the profile picture
+          'joined': Timestamp.now(),
+          'followers': [],
+          'following': [],
+          'favourites': [],
+          'events': [],
+          'requested': [],
+          'location': '',
+          'profile_type': 'Public',
+          'uid': user.uid,
+        });
+
+        // Update the password for the current user
+        await user.updatePassword(_passwordController.text.trim());
+        authVM.loading.value = false;
+
+        // Navigate to the LoginView screen after successful registration
+        Get.offAll(() => LoginView()); // Use Get.offAll to replace the current screen with LoginView
+      }
+    } catch (e) {
+      authVM.loading.value = false;
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
+
   // Method to pick an image from the gallery
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
