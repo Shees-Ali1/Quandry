@@ -18,6 +18,7 @@ class ChatController extends GetxController {
       await FirebaseFirestore.instance.collection("online_support").doc(FirebaseAuth.instance.currentUser!.uid).set({
         "seen": false,
         "last_message_sent_at": time,
+        "uid": FirebaseAuth.instance.currentUser!.uid,
       }, SetOptions(merge: true));
 
     } catch (e){
