@@ -19,7 +19,7 @@ class AppColors {
   static const appbar_text = Color.fromRGBO(216,229,236,1);
   static const textfieldBorder = Color.fromRGBO(217, 223, 230, 1);
   static const border =  Color.fromRGBO(216, 229, 236, 1);
-
+  static const lighterBlueColor = Color.fromRGBO(100, 150, 170, 1);
 
 
   static const buttonColor = Color(0xff0CC0DF);

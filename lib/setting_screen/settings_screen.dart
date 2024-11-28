@@ -20,6 +20,7 @@ import 'package:quandry/setting_screen/notification_screens/notification_screen_
 import 'package:quandry/setting_screen/notification_setting/notification_setting.dart';
 import 'package:quandry/subscription_screen.dart';
 import 'package:quandry/widgets/appbar_small.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -30,6 +31,8 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final ProfileController profileVM = Get.put(ProfileController());
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
 
 
   @override
@@ -37,6 +40,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
   }
 
+  // Sign out from Google
+  Future<void> signOut() async {
+    await _googleSignIn.signOut();
+    await _auth.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {

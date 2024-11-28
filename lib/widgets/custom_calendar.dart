@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/colors.dart';
@@ -5,9 +6,11 @@ import 'package:quandry/const/textstyle.dart';
 import 'package:intl/intl.dart';
 import 'package:quandry/controllers/profile_controller.dart';
 import 'package:get/get.dart';
+import 'package:date_picker_plus/date_picker_plus.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class CustomCalendar extends StatefulWidget {
-  final List eventDates;
+  final List eventDates;  // Receive event dates from the parent
 
   CustomCalendar({super.key, required this.eventDates});
 
@@ -22,11 +25,31 @@ class _CustomCalendarState extends State<CustomCalendar> {
   DateTime currentMonth = DateTime.now(); // Keeps track of the displayed month
   DateTime today = DateTime.now(); // Current date
 
+  DateTime? _rangeStart;
+  DateTime? _rangeEnd;
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay; // For single-day selection
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
+  Map<String, int> eventCounts = {};
+  String formattedDate = "";
+
   @override
   void initState() {
     super.initState();
     // Set the initially selected date to today's date
     selectedDate = today.day;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Update your reactive list or state here
+      formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+      if (!profileVM.selectedCalenderDate.contains(formattedDate)) {
+        profileVM.selectedCalenderDate.add(formattedDate);
+      }
+    });
+
+
+    // Debug output of the passed eventDates
+    print(widget.eventDates);
   }
 
   @override
@@ -34,154 +57,181 @@ class _CustomCalendarState extends State<CustomCalendar> {
     // Format the month name
     String monthName = DateFormat('MMMM').format(currentMonth);
 
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      body: Column(
-        children: [
-          /// Calendar Container
-          Container(
-            height: 242.h,
-            decoration: BoxDecoration(
-              color: AppColors.fillcolor,
-              borderRadius: BorderRadius.circular(11.r),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2), // Adjust shadow color and opacity
-                  blurRadius: 8.r, // Softness of the shadow
-                  spreadRadius: 2.r, // Extent of the shadow
-                  offset: Offset(0, 2), // Horizontal and vertical offset of the shadow
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.53.w),
-              child: Column(
-                children: [
-                  /// Calendar Header
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Calendar",
-                        style: jost600(13.37.sp, AppColors.calendartext),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            monthName,
-                            style: jost500(8.88.sp, AppColors.blueColor),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.arrow_forward_ios, size: 12.w, color: AppColors.iconcolorcalendar),
-                            onPressed: () {
-                              setState(() {
-                                // Move to the next month
-                                currentMonth = DateTime(currentMonth.year, currentMonth.month + 1);
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8.8.h),
+    // Clear the event counts before adding new ones
+    eventCounts.clear();
+    for (var eventDay in widget.eventDates) {
+      String eventDate = DateFormat('yyyy-MM-dd').format(DateTime(today.year, today.month, eventDay));
+      eventCounts[eventDate] = (eventCounts[eventDate] ?? 0) + 1;
+    }
 
-                  /// Day Labels Row
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-                          .map((day) => Text(
-                        day,
-                        style: jost700(8.54.sp, AppColors.blueColor),
-                      ))
-                          .toList(),
-                    ),
-                  ),
-                  SizedBox(height: 9.85.h),
+    return Container(
+      width: double.infinity,
+      height: 500,
+      decoration: BoxDecoration(
+        color: AppColors.blueColor,
+        borderRadius: BorderRadius.circular(14.r),
+      ),
+      child: TableCalendar(
+        firstDay: DateTime(2020, 1, 1),
+        lastDay: DateTime(2050, 12, 31),
+        focusedDay: _focusedDay,
+        rangeStartDay: _rangeStart,
+        rangeEndDay: _rangeEnd,
+        currentDay: _selectedDay,
+        selectedDayPredicate: (day) =>
+            isSameDay(_selectedDay, day), // Highlight for single-day selection
+        rangeSelectionMode: RangeSelectionMode.toggledOn,
+        onRangeSelected: (start, end, focusedDay) {
+          setState(() {
+            _rangeStart = start;
+            _rangeEnd = end;
+            _focusedDay = focusedDay;
+            _selectedDay = null; // Clear single selection when range is selected
+          });
 
-                  /// Date Grid
-                  Container(
-                    height: 160.h, // Define height for the grid
-                    child: GridView.builder(
-                      physics: NeverScrollableScrollPhysics(), // Keep GridView non-scrollable
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 7,
-                        childAspectRatio: 32.13 / 20.27, // Set this ratio based on your desired width/height
-                        mainAxisSpacing: 5.h,
-                        crossAxisSpacing: 10.w,
-                      ),
-                      itemCount: DateTime(currentMonth.year, currentMonth.month + 1, 0).day, // Set itemCount based on the number of days in the month
-                      itemBuilder: (context, index) {
-                        int day = index + 1;
-                        bool isSelected = selectedDate == day;
-                        bool hasEvent = widget.eventDates.contains(day);
-                        bool isToday = day == today.day; // Check if it's today's date
+          profileVM.selectedCalenderDate.clear();
 
-                        // Date should be blue if it's selected or today (with or without event)
-                        bool isBlue = isSelected ;
 
-                        // If the date is neither selected nor today but has an event, it should be green
-                        bool isGreen = !isSelected && !isToday && hasEvent;
+          if (start != null && end != null) {
+            DateTime currentDate = start;
+            while (!currentDate.isAfter(end)) {
+              String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
+              profileVM.selectedCalenderDate.add(formattedDate);
+              currentDate = currentDate.add(Duration(days: 1)); // Move to the next day
+            }
+            print(profileVM.selectedCalenderDate); // Debugging output
+          } else if(start != null && end == null){
+            String formattedDate = DateFormat('yyyy-MM-dd').format(start);
 
-                        return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                // When tapped, set the selectedDate to the tapped day (if it's an event date or not)
-                                selectedDate = day;
-                              });
+            // Check if the date is not already in the list and add it
+            profileVM.selectedCalenderDate.clear();
 
-                             profileVM.getDate(selectedDate!);
-                             setState(() {
-
-                             });
-
-                              if (hasEvent) {
-                                final eventDetails = profileVM.events.firstWhere((event) {
-                                  final eventDate = DateFormat('yyyy-MM-dd').parse(event["event_date"]!);
-                                  return eventDate.day == day;
-                                });
-                              }
-                            },
-                            child: Container(
-                              margin: EdgeInsets.all(3.5),
-                              decoration: BoxDecoration(
-                                color: isBlue
-                                    ? AppColors.blueColor // Blue color for selected or today, regardless of event
-                                    : isGreen
-                                    ? AppColors.greenbutton // Green color for event dates that are neither selected nor today
-                                    : Colors.white, // Default white color for other dates
-                                border: Border.all(
-                                  color: isSelected || isToday
-                                      ? AppColors.blueColor // Border for selected or today date
-                                      : Colors.grey, // Grey border for other dates
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "$day",
-                                  style: TextStyle(
-                                    fontSize: 8.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: isBlue || isGreen
-                                        ? Colors.white // White text for selected, today, or event dates
-                                        : Colors.black, // Black text for other dates
-                                  ),
-                                ),
-                              ),
-                            )
-
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+            if (!profileVM.selectedCalenderDate.contains(formattedDate)) {
+              profileVM.selectedCalenderDate.add(formattedDate);  // Add the selected date
+            }
+          }
+        },
+        // onDaySelected: (selectedDay, focusedDay) {
+        //   setState(() {
+        //     // Set the focusedDay to the selected day if it's not today
+        //     if (!isSameDay(selectedDay, today)) {
+        //       _focusedDay = selectedDay; // Update focusedDay
+        //     }
+        //
+        //     _selectedDay = selectedDay;
+        //     _rangeStart = null; // Clear range when single day is selected
+        //     _rangeEnd = null;
+        //   });
+        //
+        //   // Format the selected date
+        //   String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDay);
+        //
+        //   // Check if the date is not already in the list and add it
+        //   profileVM.selectedCalenderDate.clear();
+        //
+        //   if (!profileVM.selectedCalenderDate.contains(formattedDate)) {
+        //       profileVM.selectedCalenderDate.add(formattedDate);  // Add the selected date
+        //   }
+        //
+        //   print(profileVM.selectedCalenderDate);
+        // },
+        calendarStyle: CalendarStyle(
+          // cellMargin: EdgeInsets.only(top: 10),
+          selectedDecoration: BoxDecoration(
+            color: AppColors.secondaryColor,
+            shape: BoxShape.circle,
+          ),
+          markerDecoration: BoxDecoration(
+            color: AppColors.secondaryColor,
+            shape: BoxShape.circle,
+          ),
+          canMarkersOverflow: false,
+          cellPadding: EdgeInsets.zero,
+          cellAlignment: Alignment.bottomCenter,
+          selectedTextStyle: jost400(14.sp, AppColors.blueColor),
+          todayDecoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              width: 0.6,
+              color: AppColors.secondaryColor,
             ),
           ),
-        ],
+          todayTextStyle: jost400(15.sp, AppColors.secondaryColor),
+          rangeHighlightColor: AppColors.secondaryColor.withOpacity(0.5),
+          rangeStartDecoration: BoxDecoration(
+            color: AppColors.secondaryColor,
+            shape: BoxShape.circle,
+          ),
+          rangeEndDecoration: BoxDecoration(
+            color: AppColors.secondaryColor,
+            shape: BoxShape.circle,
+          ),
+          rangeStartTextStyle: jost400(15.sp, AppColors.blueColor),
+          rangeEndTextStyle: jost400(15.sp, AppColors.blueColor),
+          defaultTextStyle: jost400(15.sp, AppColors.secondaryColor),
+          outsideDaysVisible: false,
+        ),
+        daysOfWeekStyle: DaysOfWeekStyle(
+          weekdayStyle: jost700(13.sp, AppColors.secondaryColor),
+          weekendStyle: jost700(13.sp, AppColors.secondaryColor),
+        ),
+        headerStyle: HeaderStyle(
+          formatButtonVisible: false,
+          titleCentered: true,
+          titleTextStyle: jost700(13.sp, AppColors.secondaryColor),
+          leftChevronIcon: Icon(
+            CupertinoIcons.left_chevron,
+            size: 20.w,
+            color: AppColors.secondaryColor,
+          ),
+          rightChevronIcon: Icon(
+            CupertinoIcons.right_chevron,
+            size: 20.w,
+            color: AppColors.secondaryColor,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.blueColor,
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+        ),
+        rowHeight: 35,
+        calendarBuilders: CalendarBuilders(
+          defaultBuilder: (context, date, _) {
+            String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+            final eventCount = eventCounts[formattedDate];
+
+            return Container(
+              height: 35,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Text(
+                    '${date.day}',
+                    style: jost400(14.sp, AppColors.secondaryColor),
+                  ),
+                  if (eventCount != null && eventCount > 0)
+                    Positioned(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '($eventCount)',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10.sp,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

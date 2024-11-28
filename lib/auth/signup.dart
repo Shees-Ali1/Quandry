@@ -164,7 +164,6 @@ class _SignupViewState extends State<SignupView> {
     }
   }
 
-
   // Method to pick an image from the gallery
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();

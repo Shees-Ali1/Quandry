@@ -31,7 +31,7 @@ class ProfileController extends GetxController {
   RxBool loading = false.obs;
   RxBool userDataFetched = false.obs;
   RxString errorOccurred = "".obs;
-  RxString selectedCalenderDate = "".obs;
+  var selectedCalenderDate = [].obs;
 
   var firestore = FirebaseFirestore.instance;
   var auth = FirebaseAuth.instance.currentUser!;
@@ -40,7 +40,7 @@ class ProfileController extends GetxController {
     DateTime currentMonth = DateTime.now(); // Keeps track of the displayed month
 
     String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime(currentMonth.year, currentMonth.month, selectedDate!));
-    selectedCalenderDate.value = formattedDate;
+    selectedCalenderDate.add(formattedDate);
     print(selectedCalenderDate.value);
 
   }

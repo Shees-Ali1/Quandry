@@ -56,7 +56,10 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
                   builder: (context, snapshot) {
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator()); // or any loading widget
+                      return Padding(
+                        padding: EdgeInsets.only(top: Get.height *.35),
+                        child: Center(child: CircularProgressIndicator()),
+                      ); // or any loading widget
                     }
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
@@ -94,7 +97,7 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
                     );
                   }
                 ),
-                // SizedBox(height: 18.63.h),
+               SizedBox(height: 18.63.h),
                 Text(
                   " Events Scheduled for Attendance",
                   style: jost700(16.37.sp, AppColors.blueColor),
@@ -104,11 +107,59 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
                 /// List of EventCards
                 Obx(() {
                   // Fetch events from Firestore and filter by selectedCalenderDate
-                  return FutureBuilder<QuerySnapshot>(
+                  return profileVM.selectedCalenderDate != [] ?  FutureBuilder<QuerySnapshot>(
                     future: FirebaseFirestore.instance
                         .collection("events")
                         .where("attending", arrayContains: FirebaseAuth.instance.currentUser!.uid)
-                        .where("event_date", isEqualTo: profileVM.selectedCalenderDate.value)
+                        .get(),  // Fetch events based on selected date
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Padding(
+                          padding: EdgeInsets.only(top: Get.height *.35),
+                          child: Center(child: CircularProgressIndicator(color: AppColors.blueColor)),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor)));
+                      } else if (snapshot.data!.docs.isEmpty) {
+                        return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor)));
+                      }
+
+                      var events = snapshot.data!.docs;
+
+                      events.retainWhere((event) {
+                        // Ensure event["event_date"] is in the same format as profileVM.selectedCalenderDate (e.g., 'yyyy-MM-dd')
+                        String eventDate = event["event_date"]; // assuming it's in 'yyyy-MM-dd' format
+                        return profileVM.selectedCalenderDate.contains(eventDate);
+                      });
+
+                      if (events.isEmpty) {
+                        return Center(child: Text("No events on this Date", style: jost500(16.sp, AppColors.blueColor)));
+                      }
+
+                      return ListView.builder(
+                        physics: NeverScrollableScrollPhysics(), // Disable inner scrolling
+                        shrinkWrap: true,
+                        itemCount: events.length, // Number of events you want to display
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 10.0), // Adjust the space between items
+                            child: EventCard(
+                              event: events[index],
+                              imageAsset: events[index]['event_image'], // Use imageAsset instead of imageUrl
+                              title: events[index]['event_name'],
+                              date: events[index]['event_date'],
+                              location: events[index]['event_location'],
+                              credits: '10 CE Credits',
+                              priceRange: "\$" + events[index]['event_price'].toString() + "/seat",
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ) : FutureBuilder<QuerySnapshot>(
+                    future: FirebaseFirestore.instance
+                        .collection("events")
+                        .where("attending", arrayContains: FirebaseAuth.instance.currentUser!.uid)
                         .get(),  // Fetch events based on selected date
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -120,6 +171,12 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
                       }
 
                       var events = snapshot.data!.docs;
+
+                      events.retainWhere((event) {
+                        // Ensure event["event_date"] is in the same format as profileVM.selectedCalenderDate (e.g., 'yyyy-MM-dd')
+                        String eventDate = event["event_date"]; // assuming it's in 'yyyy-MM-dd' format
+                        return profileVM.selectedCalenderDate.contains(eventDate);
+                      });
 
                       if (events.isEmpty) {
                         return Center(child: Text("No events on this Date", style: jost500(16.sp, AppColors.blueColor)));
@@ -146,7 +203,8 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
                       );
                     },
                   );
-                }),              ],
+                }),
+              ],
             ),
           ),
         ),

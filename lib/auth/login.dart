@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -14,6 +16,10 @@ import '../widgets/custom_text.dart';
 import '../widgets/custom_textfield.dart';
 import 'forgot_phone_number.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
@@ -28,6 +34,10 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   bool _rememberMe = false;
 
@@ -70,14 +80,13 @@ class _LoginViewState extends State<LoginView> {
     }
 
     try {
-      authVM.loading.value = true;
+      authVM.simple_loading.value = true;
 
       // Attempt to sign in the user with Firebase Auth
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      authVM.loading.value = false;
 
       if (_rememberMe) {
         storage.setItem('email', email);
@@ -88,9 +97,12 @@ class _LoginViewState extends State<LoginView> {
       }
 
       // If successful, navigate to the AppNavBar
+      storage.setItem("logged_in_by", "email");
+      authVM.simple_loading.value = false;
+
       Get.to(() => AppNavBar());
     } on FirebaseAuthException catch (e) {
-      authVM.loading.value = false;
+      authVM.simple_loading.value = false;
 
       if (e.code == 'user-not-found') {
         // Show Snackbar if user is not registered
@@ -109,13 +121,103 @@ class _LoginViewState extends State<LoginView> {
             colorText: Colors.red);
       }
     } catch (e) {
-      authVM.loading.value = false;
+      authVM.simple_loading.value = false;
       debugPrint("real error"+ e.toString());
       // Handle any other exceptions
       Get.snackbar("Error", "An unexpected error occurred",
           // backgroundColor: Colors.red,
           colorText: Colors.red);
     }
+  }
+
+
+  // Sign in with Google
+  Future<User?> signInWithGoogle() async {
+
+    emailController.clear();
+    passwordController.clear();
+    setState(() {
+      _rememberMe = false;
+    });
+
+    try {
+      // Trigger the Google Authentication flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        // User canceled the login
+        return null;
+      }
+
+      // Obtain the Google authentication details
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Create a new credential
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the Google credentials
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      final User? user = userCredential.user;
+
+      print("uid" + user!.uid);
+
+      await _firestore.collection('users').doc(user!.uid).set({
+        'name': user.displayName ?? '',
+        'email': user.email,
+        'bio': '',
+        'is_verified': false,
+        'phone_number': '',
+        'profile_pic': user.photoURL ?? "", // Save the download URL of the profile picture
+        'joined': Timestamp.now(),
+        'followers': [],
+        'following': [],
+        'favourites': [],
+        'events': [],
+        'requested': [],
+        'location': '',
+        'profile_type': 'Public',
+        'uid': user.uid,
+      }, SetOptions(merge: true)).then((val){
+        debugPrint("user doc created");
+      });
+
+      return user;
+    } catch (e) {
+
+      print("Google Sign-In Error: $e");
+      return null;
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    authVM.loading.value = true;
+
+    final user = await signInWithGoogle();
+    if (user != null) {
+      authVM.loading.value = false;
+      storage.setItem("logged_in_by", "google");
+      print("Signed in as ${user.displayName}");
+      Get.offAll(AppNavBar());
+    } else {
+      authVM.loading.value = false;
+
+      print("Sign-in failed or cancelled");
+    }
+  }
+
+  // Sign out from Google
+  Future<void> signOut() async {
+    await _googleSignIn.signOut();
+    await _auth.signOut();
+  }
+
+  // Check if the user is already signed in
+  Future<User?> checkCurrentUser() async {
+    final User? user = _auth.currentUser;
+    return user;
   }
 
   @override
@@ -223,13 +325,15 @@ class _LoginViewState extends State<LoginView> {
                 // Login Button
                 Obx(
                   ()=> CustomButton(
-                    loading: authVM.loading.value,
+                    loading: authVM.simple_loading.value,
                     text: 'Login',
                     color: AppColors.greenbutton,
                     onPressed: _loginUser, // Call the login method
                   ),
                 ),
-                SizedBox(height: 100.h),
+
+                SizedBox(height: 50.h),
+
                 GestureDetector(
                   onTap: () {
                     Get.to(() => SignupView());
@@ -250,6 +354,16 @@ class _LoginViewState extends State<LoginView> {
                         fontWeight: FontWeight.w400,
                       ),
                     ],
+                  ),
+                ),
+                SizedBox(height: 10.h),
+
+                Obx(
+                      ()=> CustomButton(
+                    loading: authVM.loading.value,
+                    text: 'Login via Google',
+                    color: AppColors.greenbutton,
+                    onPressed: _signInWithGoogle, // Call the login method
                   ),
                 ),
                 SizedBox(height: 30.h),

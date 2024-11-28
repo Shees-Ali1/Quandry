@@ -5,6 +5,7 @@ class AuthController extends GetxController {
 
 
   RxBool loading = false.obs;
+  RxBool simple_loading = false.obs;
   RxString signupName = "".obs;
   RxString signupEmail = "".obs;
   RxString signupPass = "".obs;
