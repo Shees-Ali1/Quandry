@@ -136,6 +136,28 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
                         return Center(child: Text("No events on this Date", style: jost500(16.sp, AppColors.blueColor)));
                       }
 
+                      if(homeVM.search_fiter.value != ""){
+                        events = events.where((event) {
+                          final eventName = event['event_name'].toString().toLowerCase();
+                          final eventLocation = event['event_location'].toString().toLowerCase();
+                          final eventOrganizer = event['event_organizer'].toString().toLowerCase();
+                          final query = homeVM.search_fiter.value.toLowerCase();
+
+                          return eventName.contains(query) ||
+                              eventLocation.contains(query) ||
+                              eventOrganizer.contains(query);
+                        }).toList();
+
+                        if (events.isEmpty) {
+                          return Center(
+                            child: Text(
+                              "No events found for your search",
+                              style: jost500(16.sp, AppColors.blueColor),
+                            ),
+                          );
+                        }
+                      }
+
                       return ListView.builder(
                         physics: NeverScrollableScrollPhysics(), // Disable inner scrolling
                         shrinkWrap: true,
@@ -180,6 +202,28 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
 
                       if (events.isEmpty) {
                         return Center(child: Text("No events on this Date", style: jost500(16.sp, AppColors.blueColor)));
+                      }
+
+                      if(homeVM.search_fiter.value != ""){
+                        events = events.where((event) {
+                          final eventName = event['event_name'].toString().toLowerCase();
+                          final eventLocation = event['event_location'].toString().toLowerCase();
+                          final eventOrganizer = event['event_organizer'].toString().toLowerCase();
+                          final query = homeVM.search_fiter.value.toLowerCase();
+
+                          return eventName.contains(query) ||
+                              eventLocation.contains(query) ||
+                              eventOrganizer.contains(query);
+                        }).toList();
+
+                        if (events.isEmpty) {
+                          return Center(
+                            child: Text(
+                              "No events found for your search",
+                              style: jost500(16.sp, AppColors.blueColor),
+                            ),
+                          );
+                        }
                       }
 
                       return ListView.builder(

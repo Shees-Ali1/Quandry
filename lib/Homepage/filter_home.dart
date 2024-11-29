@@ -133,8 +133,8 @@ class _FilterContentState extends State<FilterContent> {
         children: [
           _buildHeader(context),
           SizedBox(height: 20.h),
-          _buildTopicSection(),
-          SizedBox(height: 20.h),
+          // _buildTopicSection(),
+          // SizedBox(height: 20.h),
           _buildTimeDateSection(),
           SizedBox(height: 20.h),
           _buildLocationSection(),

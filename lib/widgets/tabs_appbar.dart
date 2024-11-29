@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
+import 'package:quandry/controllers/home_controller.dart';
 import 'package:quandry/controllers/profile_controller.dart';
 import 'package:quandry/profile_screen/user_profile.dart';
 import 'package:quandry/setting_screen/notification_screens/notification_screen_main.dart';
@@ -17,11 +18,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
   final ProfileController profileVM = Get.put(ProfileController());
+  final Homecontroller homeVM = Get.put(Homecontroller());
+
+  final TextEditingController search = TextEditingController();
 
 
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       height: 100.h,
       width: double.infinity,
@@ -44,68 +49,83 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Container(
                   height: 38.h,
                   width: 256.w,
-                  child: TextField(
-                    style: TextStyle(color: AppColors.appbartextColor),
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(vertical: 0.h),
-                      hintText: 'Search for anything',
-                      hintStyle: TextStyle(
-                        color: AppColors.whiteColor,
-                        fontSize: 14.36.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Container(
-                          height: 19.2.h,
-                          width: 19.2.w,
-                          child: Image.asset(
-                            AppImages.search_icon,
-                            color: AppColors.backgroundColor,
-                            fit: BoxFit.contain,
-                          ),
+                  child: Obx(
+                    ()=> TextField(
+                      controller: search,
+                      style: TextStyle(color: AppColors.appbartextColor),
+                      textAlignVertical: TextAlignVertical.center,
+                      onEditingComplete: (){
+                        homeVM.search_fiter.value = search.text.trim();
+                        homeVM.filter.value = false;
+                        FocusScope.of(context).unfocus();
+                      },
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(vertical: 0.h),
+                        hintText: homeVM.search_fiter.value != "" ? "${homeVM.search_fiter.value}" : 'Search for anything',
+                        hintStyle: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontSize: 14.36.sp,
+                          fontWeight: FontWeight.w400,
                         ),
-                      ),
-                      suffixIcon: GestureDetector(
-                        onTap: () => showModalBottomSheet(
-                          context: context,
-                          backgroundColor: Colors.white,
-                          isDismissible: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-                          ),
-                          isScrollControlled: true,
-                          builder: (_) => FilterContent(),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 8.w,top: 5.h,bottom: 5.h,left: 7.w),
-                          child: Container(
-                            width: 8.w,
-                            decoration: BoxDecoration(
-                              color: AppColors.free,
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  AppImages.filter,
-                                  color: AppColors.blueColor,
-                                  height: 13.h,
-                                  width: 13.w,
-                                ),
-                              ],
+                        prefixIcon: InkWell(
+                          onTap: (){
+                            homeVM.search_fiter.value = search.text.trim();
+                            homeVM.filter.value = false;
+                            FocusScope.of(context).unfocus();
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 19.2.h,
+                              width: 19.2.w,
+                              child: Image.asset(
+                                AppImages.search_icon,
+                                color: AppColors.backgroundColor,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      filled: true,
-                      fillColor: Color.fromRGBO(50, 82, 98, 1),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide.none,
+                        suffixIcon: GestureDetector(
+                          onTap: () => showModalBottomSheet(
+                            context: context,
+                            backgroundColor: Colors.white,
+                            isDismissible: true,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                            ),
+                            isScrollControlled: true,
+                            builder: (_) => FilterContent(),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 8.w,top: 5.h,bottom: 5.h,left: 7.w),
+                            child: Container(
+                              width: 8.w,
+                              decoration: BoxDecoration(
+                                color: AppColors.free,
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    AppImages.filter,
+                                    color: AppColors.blueColor,
+                                    height: 13.h,
+                                    width: 13.w,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        filled: true,
+                        fillColor: Color.fromRGBO(50, 82, 98, 1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
                   ),

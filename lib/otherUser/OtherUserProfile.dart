@@ -283,6 +283,7 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage> {
               // Additional Information Section
               if(profileVM.profileType.value == "Public")
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "  Additional Information",

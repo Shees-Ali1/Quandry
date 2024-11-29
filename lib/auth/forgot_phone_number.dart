@@ -13,6 +13,7 @@ import '../../widgets/custom_textfield.dart';
 import '../../widgets/forget_back_widget.dart';
 import 'forgot_phone_auth.dart';
 import 'forgot_reset.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 class ForgetPasswordEmailPhoneView extends StatefulWidget {
@@ -29,6 +30,15 @@ class _ForgetPasswordEmailPhoneViewState
   final phoneController = TextEditingController();
   bool isLoading = false;
 
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      print('Password reset email sent.');
+      Get.snackbar("Success", "The Verification Email has been sent to your G-Mail", colorText: Colors.white, backgroundColor: AppColors.blueColor);
+    } catch (e) {
+      print('Failed to send password reset email: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -168,6 +178,7 @@ class _ForgetPasswordEmailPhoneViewState
                           ?  Container(
                         width: double.infinity,
                         child: CustomTextField1(
+                          controller: emailController,
                           hintText: 'Your email',
                           hintTextSize: 15.sp,
                           prefixIcon: Icons.email,
@@ -219,8 +230,12 @@ class _ForgetPasswordEmailPhoneViewState
                         text: 'Send',
                         color: AppColors.blueColor,
                         onPressed: () {
-                          Get.to(()=>PhoneNumberAuthenticationView());
-                        },
+                          final email = emailController.text.trim();
+                          if (email.isNotEmpty) {
+                            sendPasswordResetEmail(email);
+                          } else {
+                            print('Please enter your email address.');
+                          }                        },
                       )
                     ],
                   ),
@@ -243,7 +258,7 @@ class _ForgetPasswordEmailPhoneViewState
                     ),
                     GestureDetector(
                       onTap: () {
-                        //CustomRoute.navigateTo(context, const SignupView());
+                       Get.offAll(SignupView());
                       },
                       child: CustomText(
                         text: "Sign Up",

@@ -54,6 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: TabsAppBar(),
       drawer: MyDrawer(),
@@ -115,9 +117,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Section Title - Events
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.h),
-                      child: Text(
-                        "Events",
-                        style: jost700(16.37.sp, AppColors.blueColor),
+                      child: Obx(
+                        ()=> Text(
+                        homeVM.search_fiter.value != "" ? 'Events for "${homeVM.search_fiter.value}"' : "Events",
+                          style: jost700(16.37.sp, AppColors.blueColor),
+                        ),
                       ),
                     ),
                     // Single Event Card (Detailed)
@@ -205,6 +209,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       }).toList();
                                     }
 
+                                    if(homeVM.city.value != "" && homeVM.country.value != ""){
+                                      events.retainWhere((event)=> event["event_location"].toString() == "${homeVM.city.value}, ${homeVM.country.value}");
+                                    }
+
                                     // Apply price range filter
                                     events = events.where((event) {
                                       double eventPrice = double.tryParse(event['event_price'].toString()) ?? 0.0;
@@ -283,6 +291,32 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             } else {
                               var events = snapshot.data!.docs;
+
+
+
+                              if(homeVM.search_fiter.value != ""){
+                                events = events.where((event) {
+                                  final eventName = event['event_name'].toString().toLowerCase();
+                                  final eventLocation = event['event_location'].toString().toLowerCase();
+                                  final eventOrganizer = event['event_organizer'].toString().toLowerCase();
+                                  final query = homeVM.search_fiter.value.toLowerCase();
+
+                                  return eventName.contains(query) ||
+                                      eventLocation.contains(query) ||
+                                      eventOrganizer.contains(query);
+                                }).toList();
+
+                                if (events.isEmpty) {
+                                  return Center(
+                                    child: Text(
+                                      "No events found for your search",
+                                      style: jost500(16.sp, AppColors.blueColor),
+                                    ),
+                                  );
+                                }
+                              }
+
+
 
                               return ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),

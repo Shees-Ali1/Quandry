@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:quandry/auth/signup.dart';
 import 'package:quandry/const/colors.dart';
 
 import '../../const/images.dart';
@@ -62,7 +63,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-               Get.to(()=>ForgetPasswordEmailPhoneView());
+                   Get.to(()=>ForgetPasswordEmailPhoneView());
 
                     setState(() {
                       tappedContainerIndex = 1;
@@ -144,7 +145,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           const Spacer(),
           GestureDetector(
             onTap: () {
-
+              Get.offAll(SignupView());
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

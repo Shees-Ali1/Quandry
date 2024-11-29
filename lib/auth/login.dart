@@ -328,7 +328,11 @@ class _LoginViewState extends State<LoginView> {
                     loading: authVM.simple_loading.value,
                     text: 'Login',
                     color: AppColors.greenbutton,
-                    onPressed: _loginUser, // Call the login method
+                    onPressed: (){
+                      if(authVM.loading.value == false){
+                        _loginUser();
+                      }
+                    }, // Call the login method
                   ),
                 ),
 

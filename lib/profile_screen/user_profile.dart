@@ -135,46 +135,60 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               // Followers and Following Section
                               Row(
                                 children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        "Followers",
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
-                                        ),
+                                  GestureDetector(
+                                    onTap: (){
+                                      _showUserDialog(context, "followers");
+                                    },
+                                    child: SizedBox(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            "Followers",
+                                            style: TextStyle(
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          SizedBox(height: 10.h),
+                                          Text(
+                                            profileVM.followers.length.toString(), // Replace with dynamic follower count
+                                            style: TextStyle(
+                                              fontSize: 15.sp,
+                                              color: AppColors.blueColor,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(height: 10.h),
-                                      Text(
-                                        profileVM.followers.length.toString(), // Replace with dynamic follower count
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          color: AppColors.blueColor,
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                   SizedBox(width: 30.w), // Space between image and text
-                                  Column(
-                                    children: [
-                                      Text(
-                                        "Following",
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
-                                        ),
+                                  GestureDetector(
+                                    onTap: (){
+                                      _showUserDialog(context, "following");
+                                    },
+                                    child: SizedBox(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            "Following",
+                                            style: TextStyle(
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          SizedBox(height: 10.h),
+                                          Text(
+                                            profileVM.following.length.toString(), // Replace with dynamic following count
+                                            style: TextStyle(
+                                              fontSize: 15.sp,
+                                              color: AppColors.blueColor,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(height: 10.h),
-                                      Text(
-                                        profileVM.following.length.toString(), // Replace with dynamic following count
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          color: AppColors.blueColor,
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -410,6 +424,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
 
                         var users = snapshot.data!.docs;
+                        if(type == "followers"){
+                          users.retainWhere((user)=> profileVM.followers.contains(user["uid"]));
+                        } else if(type == "following"){
+                          users.retainWhere((user)=> profileVM.following.contains(user["uid"]));
+                        }
 
 
                         return SizedBox(

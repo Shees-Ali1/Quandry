@@ -7,8 +7,10 @@ import 'package:quandry/const/images.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:quandry/controllers/event_contorller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class EventCard extends StatelessWidget {
+class EventCard extends StatefulWidget {
   final String imageAsset; // Change this to imageAsset
   final String title;
   final String date;
@@ -26,6 +28,14 @@ class EventCard extends StatelessWidget {
     required this.credits,
     required this.priceRange, required this.event,
   }) : super(key: key);
+
+  @override
+  State<EventCard> createState() => _EventCardState();
+}
+
+class _EventCardState extends State<EventCard> {
+  final EventController eventVM = Get.put(EventController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +65,7 @@ class EventCard extends StatelessWidget {
                     height: double.infinity, // Use responsive height
                     width: 150.w, // Adjusted width for image
                     child: Image.network(
-                      imageAsset,
+                      widget.imageAsset,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -71,7 +81,7 @@ class EventCard extends StatelessWidget {
                       SizedBox(
                         width: 140.w,
                         child: Text(
-                          title,
+                          widget.title,
                           style: jost700(12.sp, AppColors.backgroundColor), // Slightly larger font
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -85,7 +95,7 @@ class EventCard extends StatelessWidget {
                           Icon(FontAwesomeIcons.calendar, size: 14.0.sp, color: AppColors.backgroundColor),
                           SizedBox(width: 6.w),
                           Text(
-                            date,
+                            widget.date,
                             style: jost600(11.sp, AppColors.backgroundColor),
                           ),
                         ],
@@ -96,7 +106,7 @@ class EventCard extends StatelessWidget {
                           Icon(Icons.location_on, size: 14.0, color: AppColors.backgroundColor),
                           SizedBox(width: 6.w),
                           Text(
-                            location,
+                            widget.location,
                             style: jost600(11.sp, AppColors.backgroundColor),
                           ),
                         ],
@@ -111,7 +121,7 @@ class EventCard extends StatelessWidget {
                           ),
                           SizedBox(width: 6.w),
                           Text(
-                            credits,
+                            widget.credits,
                             style: jost600(11.sp, AppColors.backgroundColor),
                           ),
                         ],
@@ -122,7 +132,7 @@ class EventCard extends StatelessWidget {
                           Icon(FontAwesomeIcons.tag, size: 14.0, color: AppColors.backgroundColor),
                           SizedBox(width: 6.w),
                           Text(
-                            priceRange,
+                            widget.priceRange,
                             style: jost600(11.sp, AppColors.backgroundColor),
                           ),
                         ],
@@ -135,7 +145,7 @@ class EventCard extends StatelessWidget {
                         height: 28.h,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.to(() => EventDetail(event: event!,));
+                            Get.to(() => EventDetail(event: widget.event!,));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.fillcolor,
@@ -168,7 +178,7 @@ class EventCard extends StatelessWidget {
           top: 0.h,
           child: GestureDetector(
             onTap: () {
-              print('Bookmark tapped!');
+              eventVM.favouriteToggle(widget.event!["event_id"], widget.event!["event_name"]);
             },
             child: Container(
               height: 28.h,
@@ -181,11 +191,7 @@ class EventCard extends StatelessWidget {
                 ),
               ),
               child: Center(
-                child: Image.asset(
-                  AppImages.Bookmark,
-                  height: 18.h,
-                  width: 18.w,
-                ),
+                child: Icon(widget.event!["favourited"].contains(FirebaseAuth.instance.currentUser!.uid) ? Icons.bookmark_outlined : Icons.bookmark_border, size: 20.w, color: AppColors.secondaryColor, )
               ),
             ),
           ),

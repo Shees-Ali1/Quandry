@@ -20,6 +20,7 @@ class Homecontroller extends GetxController {
   var country = "".obs;
   var state = "".obs;
   var tapped_date = "".obs;
+  var search_fiter = "".obs;
   RxInt selected_from_price = 0.obs;
   RxInt selected_to_price = 500.obs;
   RxBool increment_for_from = true.obs;

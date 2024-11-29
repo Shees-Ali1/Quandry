@@ -80,6 +80,7 @@ class _EventDetailState extends State<EventDetail> {
                   child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
+                        FocusScope.of(context).unfocus();
                       },
                       child: Image.asset(
                         'assets/images/event_back.png',
