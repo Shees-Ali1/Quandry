@@ -47,6 +47,7 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 /// Search field
                 Container(
+                  margin: EdgeInsets.only(left: 10),
                   height: 38.h,
                   width: 256.w,
                   child: Obx(
