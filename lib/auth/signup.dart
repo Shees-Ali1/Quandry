@@ -82,6 +82,10 @@ class _SignupViewState extends State<SignupView> {
           'requested': [],
           'location': '',
           'profile_type': 'Public',
+          'is_blocked': false,
+          'chat_blocked': false,
+          "is_deleted": false,
+          "created_by": "Self",
           'uid': user.uid,
         });
 

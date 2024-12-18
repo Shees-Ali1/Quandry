@@ -49,7 +49,7 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Container(
                   margin: EdgeInsets.only(left: 10),
                   height: 38.h,
-                  width: 256.w,
+                  width: 245.w,
                   child: Obx(
                     ()=> TextField(
                       controller: search,
@@ -267,7 +267,6 @@ class TabsAppBar extends StatelessWidget implements PreferredSizeWidget {
                       }
                     ),
                     SizedBox(width: 7.w), // Top padding
-
                     GestureDetector(
                       onTap: (){
                         final navBarState = context.findAncestorStateOfType<AppNavBarState>();

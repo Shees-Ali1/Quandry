@@ -329,7 +329,7 @@ class _EventDetailState extends State<EventDetail> {
 
                   GestureDetector(
                     onTap: (){
-                      Get.to(SuggestEventForm());
+                      Get.to(SuggestEventForm(uid: widget.event["event_id"],));
                     },
                     child: Align(
                       alignment: Alignment.topLeft,
