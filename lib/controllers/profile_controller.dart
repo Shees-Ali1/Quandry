@@ -24,6 +24,8 @@ class ProfileController extends GetxController {
   RxString joined = ''.obs;
   RxString profileType = 'Public'.obs;
   RxBool verified = false.obs;
+  RxBool is_deleted = false.obs;
+  RxBool is_blocked = false.obs;
   var favourites = [].obs;
   var events = [].obs;
   var requested = [].obs;
@@ -102,6 +104,46 @@ class ProfileController extends GetxController {
       loading.value = false;
     }
   }
+
+  Future<void> getBlockDelete() async {
+    try {
+
+      var userDoc = await firestore.collection('users').doc(auth.uid).get();
+
+      if (userDoc.exists) {
+        var user = userDoc.data();
+
+
+        is_deleted.value = user!['is_deleted'] ?? false;
+        is_blocked.value = user!['is_blocked'] ?? false;
+
+        print("is deleted: ${is_deleted.value}");
+        print("is_blocked: ${is_blocked.value}");
+
+      } else {
+        debugPrint('User not found in Firestore.');
+        errorOccurred.value = "User not found in database.";
+      }
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') {
+        errorOccurred.value = "Permission denied. Check Firestore rules.";
+        Get.snackbar("Error", "Permission denied. Contact admin.", colorText: Colors.red);
+      } else if (e.code == 'unavailable') {
+        errorOccurred.value = "Firestore service is unavailable.";
+        Get.snackbar("Error", "Firestore service is unavailable. Try again later.", colorText: Colors.red);
+      } else {
+        errorOccurred.value = e.message ?? "An unknown Firestore error occurred.";
+        Get.snackbar("Error", e.message ?? "An unknown error occurred", colorText: Colors.red);
+      }
+    } catch (e) {
+      errorOccurred.value = "An unexpected error occurred: $e";
+      Get.snackbar("Error", "An unexpected error occurred", colorText: Colors.red);
+      debugPrint('Unexpected error: $e');
+    } finally {
+      loading.value = false;
+    }
+  }
+
 
   Future<Map<String, String>> getCurrentLocation() async {
     try {

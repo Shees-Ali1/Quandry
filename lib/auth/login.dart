@@ -74,7 +74,6 @@ class _LoginViewState extends State<LoginView> {
 
     if (email.isEmpty || password.isEmpty) {
       Get.snackbar("Error", "Please fill in all fields",
-          // backgroundColor: Colors.red,
           colorText: Colors.red);
       return;
     }
@@ -88,6 +87,39 @@ class _LoginViewState extends State<LoginView> {
         password: password,
       );
 
+      // Fetch user details from Firestore
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user?.uid)
+          .get();
+
+      if (!userDoc.exists) {
+        authVM.simple_loading.value = false;
+        Get.snackbar("Error", "User data not found. Please contact support.",
+            colorText: Colors.red);
+        return;
+      }
+
+      // Extract bool values from the Firestore document
+      bool isDeleted = userDoc['is_deleted'] ?? false;
+      bool isBlocked = userDoc['is_blocked'] ?? false;
+
+      if (isDeleted) {
+        authVM.simple_loading.value = false;
+        Get.snackbar("Account Deleted",
+            "Your account has been deleted by the Admin. Please create a new account to proceed.",
+            colorText: Colors.white);
+        return;
+      }
+
+      if (isBlocked) {
+        authVM.simple_loading.value = false;
+        Get.snackbar("Account Blocked",
+            "Your account has been blocked by the Admin. Please wait until the Admin unblocks you.",
+            colorText: Colors.white);
+        return;
+      }
+
       if (_rememberMe) {
         storage.setItem('email', email);
         storage.setItem('password', password);
@@ -96,36 +128,27 @@ class _LoginViewState extends State<LoginView> {
         storage.removeItem('password');
       }
 
-      // If successful, navigate to the AppNavBar
+      // If successful and no issues, navigate to the AppNavBar
       storage.setItem("logged_in_by", "email");
       authVM.simple_loading.value = false;
-
       Get.to(() => AppNavBar());
     } on FirebaseAuthException catch (e) {
       authVM.simple_loading.value = false;
 
       if (e.code == 'user-not-found') {
-        // Show Snackbar if user is not registered
         Get.snackbar("Error", "User is not registered",
-            // backgroundColor: Colors.red,
-            colorText: Colors.red);
+            colorText: Colors.white);
       } else if (e.code == 'wrong-password') {
-        // Show Snackbar if the password is incorrect
         Get.snackbar("Error", "Incorrect password",
-            // backgroundColor: Colors.red,
-            colorText: Colors.red);
+            colorText: Colors.white);
       } else {
-        // Handle other errors
         Get.snackbar("Error", e.message ?? "An error occurred",
-            // backgroundColor: Colors.red,
-            colorText: Colors.red);
+            colorText: Colors.white);
       }
     } catch (e) {
       authVM.simple_loading.value = false;
-      debugPrint("real error"+ e.toString());
-      // Handle any other exceptions
+      debugPrint("real error: $e");
       Get.snackbar("Error", "An unexpected error occurred",
-          // backgroundColor: Colors.red,
           colorText: Colors.red);
     }
   }
@@ -133,7 +156,6 @@ class _LoginViewState extends State<LoginView> {
 
   // Sign in with Google
   Future<User?> signInWithGoogle() async {
-
     emailController.clear();
     passwordController.clear();
     setState(() {
@@ -162,9 +184,37 @@ class _LoginViewState extends State<LoginView> {
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
       final User? user = userCredential.user;
 
-      print("uid" + user!.uid);
+      if (user == null) {
+        throw Exception("Failed to retrieve user information.");
+      }
 
-      await _firestore.collection('users').doc(user!.uid).set({
+      print("uid: ${user.uid}");
+
+      // Check if user document exists and its flags
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+
+      if (userDoc.exists) {
+        // Extract bool values from the Firestore document
+        bool isDeleted = userDoc['is_deleted'] ?? false;
+        bool isBlocked = userDoc['is_blocked'] ?? false;
+
+        if (isDeleted) {
+          Get.snackbar("Account Deleted",
+              "Your account has been deleted by the Admin. Please create a new account to proceed.",
+              colorText: Colors.white);
+          return null;
+        }
+
+        if (isBlocked) {
+          Get.snackbar("Account Blocked",
+              "Your account has been blocked by the Admin. Please wait until the Admin unblocks you.",
+              colorText: Colors.white);
+          return null;
+        }
+      }
+
+      // If user document doesn't exist, create one
+      await _firestore.collection('users').doc(user.uid).set({
         'name': user.displayName ?? '',
         'email': user.email,
         'bio': '',
@@ -179,14 +229,17 @@ class _LoginViewState extends State<LoginView> {
         'requested': [],
         'location': '',
         'profile_type': 'Public',
+        'is_blocked': false,
+        'chat_blocked': false,
+        "is_deleted": false,
+        'created_by': "Self",
         'uid': user.uid,
-      }, SetOptions(merge: true)).then((val){
-        debugPrint("user doc created");
+      }, SetOptions(merge: true)).then((val) {
+        debugPrint("User doc created");
       });
 
       return user;
     } catch (e) {
-
       print("Google Sign-In Error: $e");
       return null;
     }
@@ -203,10 +256,10 @@ class _LoginViewState extends State<LoginView> {
       Get.offAll(AppNavBar());
     } else {
       authVM.loading.value = false;
-
       print("Sign-in failed or cancelled");
     }
   }
+
 
   // Sign out from Google
   Future<void> signOut() async {

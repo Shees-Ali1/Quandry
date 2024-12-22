@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:quandry/controllers/other_user_profile_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quandry/controllers/profile_controller.dart';
 import 'package:quandry/setting_screen/settings_screen.dart';
 
@@ -122,46 +123,60 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage> {
                               // Followers and Following Section
                               Row(
                                 children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        "Followers",
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
+                                  GestureDetector(
+                                    onTap:(){
+                                      if(profileVM.followers.contains(FirebaseAuth.instance.currentUser!.uid)){
+                                        _showUserDialog(context, "followers");
+                                      }
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "Followers",
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      Text(
-                                        profileVM.followers.length.toString(), // Replace with dynamic follower count
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          color: AppColors.blueColor,
+                                        SizedBox(height: 10.h),
+                                        Text(
+                                          profileVM.followers.length.toString(), // Replace with dynamic follower count
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            color: AppColors.blueColor,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                   SizedBox(width: 30.w), // Space between image and text
-                                  Column(
-                                    children: [
-                                      Text(
-                                        "Following",
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
+                                  GestureDetector(
+                                    onTap: (){
+                                      if(profileVM.followers.contains(FirebaseAuth.instance.currentUser!.uid)){
+                                        _showUserDialog(context, "following");
+                                      }
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "Following",
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      Text(
-                                        profileVM.following.length.toString(), // Replace with dynamic following count
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          color: AppColors.blueColor,
+                                        SizedBox(height: 10.h),
+                                        Text(
+                                          profileVM.following.length.toString(), // Replace with dynamic following count
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            color: AppColors.blueColor,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -495,4 +510,141 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage> {
       ),
     );
   }
+
+
+  void _showUserDialog(BuildContext context, String type) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor:       Color.fromRGBO(216, 229, 236, 1),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  type,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.blueColor
+                  ),
+                ),
+                SizedBox(height: 8),
+                Divider(
+                  color: AppColors.blueColor,
+                ),
+                StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection("users").snapshots(),
+                    builder: (context, snapshot) {
+
+                      if(snapshot.connectionState == ConnectionState.waiting){
+                        return Center(child: CircularProgressIndicator(color: AppColors.blueColor,));
+                      } else if (snapshot.hasError){
+                        debugPrint("Error in events stream home page: ${snapshot.error}");
+                        return Center(child: Text("An Error occurred", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.data!.docs.length == 0 && snapshot.data!.docs.isEmpty) {
+                        return Center(child: Text("There are no events at the moment", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.connectionState == ConnectionState.none){
+                        return  Center(child: Text("No Internet!", style: jost500(16.sp, AppColors.blueColor),));
+                      } else if(snapshot.hasData && snapshot.data!.docs.isNotEmpty){
+
+                        var users = snapshot.data!.docs;
+                        if(type == "followers"){
+                          users.retainWhere((user)=> profileVM.followers.contains(user["uid"]));
+                        } else if(type == "following"){
+                          users.retainWhere((user)=> profileVM.following.contains(user["uid"]));
+                        }
+
+                        users.retainWhere((user) =>
+                        user['is_deleted'] == false && user['is_blocked'] == false);
+
+
+                        return SizedBox(
+                          height: 300, // Adjust height for list
+                          child: ListView.builder(
+                            itemCount: users.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                onTap: (){
+                                  Get.to(OtherUserProfilePage(uid: users[index]['uid']));
+                                },
+                                leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(users[index]['profile_pic']),
+                                ),
+                                title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              users[index]['name'],
+                                              style: TextStyle(color:AppColors.blueColor, fontWeight: FontWeight.bold),
+                                            ),
+                                            users[index]['is_verified'] == true
+                                                ? Padding(
+                                              padding: const EdgeInsets.only(left: 4.0),
+                                              child: Image.asset(
+                                                'assets/images/qwandery-verified-professional.png',
+                                                height: 12.h,
+                                                width: 12.w
+                                                ,
+                                              ),
+                                            )
+                                                : SizedBox(),
+                                          ],
+                                        ),
+                                        Text(
+                                          users[index]['name'],
+                                          style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+
+
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+
+
+                    }
+                ),
+                SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Close"),
+
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.blueColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }

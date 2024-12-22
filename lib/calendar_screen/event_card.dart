@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quandry/controllers/event_contorller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:quandry/controllers/profile_controller.dart';
 
 class EventCard extends StatefulWidget {
   final String imageAsset; // Change this to imageAsset
@@ -34,6 +35,8 @@ class EventCard extends StatefulWidget {
 }
 
 class _EventCardState extends State<EventCard> {
+  final ProfileController profileVM = Get.put(ProfileController());
+
   final EventController eventVM = Get.put(EventController());
 
 
@@ -90,6 +93,7 @@ class _EventCardState extends State<EventCard> {
                       SizedBox(height: 8.h), // Added spacing between title and other elements
 
                       /// Date and Location Row
+                      if(widget.date.isNotEmpty)
                       Row(
                         children: [
                           Icon(FontAwesomeIcons.calendar, size: 14.0.sp, color: AppColors.backgroundColor),
@@ -100,14 +104,19 @@ class _EventCardState extends State<EventCard> {
                           ),
                         ],
                       ),
+                      if(widget.date.isNotEmpty)
                       SizedBox(height: 8.h),
                       Row(
                         children: [
                           Icon(Icons.location_on, size: 14.0, color: AppColors.backgroundColor),
                           SizedBox(width: 6.w),
-                          Text(
-                            widget.location,
-                            style: jost600(11.sp, AppColors.backgroundColor),
+                          Expanded(
+                            child: Text(
+                              widget.location,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: jost600(11.sp, AppColors.backgroundColor),
+                            ),
                           ),
                         ],
                       ),
@@ -178,7 +187,16 @@ class _EventCardState extends State<EventCard> {
           top: 0.h,
           child: GestureDetector(
             onTap: () {
-              eventVM.favouriteToggle(widget.event!["event_id"], widget.event!["event_name"]);
+              if(profileVM.is_blocked.value == false){
+                eventVM.favouriteToggle(widget.event!["event_id"], widget.event!["event_name"]);
+              } else {
+                Get.snackbar(
+                    "Not Allowed",
+                    "Your account has been blocked by the Admin, Wait for your account to be unblocked before proceeding",
+                    colorText: Colors.white,
+                    backgroundColor: AppColors.primaryColor,
+                );
+              }
             },
             child: Container(
               height: 28.h,

@@ -26,6 +26,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   void initState(){
     super.initState();
+    profileVM.getBlockDelete();
     // profileVM.getUserData();
   }
 
@@ -429,6 +430,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         } else if(type == "following"){
                           users.retainWhere((user)=> profileVM.following.contains(user["uid"]));
                         }
+
+                        users.retainWhere((user) =>
+                        user['is_deleted'] == false && user['is_blocked'] == false);
 
 
                         return SizedBox(

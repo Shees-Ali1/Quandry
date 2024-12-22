@@ -35,6 +35,7 @@ class AppNavBarState extends State<AppNavBar> {
   void initState () {
     super.initState();
 
+    profileVM.getBlockDelete();
     profileVM.getUserData();
     profileVM.getCurrentLocation();
   }

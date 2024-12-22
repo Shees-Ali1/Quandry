@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    profileVM.getBlockDelete();
     attending_events = fetchAttendingEvents();
   }
 
@@ -79,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 10,),
                     // ListView.builder for Event Cards
+                    if(profileVM.is_deleted.value != true)
                     FutureBuilder(
                       future: attending_events,
                       builder: (context, snapshot) {
@@ -125,7 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     // Single Event Card (Detailed)
-                    Obx((){
+                    if(profileVM.is_deleted.value == false)
+                      Obx((){
                       if(homeVM.filter.value == true){
                         return StatefulBuilder(
                           builder: (context, setState) {

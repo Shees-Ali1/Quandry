@@ -767,6 +767,9 @@ class _EventDetailState extends State<EventDetail> {
                         users.retainWhere((user) => eventVM.favourite.contains(user['uid']));
                       }
 
+                      users.retainWhere((user) =>
+                      user['is_deleted'] == false && user['is_blocked'] == false);
+
 
                       return SizedBox(
                         height: 300, // Adjust height for list

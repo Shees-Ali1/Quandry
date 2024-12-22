@@ -51,6 +51,7 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
               children: [
                 SizedBox(height: 14.h),
                 /// Calendar
+                if(profileVM.is_deleted.value == false)
                 StreamBuilder(
                   stream: FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
                   builder: (context, snapshot) {
@@ -105,6 +106,7 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
                 SizedBox(height: 12.h),
 
                 /// List of EventCards
+                if(profileVM.is_deleted.value == false)
                 Obx(() {
                   // Fetch events from Firestore and filter by selectedCalenderDate
                   return profileVM.selectedCalenderDate != [] ?  FutureBuilder<QuerySnapshot>(
