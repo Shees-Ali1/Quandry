@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quandry/const/colors.dart';
 import 'package:quandry/controllers/profile_controller.dart';
+import 'package:intl/intl.dart';
 
 class EventController extends GetxController {
 
@@ -15,7 +16,9 @@ class EventController extends GetxController {
   RxList attended = [].obs;
   RxList reviews = [].obs;
   RxInt selectedStars = 0.obs;
+  RxInt credits = 0.obs;
   RxBool has_given_review = false.obs;
+  var formattedDate = "".obs;
 
 
 
@@ -268,6 +271,96 @@ class EventController extends GetxController {
      debugPrint("Error in goingToggle: ${e}");
    }
   }
+
+  Future<void> goingToggleWithMultipleDates(String event_id, String event_name) async {
+    try {
+      var eventDoc = await FirebaseFirestore.instance.collection("events").doc(event_id).get();
+
+      if (eventDoc.exists) {
+        var event = eventDoc.data();
+
+        // Get the multiple event dates
+        if (event!.containsKey('multiple_event_dates')) {
+          List<dynamic> multipleDates = event['multiple_event_dates'];
+
+          // Get user document reference
+          DocumentReference userDoc = FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid);
+          DocumentSnapshot userSnapshot = await userDoc.get();
+
+          List<dynamic> events = userSnapshot.get('events');
+
+          // Check if the event is already added (based on event_id)
+          bool isEventAlreadyAdded = events.any((event) => event['event_id'] == event_id);
+
+          if (isEventAlreadyAdded) {
+            planned.remove(FirebaseAuth.instance.currentUser!.uid);
+
+            await FirebaseFirestore.instance.collection("events").doc(event_id).update({
+              'attending': FieldValue.arrayRemove([FirebaseAuth.instance.currentUser!.uid]),
+            }).then((val) {
+              debugPrint("not_attending");
+
+            });
+            // Remove all maps with the same event_id (this means the user is "removing" the event)
+            events.removeWhere((event) => event['event_id'] == event_id);
+
+
+            // Update the user's events array to remove those maps
+            await userDoc.update({
+              'events': events,
+            });
+
+            // Optionally, update local state for profileVM.events
+            profileVM.events.removeWhere((event) => event['event_id'] == event_id);
+
+            debugPrint("Event removed for event_id: $event_id");
+          } else {
+            // Add new maps for each date if the event is not already added
+            attended.remove(FirebaseAuth.instance.currentUser!.uid);
+
+            if(!planned.contains(FirebaseAuth.instance.currentUser!.uid)){
+              planned.add(FirebaseAuth.instance.currentUser!.uid);
+            }
+            await FirebaseFirestore.instance.collection("events").doc(event_id).update({
+              'attending': FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
+              'attended': FieldValue.arrayRemove([FirebaseAuth.instance.currentUser!.uid]),
+            }).then((val){
+              debugPrint("attending");
+            });
+
+
+            for (var date in multipleDates) {
+              var dateMap = {
+                "event_id": event_id,
+                "event_name": event_name,
+                "event_date": date,
+              };
+              // Add the new date map to the user's events array
+              await userDoc.update({
+                'events': FieldValue.arrayUnion([dateMap]),
+              });
+            }
+
+            profileVM.events.add({
+              "event_id": event_id,
+              "event_name": event_name,
+              "event_date": formattedDate.value,
+            });
+
+            debugPrint("Event added for event_id: $event_id");
+          }
+        } else {
+          debugPrint("No 'multiple_event_dates' field found for event: $event_id");
+        }
+      } else {
+        debugPrint("Event document does not exist for event_id: $event_id");
+      }
+    } catch (e) {
+      debugPrint("Error in toggleMultipleEventDates: ${e}");
+    }
+  }
+
+
 
   Future<void> iWent (String event_id) async {
     try{

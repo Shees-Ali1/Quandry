@@ -7,7 +7,7 @@ import 'package:quandry/const/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quandry/const/images.dart';
 import 'package:get/get.dart';
-
+import 'package:intl/intl.dart';
 import 'package:quandry/const/textstyle.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quandry/controllers/event_contorller.dart';
@@ -18,6 +18,8 @@ import 'package:quandry/suggestions.dart';
 import '../otherUser/OtherUserProfile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class EventDetail extends StatefulWidget {
 
@@ -38,6 +40,10 @@ class _EventDetailState extends State<EventDetail> {
   @override
   void initState (){
     super.initState();
+    if(widget.event["single_date"] == false){
+      formatAndCombineDates(widget.event!["multiple_event_dates"]);
+    }
+    _getTotalCredits(widget.event["credits_and_topics"]);
     eventVM.followers.value = widget.event['following'];
     eventVM.planned.value = widget.event['attending'];
     eventVM.favourite.value = widget.event['favourited'];
@@ -54,6 +60,48 @@ class _EventDetailState extends State<EventDetail> {
 
 
     print(eventVM.reviews);
+  }
+
+  void formatAndCombineDates(List dateList) {
+    // Parse and format dates
+    eventVM.formattedDate.value = dateList
+        .map((date) => DateFormat('dd MMM yyyy').format(DateTime.parse(date))) // Format to '12 Dec 2024'
+        .join(', '); // Combine into a single string with ", " separator
+  }
+
+  void _getTotalCredits(List ceCreditsList) {
+    int credits = 0;
+
+    // Loop through the list and sum up all the credits_earned
+    for (var item in ceCreditsList) {
+      credits += (item['credits_earned'] as num?)?.toInt() ?? 0;
+    }
+
+    // Update the state with the total credits
+      eventVM.credits.value = credits;
+  }
+
+
+  void _launchUrl(var link) async {
+    try {
+      final Uri url = Uri.parse(link);
+      if (await canLaunch(url.toString())) {
+        await launch(url.toString());
+      } else {
+        _showError("Could not open the URL.");
+      }
+    } catch (e) {
+      _showError("Error occurred while launching the URL.");
+    }
+  }
+
+  void _showError(String message) {
+    Get.snackbar(
+      "Error",
+      message,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
   }
 
   @override
@@ -100,27 +148,28 @@ class _EventDetailState extends State<EventDetail> {
               child: Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 15.w,top: 16.h),
-                    height: 140.h,
+                    padding: EdgeInsets.only(left: 15.w,top: 16.h, right: 15.w),
                     decoration: BoxDecoration(
                       color: Color.fromRGBO(216, 229, 236, 1),
                       borderRadius: BorderRadius.only(
                           topRight: Radius.circular(12.r),
                           topLeft: Radius.circular(12.r)),),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Row(
 
                           children: [
                             Icon(FontAwesomeIcons.calendarDay, size: 14.0.sp, color: AppColors.blueColor),
                             SizedBox(width: 13.w),
-                            Text( widget.event['event_date'],
-                              style: montserrat600(14.sp, AppColors.blueColor),
+                            Obx(
+                              ()=> Expanded(
+                                child: Text( widget.event["single_date"] == true ? widget.event['event_date'] : eventVM.formattedDate.value,
+                                  style: montserrat600(14.sp, AppColors.blueColor),
+                                ),
+                              ),
                             ),
-                            SizedBox(width: 105.w,),
-                            Image.asset('assets/images/singlestar.png',height: 18.h,width: 18.w,),
-                            Text(' ${widget.event["average_rating"]}',style: jost600(14.sp, AppColors.blueColor),),
-                            Text(' (${widget.event["reviews"].length})',style: jost400(14.sp, AppColors.blueColor),)
+
 
 
                           ],
@@ -138,7 +187,7 @@ class _EventDetailState extends State<EventDetail> {
                               color: AppColors.blueColor,
                             ),
                             SizedBox(width: 5.w),
-                            Text(widget.event['event_credits'] + " Cred.   ", style: jost600(14.sp, AppColors.blueColor),),
+                            Obx(()=> Text(eventVM.credits.value.toString() + " Cred.", style: jost600(14.sp, AppColors.blueColor),)),
                           ],
                         ),
                         SizedBox(height: 10.h),
@@ -147,9 +196,14 @@ class _EventDetailState extends State<EventDetail> {
                             Icon(FontAwesomeIcons.tag, size: 14.0.sp, color: AppColors.blueColor),
                             SizedBox(width: 13.w),
                             Text("\$" + widget.event['event_price'].toString() + "/seat", style: jost600(14.sp, AppColors.blueColor),),
+                            Spacer(),
+                            Image.asset('assets/images/singlestar.png',height: 18.h,width: 18.w,),
+                            Text(' ${widget.event["average_rating"]}',style: jost600(14.sp, AppColors.blueColor),),
+                            Text(' (${widget.event["reviews"].length})',style: jost400(14.sp, AppColors.blueColor),),
                           ],
                         ),
                         SizedBox(height: 10.h),
+                        if(widget.event["event_building"] != "")
                         Row(
                           children: [
                             Icon(FontAwesomeIcons.ticket, size: 14.0.sp, color: AppColors.blueColor),
@@ -327,19 +381,32 @@ class _EventDetailState extends State<EventDetail> {
                     height: 14.h,
                   ),
 
-                  GestureDetector(
-                    onTap: (){
-                      Get.to(SuggestEventForm(uid: widget.event["event_id"],));
-                    },
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Container(
-                        height: 40.h,
-                        width: 150.w,
-                        decoration: BoxDecoration(color: AppColors.blueColor,borderRadius: BorderRadius.circular(10.r)),
-                        child: Center(child: Text('Suggest Edits',style: montserrat600(12.sp, AppColors.whiteColor),)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: (){
+                          Get.to(SuggestEventForm(uid: widget.event["event_id"],));
+                        },
+                        child: Container(
+                          height: 40.h,
+                          width: 150.w,
+                          decoration: BoxDecoration(color: AppColors.blueColor,borderRadius: BorderRadius.circular(10.r)),
+                          child: Center(child: Text('Suggest Edits',style: montserrat600(12.sp, AppColors.whiteColor),)),
+                        ),
                       ),
-                    ),
+                      GestureDetector(
+                        onTap: () async {
+                          _launchUrl(widget.event["event_link"]);
+                        },
+                        child: Container(
+                          height: 40.h,
+                          width: 150.w,
+                          decoration: BoxDecoration(color: AppColors.blueColor,borderRadius: BorderRadius.circular(10.r)),
+                          child: Center(child: Text('Website Link',style: montserrat600(12.sp, AppColors.whiteColor),)),
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 8.h,),
                   Container(
@@ -351,107 +418,87 @@ class _EventDetailState extends State<EventDetail> {
                   SizedBox(
                     height: 8.h,
                   ),
-                  Row(
-                    children: [
-                      Container(
-                        height: 76.h,
-                        width: 161.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(left: 13.w, ),
-                              height: 37.h,
-                              width: 161.w,
-                              decoration: BoxDecoration(
-                                color: AppColors.blueColor,
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(12.r),
-                                    topLeft: Radius.circular(12.r)),
-                              ),
-                              child: Row(
+                  GridView.builder(
+                    shrinkWrap: true,  // Makes the GridView take the minimum required space based on content
+                    physics: NeverScrollableScrollPhysics(),  // Disables scrolling for GridView
+                    padding: EdgeInsets.zero,
 
-                                children: [
-                                  Text('Substance Abuse',style: TextStyle(fontWeight: FontWeight.w600,fontSize: 10.sp,color: Colors.white),),
-                                  SizedBox(width: 28.w,),
-                                  Text('8',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 30.sp,color: Colors.white,),),
-
-                                ],
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,  // This will create two widgets in each row
+                      crossAxisSpacing: 11.w,  // Spacing between columns
+                      mainAxisSpacing: 11.h,  // Spacing between rows
+                      childAspectRatio: 2.1/1,
+                    ),
+                    itemCount: widget.event["credits_and_topics"].length,  // Set the number of items (change this as per your data)
+                    itemBuilder: (context, index) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,  // Ensures the column only takes as much space as needed
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(left: 13.w),
+                            height: 37.h,
+                            width: 161.w,
+                            decoration: BoxDecoration(
+                              color: AppColors.blueColor, // Example for alternating color
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(12.r),
+                                topLeft: Radius.circular(12.r),
                               ),
                             ),
-                            Container(
-                              padding: EdgeInsets.only(left: 8.w, ),
-                              decoration: BoxDecoration(
-                                color: AppColors.appbar_text,
-                                borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(12.r),
-                                    bottomLeft: Radius.circular(12.r)),
-                              ),
-                              height: 37.h,
-                              child: Row(
-                                children: [Image.asset('assets/images/check.png',height: 11.h,width: 11.w,),
-                                  SizedBox(width: 5.w,),
-                                  Text('American Physchology\nAssociation (APA)',style: montserrat600(8.sp, AppColors.blueColor),)
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 11.w),
-                      Container(
-                        height: 76.h,
-                        width: 161.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(left: 13.w, ),
-                              height: 37.h,
-                              width: 161.w,
-                              decoration: BoxDecoration(
-                                color: AppColors.blueColor,
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(12.r),
-                                    topLeft: Radius.circular(12.r)),
-                              ),
-                              child: Row(
-
-                                children: [
-                                  Text('Addiction Treatment',style: TextStyle(fontWeight: FontWeight.w600,fontSize: 10.sp,color: Colors.white),),
-                                  SizedBox(width: 10.w,),
-                                  Text('4',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 30.sp,color: Colors.white,),),
-
-                                ],
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  widget.event["credits_and_topics"][index]["topic"],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 10.sp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  widget.event["credits_and_topics"][index]["credits_earned"].toString(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 26.sp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 8.w),
+                            decoration: BoxDecoration(
+                              color: AppColors.appbar_text,
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(12.r),
+                                bottomLeft: Radius.circular(12.r),
                               ),
                             ),
-                            Container(
-                              padding: EdgeInsets.only(left: 8.w, ),
-                              decoration: BoxDecoration(
-                                color: AppColors.appbar_text,
-                                borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(12.r),
-                                    bottomLeft: Radius.circular(12.r)),
-                              ),
-                              height: 37.h,
-                              child: Row(
-                                children: [Image.asset('assets/images/check.png',height: 11.h,width: 11.w,),
-                                  SizedBox(width: 5.w,),
-                                  Text('American Physchology\nAssociation (APA)',style: montserrat600(8.sp, AppColors.blueColor),)
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
+                            height: 37.h,
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  'assets/images/check.png',
+                                  height: 11.h,
+                                  width: 11.w,
+                                ),
+                                SizedBox(width: 5.w),
+                                Text(
+                                  widget.event["credits_and_topics"][index]["accreditor"],
+                                  style: montserrat600(8.sp, AppColors.blueColor),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
+
                   SizedBox(
-                    height: 17.h,
+                    height: 13.h,
                   ),
                   Row(
                     children: [
@@ -546,7 +593,11 @@ class _EventDetailState extends State<EventDetail> {
                                   ()=> InkWell(
                                   autofocus: false,
                                   onTap: (){
-                                    eventVM.goingToggle(widget.event["event_id"], widget.event["event_name"], widget.event["event_date"],);
+                                    if(widget.event["single_date"] == true){
+                                      eventVM.goingToggle(widget.event["event_id"], widget.event["event_name"], widget.event["event_date"],);
+                                    } else {
+                                      eventVM.goingToggleWithMultipleDates(widget.event["event_id"], widget.event["event_name"],);
+                                    }
                                   },
                                   child: Container(height: 30.h,width: 30.w,decoration: BoxDecoration(
                                       color: eventVM.planned.contains(FirebaseAuth.instance.currentUser!.uid) ? AppColors.blueColor : Colors.white,

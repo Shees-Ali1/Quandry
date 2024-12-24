@@ -87,8 +87,6 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
                       return eventDate.day;
                     }).toList();
 
-                    print(eventDates);
-
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Container(
@@ -128,11 +126,22 @@ class _CalendarScreenMainState extends State<CalendarScreenMain> {
 
                       var events = snapshot.data!.docs;
 
+                      print(profileVM.selectedCalenderDate);
+
+
+
                       events.retainWhere((event) {
-                        // Ensure event["event_date"] is in the same format as profileVM.selectedCalenderDate (e.g., 'yyyy-MM-dd')
-                        String eventDate = event["event_date"]; // assuming it's in 'yyyy-MM-dd' format
-                        return profileVM.selectedCalenderDate.contains(eventDate);
+                        if (event["single_date"] == true) {
+                          String eventDate = event["event_date"]; // Assuming the date is in 'yyyy-MM-dd' format
+                          return profileVM.selectedCalenderDate.contains(eventDate);
+                        } else if (event["multiple_event_dates"] != []) {
+                          // Check for multiple_event_dates if single_date is false
+                          List<dynamic> multipleDates = event["multiple_event_dates"];
+                          return multipleDates.any((date) => profileVM.selectedCalenderDate.contains(date));
+                        }
+                        return false; // If neither condition is met, exclude the event
                       });
+
 
                       if (events.isEmpty) {
                         return Center(child: Text("No events on this Date", style: jost500(16.sp, AppColors.blueColor)));

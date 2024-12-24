@@ -54,10 +54,9 @@ class ProfileController extends GetxController {
 
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult == ConnectivityResult.none) {
-        errorOccurred.value = "No Internet!\nPLease make sure internet is available";
+        errorOccurred.value = "No Internet!\nPlease make sure internet is available";
         throw SocketException('No internet connection');
       }
-
 
       var userDoc = await firestore.collection('users').doc(auth.uid).get();
 
@@ -68,17 +67,18 @@ class ProfileController extends GetxController {
         name.value = user?['name'] ?? 'Unknown User';
         bio.value = user?['bio'] ?? '';
         phone_number.value = user?['phone_number'] ?? 'Unknown User';
-        followers.value = List<String>.from(user!['followers'] ?? []);
-        following.value = List<String>.from(user['following'] ?? []);
-        email.value = user['email'] ?? '';
-        verified.value = user['verified'] ?? false;
-        location.value = user['location'] ?? 'Unknown';
-        joined.value = formatTimestampToDate(user['joined']!);
-        profileType.value = user['profile_type'] ?? 'Public';
-        favourites.value = (user['favourites'] ?? []);
-        events.value = (user['events'] ?? []);
-        requested.value = (user['requested'] ?? []);
-        incoming_requests.value = (user['incoming_requests'] ?? []);
+        followers.value = List<String>.from(user?['followers'] ?? []);
+        following.value = List<String>.from(user?['following'] ?? []);
+        email.value = user?['email'] ?? '';
+        verified.value = user?['verified'] ?? false;
+        location.value = user?['location'] ?? 'Unknown';
+        joined.value = formatTimestampToDate(user?['joined'] ?? '');
+        profileType.value = user?['profile_type'] ?? 'Public';
+        favourites.value = List<String>.from(user?['favourites'] ?? []);
+        events.value = await _processEvents(user?['events'] ?? []);
+        print("events : ${events.value}");
+        requested.value = List<String>.from(user?['requested'] ?? []);
+        incoming_requests.value = List<String>.from(user?['incoming_requests'] ?? []);
 
         userDataFetched.value = true;
       } else {
@@ -104,6 +104,68 @@ class ProfileController extends GetxController {
       loading.value = false;
     }
   }
+
+  Future<List<Map<String, dynamic>>> _processEvents(List<dynamic> eventsList) async {
+    // Group events by event_id
+    Map<String, Map<String, dynamic>> groupedEvents = {};
+
+    // Loop through events and group by event_id
+    for (var event in eventsList) {
+      String eventId = event['event_id'] ?? ''; // Default to empty string if null
+      String eventName = event['event_name'] ?? ''; // Default to empty string if null
+      String eventDate = event['event_date'] ?? ''; // Default to empty string if null
+
+      // Only add to dates if eventDate is not empty
+      if (eventDate.isNotEmpty) {
+        if (groupedEvents.containsKey(eventId)) {
+          groupedEvents[eventId]?['event_date']?.add(eventDate);
+        } else {
+          groupedEvents[eventId] = {
+            'event_name': eventName,
+            'event_date': [eventDate] // Add the valid date to the list
+          };
+        }
+      }
+    }
+
+    // Now process each group, format and combine the dates
+    List<Map<String, dynamic>> processedEvents = [];
+
+    groupedEvents.forEach((eventId, eventData) {
+      String formattedDates = _formatAndCombineDates(eventData['event_date']);
+      processedEvents.add({
+        'event_id': eventId,
+        'event_name': eventData['event_name'],
+        'event_date': formattedDates, // Combined dates as a string
+      });
+    });
+
+    return processedEvents;
+  }
+
+  String _formatAndCombineDates(List<String> dateList) {
+    // Filter out empty dates
+    List<String> validDates = dateList.where((date) => date.isNotEmpty).toList();
+
+    // If only one valid date, return it directly without joining
+    if (validDates.length == 1) {
+      return validDates[0];
+    }
+
+    // Join multiple dates with a comma if there are multiple dates
+    return validDates
+        .map((date) {
+      try {
+        return DateFormat('dd MMM yyyy').format(DateTime.parse(date)); // Format to '12 Dec 2024'
+      } catch (e) {
+        return ''; // Handle invalid date formats
+      }
+    })
+        .join(', '); // Combine into a single string with ", " separator
+  }
+
+
+
 
   Future<void> getBlockDelete() async {
     try {

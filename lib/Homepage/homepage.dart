@@ -46,6 +46,38 @@ class _HomeScreenState extends State<HomeScreen> {
     return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
   }
 
+  String getNearestFutureDate(List<String> dateList) {
+    // Get the current date
+    DateTime current = DateTime.now();
+
+    // Convert dates to DateTime objects and filter for future dates
+    List<DateTime> futureDates = dateList
+        .map((date) => DateTime.parse(date))
+        .where((date) => date.isAfter(current))
+        .toList();
+
+    if (futureDates.isEmpty) {
+      return ''; // Return an empty string if no future dates exist
+    }
+
+    // Find the nearest future date
+    futureDates.sort((a, b) => a.compareTo(b));
+    return futureDates.first.toIso8601String().split('T').first;
+  }
+
+  int _getTotalCredits(List ceCreditsList) {
+    int credits = 0;
+
+    // Loop through the list and sum up all the credits_earned
+    for (var item in ceCreditsList) {
+      credits += (item['credits_earned'] as num?)?.toInt() ?? 0;
+    }
+
+    // Update the state with the total credits
+    return credits;
+  }
+
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -402,50 +434,58 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              // Row for Labels (Date/Time, Location, Credits)
               Padding(
                 padding: EdgeInsets.only(left: 12.w,top: 6.01.h,right: 12.w),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Date/Time',
-                      style: jost700(10.54.sp, AppColors.backgroundColor),
+                    Column(
+                      children: [
+                        Text(
+                          'Date/Time',
+                          style: jost700(10.54.sp, AppColors.backgroundColor),
+                        ),
+                        SizedBox(height: 1.68.h),
+                        Text(
+                          event["event_date"] != "" && event["single_date"] == true
+                              ? event["event_date"]
+                              : getNearestFutureDate(
+                            List<String>.from(event["multiple_event_dates"]),
+                          ),
+                          style: jost500(8.78.sp, AppColors.backgroundColor),
+                        ),
+                      ],
                     ),
-                    Text(
-                      'Location',
-                      style: jost700(10.54.sp, AppColors.backgroundColor),
+                    Column(
+                      children: [
+                        Text(
+                          'Location',
+                          style: jost700(10.54.sp, AppColors.backgroundColor),
+                        ),
+                        SizedBox(height: 1.68.h),
+                        Text(
+                          event["event_location"]!,
+                          style: jost500(8.78.sp, AppColors.backgroundColor),
+                        ),
+                      ],
                     ),
-                    Text(
-                      'Credits',
-                      style: jost700(10.54.sp, AppColors.backgroundColor),
+                    Column(
+                      children: [
+                        Text(
+                          'Credits',
+                          style: jost700(10.54.sp, AppColors.backgroundColor),
+                        ),
+                        SizedBox(height: 1.68.h),
+                        Text(
+                          _getTotalCredits(event["credits_and_topics"]).toString() + " CE",
+                          style: jost500(8.78.sp, AppColors.backgroundColor),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 1.68.h), // Spacing between label and values
-
-              // Row for Values (Date, Location, Credits)
-              Padding(
-                padding: EdgeInsets.only(left: 8.w,right: 11.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      event["event_date"]!,
-                      style: jost500(8.78.sp, AppColors.backgroundColor),
-                    ),
-                    Text(
-                      event["event_location"]!,
-                      style: jost500(8.78.sp, AppColors.backgroundColor),
-                    ),
-                    Text(
-                      "10c",
-                      style: jost500(8.78.sp, AppColors.backgroundColor),
-                    ),
-                  ],
-                ),
-              ),
+               // Spacing between label and values
               SizedBox(height: 10.2.h),
               // Price Tag aligned at the bottom-center inside the Stack with reduced width
               Align(alignment: Alignment.center,

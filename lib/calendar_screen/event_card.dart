@@ -39,6 +39,36 @@ class _EventCardState extends State<EventCard> {
 
   final EventController eventVM = Get.put(EventController());
 
+  String getNearestFutureDate(List<String> dateList) {
+    // Get the current date
+    DateTime current = DateTime.now();
+
+    // Convert dates to DateTime objects and filter for future dates
+    List<DateTime> futureDates = dateList
+        .map((date) => DateTime.parse(date))
+        .where((date) => date.isAfter(current))
+        .toList();
+
+    if (futureDates.isEmpty) {
+      return ''; // Return an empty string if no future dates exist
+    }
+
+    // Find the nearest future date
+    futureDates.sort((a, b) => a.compareTo(b));
+    return futureDates.first.toIso8601String().split('T').first;
+  }
+
+  int _getTotalCredits(List ceCreditsList) {
+    int credits = 0;
+
+    // Loop through the list and sum up all the credits_earned
+    for (var item in ceCreditsList) {
+      credits += (item['credits_earned'] as num?)?.toInt() ?? 0;
+    }
+
+    // Update the state with the total credits
+    return credits;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,18 +123,21 @@ class _EventCardState extends State<EventCard> {
                       SizedBox(height: 8.h), // Added spacing between title and other elements
 
                       /// Date and Location Row
-                      if(widget.date.isNotEmpty)
                       Row(
                         children: [
                           Icon(FontAwesomeIcons.calendar, size: 14.0.sp, color: AppColors.backgroundColor),
                           SizedBox(width: 6.w),
                           Text(
-                            widget.date,
+                            widget.date.isNotEmpty && widget.event!["single_date"] == true
+                                ? widget.date
+                                : getNearestFutureDate(
+                              List<String>.from(widget.event!["multiple_event_dates"]),
+                            ),
                             style: jost600(11.sp, AppColors.backgroundColor),
                           ),
+
                         ],
                       ),
-                      if(widget.date.isNotEmpty)
                       SizedBox(height: 8.h),
                       Row(
                         children: [
@@ -130,7 +163,7 @@ class _EventCardState extends State<EventCard> {
                           ),
                           SizedBox(width: 6.w),
                           Text(
-                            widget.credits,
+                            _getTotalCredits(widget.event!["credits_and_topics"]).toString() + " Credits",
                             style: jost600(11.sp, AppColors.backgroundColor),
                           ),
                         ],
